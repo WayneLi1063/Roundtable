@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project proposal</title>
+    <meta name="author" content="Wayne Li">
+    <link rel="stylesheet" href="css/proposal_style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Project Proposal</h1>
+        <p class="subtitle">A tool for UW students to look for a study group</p>
+    </header>
+    <main>
+        <section>
+            <h3>Problem Description</h3>
+            <div>
+                <p>Researches showed that study groups are often beneficial for students, and greatly contribute to
+                    their academic successes. A collaborative environment helps people progress at a similar pace (i.e.
+                    less procrastination), practice communication skills in preparation for the real-life work
+                    environment, and finally, group members can learn by exchanging notes and viewpoints outside of the
+                    class. The <cite><a
+                            href="https://webster.uaa.washington.edu/asp/website/study-skills/tips-for-success-at-the-university-of-washington/">Tips
+                            for Success at the UW</a></cite> page also listed the study group as an
+                    important studying tool. Many professors and courses start to adopt the team model, most notably,
+                    Informatics Program recognizes teamwork as an essential element.</p>
+                <p>However, not every major encourages teamwork, and many courses don’t have a mandatory lab or quiz
+                    section, which can help you find teammates to work with. There are other ways to establish a study
+                    group, for example, announce your intention in front of the whole class or through the mailing list,
+                    or put up fliers and discussion posts asking for teammates, which both require a significant amount
+                    of organization and work. Furthermore, the people around you may not have a similar schedule, thus
+                    forming a consistent and highly collaborative group to study with can be challenging. Therefore, an
+                    accessible tool for organizing study groups is helpful. </p>
+                <p>Are there existing solutions to this problem? <a
+                        href="https://www.google.com/search?q=find+study+group">A quick google
+                        search</a> will tell you there are two or three websites with similar ideas; however, they are
+                    either not specific and personalized enough, or they can’t apply to all UW students. <a
+                        href="https://www.meetup.com/">Meetup</a> is first on the google list, after a
+                    relatively easy registration process, you will find Meetup only ask you your location and interest fields 
+                    when you try to create your group, turns out it’s more like an interest group catalog, which is
+                    meant to attract a large number of people with board searchability and very little specificity. Next
+                    on the list, <a href="https://www.studypal.co/">StudyPal.co</a> is established to be
+                    a “find study group” tool, but sadly it’s only for people that want to obtain certain certifications
+                    like GMAT, GRE, and TOEFL, etc., so it doesn’t suit every UW student’s needs. The last tool,
+                    BuddyUp, is mentioned in a <cite><a
+                            href="https://www.digitaltrends.com/mobile/buddyup-study-group-app/">blog post</a></cite>,
+                    but sadly its link is dead, and presumably, the business fails.</p>
+            </div>
+        </section>
+        <section>
+            <h3>Proposed Application</h3>
+            <div>
+                <p>The proposed application is a tool that facilitates the formation and search of study groups, in
+                    particular, people can plot and share their preferred study location, communication methods, and group 
+                    size through a web forum, and finally, utilize a competent search function that quickly points users to 
+                    already existing groups.
+                </p>
+                <p>Although such a study group finder tool is useful and applicable to every college student, I would
+                    like to confine the targeted user base strictly to UW students, especially I want to implement
+                    features that streamline the group posting and finding process, limit unwanted user error, and adds 
+                    a sense of security, because the users know all the study pals will be UW students. This also guarantees 
+                    study pals are in close proximities, such as in the same campus or dorm buildings. </p>
+                <p>Here is how I envision the process will be:</p>
+                <ol>
+                    <li>The user enters the website, and the website first prompts the user to search with course
+                        numbers with visual cues, or they are free to explore all public available groups.</li>
+                    <li>Then there is an advanced search tool to help the user further optimize front page recommendations, 
+                        for example, study group objectives, preferred group size.</li>
+                    <li>If there's a suitable result, the user can hover or click on a group (most likely a card) 
+                        to inspect more info, including the group's self-description.</li>
+                    <li>If the user chooses a particular group, the website will prompt the user to login and successfully 
+                        authenticate, it will show the user that group's members' emails and preferred communication method.</li>
+                    <li>If there's no suitable search result, the user will be prompted to sign-up and create a group. 
+                        The user has to input a UW email address for future contacts.</li>
+                    <li>The webpage then shows a forum to the user, the user will choose one of the courses he/she
+                        has (or input manually), fill out optional information, like preferred communication methods, and 
+                        group size.</li>
+                    <li>After the user completed the forum, the user is automatically the group's admin, the webpage will send 
+                        the user to his/her currently existing "Groups" page. </li>
+                    <li>From there, the user can further manage his or her groups or create another new group. </li>
+                </ol>
+                <p>
+                    This Web app hopes to fix the inaccessibility issues of finding a study group in UW, it targets the
+                    UW students specifically. It helps students that are completing an online course, a big lecture with
+                    zero labs, or users that are a little shy, to score a fantastic study group. Less coordination and
+                    organization are needed to set up a meeting time and communication methods, so finding the right
+                    group relies less on luck. The streamlined process of creating posts aims to reduce user
+                    frustration: the authentication protects the user from trolls, prevents users from forgetting their
+                    login information, and the need to handle another database; and the Student API helps users complete
+                    forms faster and easier.
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
