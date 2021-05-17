@@ -16,7 +16,7 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 ![img](https://lh4.googleusercontent.com/R2Da_YVtOBGv_d5gkcPn6whNBuY_Ndh8Z4Qh0C1hL8TO5aqwB-3VOxsgpi2CZFWLMtLLYyafLYAL-3DQguOp6W0kmIBahkWX_OLRq2mzzm4SNlOfJ6FYeTMjGiBtHkALNMh5nh5h)
 
- 
+ <br />
 
 **Summary Table: All P0 are MVP user stories**
 
@@ -30,7 +30,7 @@ We, the developers, had experienced these pain points as UW students and wished 
 | P1       | As a student      | I want to filter groups by group size and join a group with no more than 5 people, because I want to make close friends. | Look up groups with a form filled out by the user, send the form in **JSON** and search for suitable groups in **MySQL** database, compile all matches and send all the data back to users in **JSON**, then display them using **React, HTML and CSS**. |
 | P1       | As a group admin  | I want to add tags to my study group, so it is more searchable. | Validate the identity of the user as the group admin, append tags (defined by us) to the current group within the groups table in **MySQL**.The tags we envisioned are: homework help, exam squad, lab mates, note exchange, project partners |
 
- 
+ <br />
 
 **List of available endpoints:**
 
@@ -46,7 +46,7 @@ POST /sessions (Starts a new session)
 
 DELETE /sessions/mine (Ends the current session) 
 
- 
+ <br />
 
 *Create, edit, delete for Groups*
 
@@ -68,10 +68,9 @@ POST /groups/{id}/tags/{id} (Adds a new tag to a particular group)
 
 DELETE /groups/{id}/tags/{id} (Deletes the tag of a particular group) 
 
- 
+ <br />
 
 **Database Schema:**
-
 ```
 create table if not exists Users (
 
@@ -101,6 +100,8 @@ create table if not exists Courses (
 
 ) 
 
+
+
 create table if not exists Groups (
 
   group_id int not null auto_increment primary key,
@@ -123,7 +124,7 @@ create table if not exists Groups (
 
 ) 
 
- 
+
 
 create table if not exists Enrollments (
 
@@ -135,7 +136,7 @@ create table if not exists Enrollments (
 
 ) 
 
- 
+
 
 create table if not exists Tags (
 
@@ -145,7 +146,7 @@ create table if not exists Tags (
 
 ) 
 
- 
+
 
 create table if not exists GroupTags (
 
@@ -155,25 +156,24 @@ create table if not exists GroupTags (
 
   group_id int not null FOREIGN KEY REFERENCES Groups(group_id)
 
-)
+) 
 
 
- 
 
 create unique index idx_usr_email
 
 on Users (email) 
 
- 
+
 
 create unique index idx_crs_abbr
 
 on Courses (course_abbr) 
 
- 
+
 
 create unique index idx_grp_name
 
-on Groups (group_name)
+on Groups (group_name) 
 ```
  
