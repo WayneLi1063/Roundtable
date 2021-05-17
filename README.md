@@ -8,7 +8,7 @@ As UW students, we often need to find study groups to understand new concepts, t
 
 We, the developers, had experienced these pain points as UW students and wished there were tools that facilitate group forming. This project will continue to be useful and help many students, and we believe it has enough complexities to make for a good final project.
 
-
+ 
 
 ## **Technical Description**
 
@@ -16,7 +16,7 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 ![img](https://lh4.googleusercontent.com/R2Da_YVtOBGv_d5gkcPn6whNBuY_Ndh8Z4Qh0C1hL8TO5aqwB-3VOxsgpi2CZFWLMtLLYyafLYAL-3DQguOp6W0kmIBahkWX_OLRq2mzzm4SNlOfJ6FYeTMjGiBtHkALNMh5nh5h)
 
-
+ 
 
 **Summary Table: All P0 are MVP user stories**
 
@@ -34,7 +34,7 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 **List of available endpoints:**
 
-Sign up, sign in, sign out, edit user info for Users and Sessions  
+*Sign up, sign in, sign out, edit user info for Users and Sessions*  
 
 POST /users (Creates a new user)
 
@@ -44,11 +44,11 @@ PATCH /users/{id} (Edits the given user’s profile info)
 
 POST /sessions (Starts a new session)
 
-DELETE /sessions/mine (Ends the current session)
+DELETE /sessions/mine (Ends the current session) 
 
+ 
 
-
-Create, edit, delete for Groups
+*Create, edit, delete for Groups*
 
 POST /groups (Creates a new group)
 
@@ -66,15 +66,15 @@ DELETE /groups/{id}/members/{id} (Deletes the member, both from admin removal, o
 
 POST /groups/{id}/tags/{id} (Adds a new tag to a particular group)
 
-DELETE /groups/{id}/tags/{id} (Deletes the tag of a particular group)
+DELETE /groups/{id}/tags/{id} (Deletes the tag of a particular group) 
 
-
+ 
 
 **Database Schema:**
 
 create table if not exists Users (
 
-  *usr_id int not null auto_increment primary key,*
+  usr_id int not null auto_increment primary key,
 
   email varchar(320) not null,
 
@@ -86,9 +86,9 @@ create table if not exists Users (
 
   photo_url varchar(2000) not null
 
-);
+) 
 
- 
+
 
 create table if not exists Courses (
 
@@ -98,7 +98,7 @@ create table if not exists Courses (
 
   course_abbr varchar(5) not null
 
-)
+) 
 
  
 
@@ -122,7 +122,7 @@ create table if not exists Groups (
 
   photo_url varchar(2000) not null
 
-)
+) 
 
  
 
@@ -134,7 +134,7 @@ create table if not exists Enrollments (
 
   group_id int not null FOREIGN KEY REFERENCES Groups(group_id)
 
-)
+) 
 
  
 
@@ -144,7 +144,7 @@ create table if not exists Tags (
 
   tag_name varchar(120) not null
 
-)
+) 
 
  
 
@@ -156,24 +156,24 @@ create table if not exists GroupTags (
 
   group_id int not null FOREIGN KEY REFERENCES Groups(group_id)
 
-)
+) 
 
  
 
 create unique index idx_usr_email
 
-on Users (email)
+on Users (email) 
 
  
 
 create unique index idx_crs_abbr
 
-on Courses (course_abbr)
+on Courses (course_abbr) 
 
  
 
 create unique index idx_grp_name
 
-on Groups (group_name)
+on Groups (group_name) 
 
  
