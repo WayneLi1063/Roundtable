@@ -72,6 +72,7 @@ DELETE /groups/{id}/tags/{id} (Deletes the tag of a particular group)
 
 **Database Schema:**
 
+```
 create table if not exists Users (
 
   *usr_id int not null auto_increment primary key,*
@@ -99,8 +100,6 @@ create table if not exists Courses (
   course_abbr varchar(5) not null
 
 )
-
- 
 
 create table if not exists Groups (
 
@@ -169,11 +168,10 @@ on Users (email)
 create unique index idx_crs_abbr
 
 on Courses (course_abbr)
-
  
 
 create unique index idx_grp_name
 
 on Groups (group_name)
-
+```
  
