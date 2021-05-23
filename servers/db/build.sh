@@ -1,0 +1,1 @@
+docker build -t wayneli1063/mysqldb ../db

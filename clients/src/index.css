@@ -1,0 +1,995 @@
+/*
+  background / font
+*/
+
+html, body {
+	height: 100%;
+	position: relative;
+	font-family: 'Open Sans', sans-serif;
+}
+
+main {
+	min-height: 350px;
+}
+
+#nav-search {
+	background-color: lightsteelblue;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.h2 {
+	font-family: 'Teko', sans-serif;
+}
+
+h1 {
+	font-family: 'Passion One', cursive;
+	padding-left: 10px;
+	padding-right: 10px
+}
+
+/*
+  footer
+*/
+.placeHolderBlock {
+	display: block;
+	height: 520px;
+	width: 100%;
+}
+
+footer {
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: darkslateblue;
+	width: 100%;
+	margin-top: 50px;
+}
+
+footer a, footer p {
+	color: white;
+}
+
+footer a:hover {
+	color: goldenrod;
+}
+
+footer hr {
+	border-color: #ffffff;
+	padding-top: 20px;
+}
+
+.footer-text {
+	line-height: 1.7rem;
+}
+
+.rgba-light {
+	margin: 0 10%;
+}
+
+.github {
+	padding-top: 30px;
+}
+
+
+/*
+  header / nav
+*/
+
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: darkslateblue;
+	color: white;
+	padding: 10px;
+	margin-bottom: 10px;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.navbar .logo {
+	padding-left: 20px;
+	padding-top: 2px;
+}
+
+#logo {
+	width: 60px;
+	height: 50px;
+}
+
+.logo p {
+	padding-top: 8px;
+	color: white;
+}
+
+.nav-links a {
+	color: white;
+	padding: 8px;
+	text-decoration: none;
+	padding-bottom: 10px;
+}
+
+.logo a:hover {
+	text-decoration: none;
+}
+
+.nav-links {
+	display: none;
+}
+
+.profile-link {
+	color: white;
+}
+
+.nav-links a:hover, footer .h6 a:hover, .profile-link:hover, .fa-icon:hover {
+	color: goldenrod;
+	text-decoration: none;
+}
+
+.avatar {
+	width: 50px;
+	height: 50px;
+	border-radius: 30px;
+}
+
+.spinner {
+	text-align: center;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+	background-color: white;
+	color: black;
+}
+
+/*
+  Filter
+*/
+
+.filter-form {
+	margin-top: 25px;
+}
+
+.dropdown {
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+.dropdown input {
+	border-radius: 4px;
+	background-color: white;
+	width: 40%;
+	padding: 10px;
+}
+
+button {
+	background-color: white;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+.join, .edit, .leave {
+	float: right;
+	margin-bottom: 12px;
+	margin-top: 2px;
+	background-color: darkslateblue;
+	color: white;
+	padding: 4px 12px;
+	border: 0px;
+}
+
+.leader {
+	margin-left: 2px;
+}
+
+.group-name, .join, .edit, .leave, .class-name, .class-name-details {
+	font-family: 'Passion One', cursive;
+	font-size: 20px;
+	border-radius: 5px;
+}
+
+.search-button {
+	margin-top: 10px;
+}
+
+.more-options {
+	width: 100%;
+}
+
+#options {
+	margin-top: -21px;
+	margin-left: -1px;
+	position: fixed;
+	background: rgb(197, 54, 2);
+	color: white;
+	border-radius: 0 0 20px 0px;
+	border-color: white;
+	z-index: 100;
+	padding: 10px;
+	border: 0px;
+}
+
+#create {
+	margin-top: -21px;
+	margin-right: -1px;
+	right: 0px;
+	background: darkgreen;
+	color: white;
+	border-radius: 0 0 0px 20px;
+	border-color: white;
+	padding: 10px;
+	z-index: 100;
+	position: fixed;
+	border: 0px
+}
+
+.dropdown button:hover, .join:hover, .edit:hover, .leave:hover, .search-button:hover, #options:hover, #create:hover {
+	background-color: goldenrod;
+	color: white;
+	text-decoration: none;
+}
+
+.side-bar {
+	margin-top: 30px;
+	background-color: white;
+	z-index: 5;
+}
+
+.form-control {
+	width: 100%;
+}
+
+.select-field {
+	font-size: 11pt;
+}
+
+.form-group {
+	font-size: 13px;
+	margin-bottom: 0;
+}
+
+form .form-control {
+	height: 20px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.form-check-label {
+	margin-bottom: 0;
+}
+
+/*
+  cards
+*/
+
+.title {
+	margin-top: 30px;
+}
+
+.course-cards {
+	margin-top: 10px;
+	margin-left: 12px;
+	flex: 1;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.flex-cards-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.flex-card {
+	flex: 0 0 250px;
+	background-color: white;
+	margin: 1rem;
+	border-radius: 10px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16), 0 1px 3px rgba(0, 0, 0, 0.23);
+}
+
+.flex-card div.top {
+	border-radius: 10px 10px 0 0;
+	background-color: #365073;
+	position: relative;
+	top: 0;
+	height: 3rem
+}
+
+.flex-card p.class {
+	color: blanchedalmond;
+	margin: 0;
+	padding: 0%;
+	padding-left: 1rem;
+	padding-top: 0.9rem;
+}
+
+.flex-card div.card-content {
+	padding: .5rem 1rem;
+}
+
+.flex-card img {
+	border-radius: 10px 10px 0 0;
+	width: 350px;
+	height: 210px;
+}
+
+.flex-card:hover {
+	box-shadow: 10px 10px 5px grey;
+}
+
+.group-size {
+	font-style: italic;
+}
+
+div.team-viz {
+	margin-top: 5px;
+	display: flex;
+	justify-content: center;
+}
+
+.card-text img {
+	width: 25px;
+	height: 25px;
+	margin-top: -8px;
+}
+
+div.team-viz img {
+	width: 43px;
+	height: 43px;
+	margin-left: 0.6rem;
+	margin-right: 0.6rem;
+	margin-bottom: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.class-name, .group-name {
+	display: inline;
+}
+
+.class-name {
+	float: right;
+	color: black;
+	border: 2px solid orange;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+.class-name-details {
+	float: left;
+	color: black;
+	border: 2px solid orange;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+.group-info {
+	margin-top: 6px;
+}
+
+.row {
+	margin-right: 0;
+}
+
+form ::placeholder {
+	font-size: 13px;
+}
+
+.popup {
+	text-align: center;
+}
+
+/* Profile Form*/
+.nav-tabs {
+	background: white;
+}
+
+.tab-content {
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: white;
+}
+
+.tab-content h6 {
+	font-weight: bold;
+}
+
+/* The popup form */
+
+.form-popup {
+	display: block;
+	border: 3px solid #f1f1f1;
+	position: fixed;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: 30px;
+	z-index: 100;
+}
+
+/* Add styles to the form container */
+
+.form-container {
+	display: block;
+	width: 300px;
+	height: auto;
+	padding: 10px;
+	background-color:white
+}
+
+.form-container input{
+	border-radius: 4px;
+}
+
+/* Full-width input fields */
+
+.form-container input[type=text], 
+
+
+/* When the inputs get focus, do something */
+
+.form-container input[type=text]:focus {
+	background-color: #ddd;
+	outline: none;
+}
+
+.formButton {
+	justify-content: center;
+}
+
+.form-container h1 {
+	font-size: 20px;
+	text-align: center;
+	margin-bottom: 0;
+}
+
+.form-container b {
+	font-size: 12px;
+}
+
+
+
+/* Set a style for the submit/login button */
+
+.form-container .btn {
+	color: white;
+	padding: 10px 15px;
+	border: none;
+	cursor: pointer;
+	width: 40%;
+	margin: 12px
+}
+
+#g-name, #create-group-name {
+	width: 100%;
+	border-style: hidden;
+	background-color: #f1f1f1;
+}
+
+
+/* Add a red background color to the cancel button */
+
+.form-container .save {
+	background-color: darkslateblue;
+	opacity: 0.8;
+}
+
+.save:disabled {
+	background-color: gray;
+}
+
+.form-container .cancel {
+	background-color: grey;
+	opacity: 0.8;
+}
+
+.form-container .save:hover, .form-container .cancel:hover {
+	opacity: 1;
+}
+
+.form-container .disband {
+	width: 100px;
+	padding: 8px 10px;
+	background-color: red;
+	opacity: 0.8;
+}
+
+/* Add some hover effects to buttons */
+
+.form-container .btn:hover {
+	opacity: 1;
+}
+
+.g-size {
+	-webkit-appearance: none;
+	height: 15px;
+	border-radius: 5px;
+	background: #d3d3d3;
+	outline: none;
+	width: 50%;
+}
+
+.g-size::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	background: #4CAF50;
+	cursor: pointer;
+}
+
+.login {
+	position: fixed;
+	left: 50%;
+	top: 55%;
+	margin-top: -75px;
+	margin-left: -125px;
+	z-index: 21;
+	width: 250px;
+}
+
+.loginLogo {
+	position: fixed;
+	left: 50%;
+	top: 40%;
+	margin-top: -320px;
+	margin-left: -200px;
+	width: 400px;
+	z-index: 20;
+}
+
+.loginBG {
+	background-image: url(/img/loginBac.png);
+	height: 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+
+/* Add Courses Form */
+.addCoursePopUp {
+	display: block;
+	border: 3px solid #f1f1f1;
+	background-color: white;
+	position: fixed;
+	left: 50%;
+	top: 30%;
+	margin-top: -65px;
+	margin-left: -150px;
+	z-index: 200;
+	width: 300px;
+	padding: 20px;
+}
+
+.addCourse-p {
+	font-size: 2;
+}
+
+.addCoursePopUp h1 {
+	font-size: 30px
+}
+
+#addCourseInput {
+	/* margin-top: 5px; */
+	width: 100%;
+	height: 30px;
+	border-style: hidden;
+	background-color: #f1f1f1;
+	font-size: 20px;
+}
+
+#add-course, #add-course-2 {
+	justify-content: center;
+	float: right;
+	background-color: darkslateblue;
+	color: white;
+	font-family: 'Passion One', cursive;
+	font-size: 15px;
+	/* border-radius: .5rem; */
+}
+
+#add-course {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+#add-course-2 {
+	margin-top: 10px;
+}
+
+.add-course-input-flex-container {
+	display: flex;
+}
+
+.course-list {
+	display: flex;
+}
+
+.course-tag {
+	background-color: purple;
+	color: white;
+	height: 3.5rem;
+	width: 10rem;
+	font-family: 'Passion One', cursive;
+	font-size: 30px;
+	border-radius: 5px;
+	margin-left: 1rem;
+	margin-top: .5rem;
+	padding-left: 0.7rem;
+	padding-top: 0.3rem;
+}
+
+
+/*
+  Confirm Pop up
+*/
+
+.confirm-popup {
+	display: block;
+	border: 3px solid orangered;
+	border-radius: 3px;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	margin-top: -55px;
+	margin-left: -125px;
+	z-index: 200;
+}
+
+.confirm-container {
+	display: block;
+	width: 250px;
+	padding: 10px;
+	background-color: white;
+}
+
+.confirm-container h1 {
+	text-align: center;
+}
+
+.confirm-button {
+	justify-content: center;
+}
+
+div.confirm-button {
+	display: flex;
+	justify-content: center;
+}
+
+.btn-yes, .btn-no {
+	width: 100px;
+	margin: 0.5rem;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.btn-yes {
+	background-color: red;
+}
+
+.btn-no {
+	background-color: grey;
+ }
+
+.alert-red {
+	color: red;
+}
+
+.applied-filter {
+	color: darkgreen;
+	display: inline;
+}
+
+/*
+  Feedback popup
+*/
+.feedback-pop {
+	position: fixed;
+	z-index: 10;
+	background-color: white;
+	padding: 10px;
+	margin-top: 40px;
+	border-style: solid;
+	border-radius: 5px;
+	border-color: sandybrown;
+	margin-left: 5px;
+}
+
+#popCancel {
+	background-color: darkslateblue;
+	color: white;
+}
+/* Profile */
+.my-courses {
+	float: left;
+}
+
+.trash {
+	float: right;
+}
+
+.password-err, .name-err, .email-err {
+	color: red;
+}
+
+.detailsForm {
+	display: block;
+	border: 3px solid rgb(84, 186, 250);
+	background-color: rgb(232, 252, 255);
+	position: fixed;
+	border-radius: 5px;
+	left: 50%;
+	top: 25%;
+	margin-left: -150px;
+	z-index: 200;
+	width: 300px;
+	padding: 20px;
+}
+
+.detailsForm h1 {
+	font-size: 25px;
+}
+
+.detailsCloseButton {
+	color: white;
+	background-color: red;
+	border: 0px;
+	float: right;
+	margin-top: -40px;
+	padding: .5rem
+}
+
+#upload-new-image {
+	margin-left: 10%;
+}
+
+.custom-file {
+	margin-top: 20px;
+}
+
+.user-img {
+	width: 200px;
+	height: 200px;
+	border-radius: 100px;
+}
+
+.memberRow {
+	margin-top: 10px;
+}
+
+.memberInfos {
+	display: inline;
+	margin: 10px;
+}
+
+.membersTitle {
+	font-size: 16px;
+	margin-bottom: 1rem
+}
+
+.lookingFor {
+	position: relative;
+	top: 4px;
+	left: 10px;
+}
+
+.sendEmailButton {
+	position: relative;
+	color: white;
+	background-color: darkslateblue;
+	float: right;
+	padding: 0.5rem;
+	margin-top: 3px;
+	border-radius: 5px;
+}
+
+.emailAllButton {
+	position: fixed;
+	color: white;
+	background-color: darkslateblue;
+	border: 0px;
+	left:50%;
+	padding: 0.5rem;
+	border-radius: 5px;
+}
+
+.goalTag {
+	display: flex;
+	color: white;
+	background-color: tomato;
+	padding: 0.5rem;
+	border-radius: 5px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.goalTagsContainer {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.grey-cover {
+	background-color: gray;
+	position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+	top: 0;
+	bottom: 0;
+	opacity: 0.5;
+	z-index: 10;
+}
+
+.detailsLeader {
+	position: relative;
+	left: -43px;
+	height: 35px;
+	margin-top: -70px;
+}
+.leaderInfos {
+	position: relative;
+	left: -35px;
+	display: inline;
+	margin: 10px;
+}
+
+.detailsContainer {
+	padding: 2rem 2rem 2rem 2rem;
+}
+
+.detailsTitle {
+	margin-left: -10px;
+}
+
+.membersTitle {
+	margin-bottom: 25px;
+	font-size: 20px;
+}
+
+/* 
+  Media rules
+*/
+
+@media (min-width: 768px) {
+	.title {
+		margin-top: 0px;
+	}
+
+	#options {
+		margin-top: -21px;
+	}
+
+	#create {
+		margin-top: -21px;
+	}
+
+	.search-button {
+		margin-top: 0;
+	}
+
+	form ::placeholder {
+		font-size: 16px;
+	}
+
+	.addCoursePopUp {
+		margin-left: -300px;
+		width: 600px;
+	}
+	
+	.addCoursePopUp h1 {
+		font-size: 35px
+	}
+	
+	#addCourseInput {
+		height: 50px;
+		font-size: 25px;
+	}
+	
+	#add-course, #add-course-2 {
+		font-size: 20px;
+	}
+	
+	#add-course {
+		padding-left: 14px;
+		padding-right: 14px;
+	}
+	
+	#add-course-2 {
+		margin-top: 15px;
+	}
+
+	.course-tag {
+		height: 5rem;
+		font-size: 30px;
+		margin-top: 1rem;
+	}
+	
+	.detailsContainer {
+		padding: 2rem 5rem 2rem 5rem;
+	}
+}
+
+@media (min-width: 700px) {
+	.dropdown-mobile {
+		display: none;
+	}
+
+	.nav-links {
+		display: inline;
+	}
+}
+
+@media (min-width: 600px) {
+
+	.placeHolderBlock {
+		height: 220px
+	}
+
+	.form-group {
+		font-size: 16px;
+	}
+
+	form .form-control {
+		height: 30px;
+		padding-top: .2rem;
+		padding-bottom: .2rem;
+	}
+
+	.form-popup {
+		margin-left: -250px;
+		margin-top: -10px;
+	}
+
+	.form-container {
+		width: 500px;
+		height: auto;
+	}
+
+	#confirm {
+		width: 500px;
+	}
+
+	.form-container .btn {
+		padding: 16px 20px;
+		margin: 10px;
+	}
+
+	.form-container .save, .form-container .cancel {
+		width: 45%;
+	}
+
+	.form-container h1 {
+		font-size: 30px;
+		margin-bottom: 8px;
+	}
+
+	.form-container b {
+		font-size: 16px;
+	}
+
+	.form-container input[type=text], 
+	.form-control {
+		padding: 7px;
+	}
+
+	.form-group {
+		margin-bottom: 0.3rem;
+	}
+	
+	.create-form-group input {
+		margin: 0;
+		position: relative;
+	}
+
+	.form-container .disband {
+		width: 100px;
+		padding: 8px 10px;
+		background-color: red;
+		opacity: 0.8;
+	}
+
+	
+}
