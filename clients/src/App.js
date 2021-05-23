@@ -58,7 +58,7 @@ export default class App extends React.Component {
     componentDidMount() {
         this.fetch();
 
-        // Change this into the auth we wrote
+        // TODO: Change this into the auth we wrote
 
         // this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         //     (user) => {
@@ -108,13 +108,16 @@ export default class App extends React.Component {
 
     // unregister all listeners
     componentWillUnmount() {
-        this.rootRef.off();
+        // this.rootRef.off();
         this.unregisterAuthObserver();
     }
 
     // Fetch the groups the user is currently enrolled and user's current attending courses in from json.
     fetch = () => {
         this.setSpinnerOnDisplay();
+
+        // TODO: Change this into an api call.
+
         // this.rootRef = firebase.database().ref();
         // this.rootRef.on('value', (snapshot) => {
         //     let groupList = snapshot.val().groups;
@@ -154,6 +157,8 @@ export default class App extends React.Component {
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = (newGroup) => {
+        // TODO: Change this into an api call.
+
         // newGroup.id = this.state.groupCount + 1;
         // this.rootRef.child("groups").child(newGroup.id).set(newGroup, (errorObj) => {
         //     if (errorObj) {
@@ -170,6 +175,8 @@ export default class App extends React.Component {
 
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = (card) => {
+        // TODO: Change this into an api call.
+
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
         //     if (errorObj) {
         //         this.toggleOnError(errorObj);
@@ -246,6 +253,9 @@ export default class App extends React.Component {
     disbandGroup = (card) => {
         this.fetch()
         this.toggleEditForm();
+
+        // TODO: Change this into an api call.
+
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
         //     if (errorObj) {
         //         this.toggleOnError(errorObj);
@@ -293,7 +303,7 @@ export default class App extends React.Component {
                         <img className='loginLogo' src='img/loginLogo.png' alt='Round Table Logo'></img>
                         <div className='loginBG'>
                             <div className='login'>
-                                {/* Change to our own auth */}
+                                {/* TODO: Change to our own auth */}
                                 {/* <StyledFirebaseAuth uiConfig={this.firebaseUiConfig} firebaseAuth={firebase.auth()} /> */}
                             </div>
                         </div>

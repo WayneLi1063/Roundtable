@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
 
 const HOMEWORK_HELP = "homeworkHelp";
@@ -30,21 +30,24 @@ export default class GroupDetailsPage extends React.Component {
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
-        this.groupRef = firebase.database().ref("groups/").child(groupID);
-        this.groupRef.on("value", (snapshot) => {
-            let group = snapshot.val();
-            if (group) {
-                let members = group.members;
-                this.getMembersInfo(members);
-                this.setState(() => {
-                    return ({ card: group, teamName: group.teamName })
-                })
-            }
-        }, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        })
+
+        // TODO: Change this into an api call.
+
+        // this.groupRef = firebase.database().ref("groups/").child(groupID);
+        // this.groupRef.on("value", (snapshot) => {
+        //     let group = snapshot.val();
+        //     if (group) {
+        //         let members = group.members;
+        //         this.getMembersInfo(members);
+        //         this.setState(() => {
+        //             return ({ card: group, teamName: group.teamName })
+        //         })
+        //     }
+        // }, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // })
     }
 
     // unregister event listener when component is destroyed
@@ -54,39 +57,41 @@ export default class GroupDetailsPage extends React.Component {
 
     // build the data arrays for group leader and memebers
     getMembersInfo = (members) => {
-        Object.keys(members).forEach((key) => {
-            let userString = 'users/' + key;
-            this.ref = firebase.database().ref(userString);
-            if (!members[key]) {
-                this.ref.on("value", (snapshot) => {
-                    this.setState((prevState) => {
-                        let dataArray = prevState.userDataArray
-                        dataArray.push(snapshot.val());
-                        return {
-                            userDataArray: dataArray
-                        }
-                    }, (errorObj) => {
-                        if (errorObj) {
-                            this.props.errorCallback(errorObj);
-                        }
-                    })
-                })
-            } else {
-                this.ref.on('value', (snapshot) => {
-                    this.setState((prevState) => {
-                        let leaderArray = prevState.leader
-                        leaderArray.push(snapshot.val());
-                        return {
-                            leader: leaderArray
-                        }
-                    })
-                }, (errorObj) => {
-                    if (errorObj) {
-                        this.props.errorCallback(errorObj);
-                    }
-                })
-            }
-        })
+        // TODO: Change this into an api call.
+
+        // Object.keys(members).forEach((key) => {
+        //     let userString = 'users/' + key;
+        //     this.ref = firebase.database().ref(userString);
+        //     if (!members[key]) {
+        //         this.ref.on("value", (snapshot) => {
+        //             this.setState((prevState) => {
+        //                 let dataArray = prevState.userDataArray
+        //                 dataArray.push(snapshot.val());
+        //                 return {
+        //                     userDataArray: dataArray
+        //                 }
+        //             }, (errorObj) => {
+        //                 if (errorObj) {
+        //                     this.props.errorCallback(errorObj);
+        //                 }
+        //             })
+        //         })
+        //     } else {
+        //         this.ref.on('value', (snapshot) => {
+        //             this.setState((prevState) => {
+        //                 let leaderArray = prevState.leader
+        //                 leaderArray.push(snapshot.val());
+        //                 return {
+        //                     leader: leaderArray
+        //                 }
+        //             })
+        //         }, (errorObj) => {
+        //             if (errorObj) {
+        //                 this.props.errorCallback(errorObj);
+        //             }
+        //         })
+        //     }
+        // })
     }
 
     //pre-prosess member data

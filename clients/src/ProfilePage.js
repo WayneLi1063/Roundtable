@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
@@ -20,7 +20,7 @@ export default class Profile extends React.Component {
             newPhoto: '',
             url: this.props.user.photoURL
         }
-        this.imgStorageRef = firebase.storage().ref("img");
+        // this.imgStorageRef = firebase.storage().ref("img");
     }
 
     // initial actions when component is created.
@@ -104,33 +104,37 @@ export default class Profile extends React.Component {
                     if (this.state.newPassword !== '') {
                         this.props.user.updatePassword(this.state.newPassword);
                     }
-                    firebase.database().ref('/users/' + uid).update({
-                        name: this.state.name,
-                        email: this.state.email
-                    }, (errorObj) => {
-                        if (errorObj) {
-                            this.props.errorCallback(errorObj);
-                        }
-                    })
+                    // TODO: Change this into an api call.
+
+                    // firebase.database().ref('/users/' + uid).update({
+                    //     name: this.state.name,
+                    //     email: this.state.email
+                    // }, (errorObj) => {
+                    //     if (errorObj) {
+                    //         this.props.errorCallback(errorObj);
+                    //     }
+                    // })
 
                     if (this.state.newPhoto !== '') {
-                        this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
-                            this.imgStorageRef.child(this.state.newPhoto.name).getDownloadURL().then((url) => {
-                                this.props.user.updateProfile({ photoURL: url})
-                                firebase.database().ref('users').child(this.props.user.uid).update({
-                                    photoURL: url
-                                })
-                                this.setState({ url: url })
-                            }).catch((errorObj) => {
-                                if (errorObj) {
-                                    this.props.errorCallback(errorObj);
-                                }
-                            });
-                        }).catch((errorObj) => {
-                            if (errorObj) {
-                                this.props.errorCallback(errorObj);
-                            }
-                        });
+                        // TODO: Change the img handling process.
+
+                        // this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
+                        //     this.imgStorageRef.child(this.state.newPhoto.name).getDownloadURL().then((url) => {
+                        //         this.props.user.updateProfile({ photoURL: url})
+                        //         firebase.database().ref('users').child(this.props.user.uid).update({
+                        //             photoURL: url
+                        //         })
+                        //         this.setState({ url: url })
+                        //     }).catch((errorObj) => {
+                        //         if (errorObj) {
+                        //             this.props.errorCallback(errorObj);
+                        //         }
+                        //     });
+                        // }).catch((errorObj) => {
+                        //     if (errorObj) {
+                        //         this.props.errorCallback(errorObj);
+                        //     }
+                        // });
                     }
 
                     this.setState({
@@ -150,25 +154,27 @@ export default class Profile extends React.Component {
 
     // fetch user information from the database
     setUserProfile = () => {
-        let uid = this.props.user.uid;
-        this.currentUserRef = firebase.database().ref('/users/' + uid);
-        this.currentUserRef.on('value', (snapshot) => {
-            let user = snapshot.val();
-            if (user) {
-                this.setState({
-                    name: user.name,
-                    email: user.email,
-                    url: user.photoURL
-                })
-                if (user.courses) {
-                    this.setState({ courses: user.courses })
-                }
-            }
-        }, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        });
+        // TODO: Change this into an api call.
+
+        // let uid = this.props.user.uid;
+        // this.currentUserRef = firebase.database().ref('/users/' + uid);
+        // this.currentUserRef.on('value', (snapshot) => {
+        //     let user = snapshot.val();
+        //     if (user) {
+        //         this.setState({
+        //             name: user.name,
+        //             email: user.email,
+        //             url: user.photoURL
+        //         })
+        //         if (user.courses) {
+        //             this.setState({ courses: user.courses })
+        //         }
+        //     }
+        // }, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // });
     }
 
     // handle name change when users edit their profiles

@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 
 // The form for "create a group" function.
 export default class Create extends React.Component {
@@ -20,7 +20,7 @@ export default class Create extends React.Component {
             projectPartners: false,
             myCourses: []
         }
-        this.imgStorageRef = firebase.storage().ref("img");
+        // this.imgStorageRef = firebase.storage().ref("img");
     }
 
     // updates course list prop when database fetches
@@ -143,23 +143,26 @@ export default class Create extends React.Component {
             this.toggleEmptyCourse();
             // default img if user didn't upload image
         } else {
-            if (this.state.img === '') {
-                newGroup.img = this.imgStorageRef.child('group6.jfif').getDownloadURL().then((url) => {
-                    this.handleSubmitHelper(newGroup, url);
-                }).catch((errorObj) => {
-                    this.props.errorCallback(errorObj);
-                });
-            } else {
-                this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
-                    this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
-                        this.handleSubmitHelper(newGroup, url);
-                    }).catch((errorObj) => {
-                        this.props.errorCallback(errorObj);
-                    });
-                }).catch((errorObj) => {
-                    this.props.errorCallback(errorObj);
-                });
-            }
+            // TODO: Change the image handling process
+
+            // if (this.state.img === '') {
+            //     newGroup.img = this.imgStorageRef.child('group6.jfif').getDownloadURL().then((url) => {
+            let url = "https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/81/2015/04/07090900/uw-block-w-statue-377x160.jpg"
+            this.handleSubmitHelper(newGroup, url);
+            //     }).catch((errorObj) => {
+            //         this.props.errorCallback(errorObj);
+            //     });
+            // } else {
+            //     this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
+            //         this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
+            //             this.handleSubmitHelper(newGroup, url);
+            //         }).catch((errorObj) => {
+            //             this.props.errorCallback(errorObj);
+            //         });
+            //     }).catch((errorObj) => {
+            //         this.props.errorCallback(errorObj);
+            //     });
+            // }
             this.props.toggleForm();
         }
     }

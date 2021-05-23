@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
@@ -17,20 +17,23 @@ export default class AddCourses extends React.Component {
     //called when component shows
     componentDidMount() {
         let uid = this.props.user.uid;
-        this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
-        this.courseRef.on('value', (snapshot) => {
-            let courses = snapshot.val();
-            this.setState({ courses: courses })
-        }, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        })
+
+        // TODO: change to api call
+
+        // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
+        // this.courseRef.on('value', (snapshot) => {
+        //     let courses = snapshot.val();
+        //     this.setState({ courses: courses })
+        // }, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // })
     }
 
     // disable event listens.
     componentWillUnmount() {
-        this.courseRef.off();
+        // this.courseRef.off();
     }
 
     //shows empty field alert
@@ -46,8 +49,11 @@ export default class AddCourses extends React.Component {
     //delete a course from the user's list
     deleteCourse = (courseKey) => {
         let uid = this.props.user.uid;
-        let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
-        courseRef.remove()
+
+        // TODO: change to api call
+
+        // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
+        // courseRef.remove()
     }
 
     //add a course to the user's list
@@ -55,23 +61,26 @@ export default class AddCourses extends React.Component {
         if (newCourseName === '') {
             this.showEmpty();
         } else {
-            this.courseRef.update({
-                [newCourseName]: newCourseName
-            }, (errorObj) => {
-                if (errorObj) {
-                    this.props.errorCallback(errorObj);
-                }
-            })
-            this.courseRef.on('value', (snapshot) => {
-                let courses = snapshot.val();
-                if (courses !== null) {
-                    this.setState({ courses: courses })
-                }
-            }, (errorObj) => {
-                if (errorObj) {
-                    this.props.errorCallback(errorObj);
-                }
-            })
+
+            // TODO: change to api call
+
+            // this.courseRef.update({
+            //     [newCourseName]: newCourseName
+            // }, (errorObj) => {
+            //     if (errorObj) {
+            //         this.props.errorCallback(errorObj);
+            //     }
+            // })
+            // this.courseRef.on('value', (snapshot) => {
+            //     let courses = snapshot.val();
+            //     if (courses !== null) {
+            //         this.setState({ courses: courses })
+            //     }
+            // }, (errorObj) => {
+            //     if (errorObj) {
+            //         this.props.errorCallback(errorObj);
+            //     }
+            // })
             this.hideEmpty();
         }
     }

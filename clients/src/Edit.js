@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 
 // The form for "edit" button.
 export default class Create extends React.Component {
@@ -20,7 +20,7 @@ export default class Create extends React.Component {
             manyMemberDisplay: false,
             myCourses: this.props.courseList
         }
-        this.imgStorageRef = firebase.storage().ref("img");
+        // this.imgStorageRef = firebase.storage().ref("img");
     }
 
     // updates course list prop when database fetches
@@ -143,19 +143,21 @@ export default class Create extends React.Component {
         } else if (this.state.groupSize < this.props.editData.currNumber) {
             this.toggleManyMember();
         } else {
-            if (typeof this.state.img !== "string") {
-                this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
-                    this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
-                        this.handleSubmitHelper(newGroup, url);
-                    }).catch((errorObj) => {
-                        this.props.errorCallback(errorObj);
-                    });
-                }).catch((errorObj) => {
-                    this.props.errorCallback(errorObj);
-                });
-            } else {
-                this.handleSubmitHelper(newGroup, this.state.img);
-            }
+            // TODO: Change the img handling process.
+
+            // if (typeof this.state.img !== "string") {
+            //     this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
+            //         this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
+            //             this.handleSubmitHelper(newGroup, url);
+            //         }).catch((errorObj) => {
+            //             this.props.errorCallback(errorObj);
+            //         });
+            //     }).catch((errorObj) => {
+            //         this.props.errorCallback(errorObj);
+            //     });
+            // } else {
+            this.handleSubmitHelper(newGroup, this.state.img);
+            // }
             this.props.toggleForm();
         }
     }

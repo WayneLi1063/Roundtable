@@ -1,7 +1,6 @@
 import React from 'react';
 import Card from './Card.js';
-import firebase from 'firebase/app';
-// import GroupDetailsPage from './GroupDetailsPage.js';
+// import firebase from 'firebase/app';
 
 export default class FilteredCardList extends React.Component {
     constructor(props) {
@@ -177,27 +176,31 @@ export default class FilteredCardList extends React.Component {
     confirmLeave = (card) => {
         card.members[this.props.user.uid] = null;
         card.currNumber--;
-        let cardRef = firebase.database().ref("groups/" + card.id);
-        cardRef.set(card, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        });
+        // TODO: Change this into an api call.
+
+        // let cardRef = firebase.database().ref("groups/" + card.id);
+        // cardRef.set(card, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // });
     }
 
     // Add the user to the group when they join the group
     joinGroup = (card) => {
-        let cardRef = firebase.database().ref("groups/" + card.id);
-        cardRef.child("members").child(this.props.user.uid).set(false, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        });
-        cardRef.child("currNumber").set(card.currNumber + 1, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        });
+        // TODO: change this into an api call
+
+        // let cardRef = firebase.database().ref("groups/" + card.id);
+        // cardRef.child("members").child(this.props.user.uid).set(false, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // });
+        // cardRef.child("currNumber").set(card.currNumber + 1, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // });
     }
 
     // Pops up an edit form when the user clicks "edit" button

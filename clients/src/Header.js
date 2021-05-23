@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavLink, Redirect} from 'react-router-dom';
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -47,15 +47,17 @@ export default class Header extends React.Component {
             }
         } 
 
-        let url = ''
-        firebase.database().ref('/users/' + this.props.uid).once('value', (snapshot) => {
-            let user = snapshot.val();
-            url = user.photoURL
-        }, (errorObj) => {
-            if (errorObj) {
-                this.props.errorCallback(errorObj);
-            }
-        })
+        // TODO: Change this into an api call.
+
+        // let url = ''
+        // firebase.database().ref('/users/' + this.props.uid).once('value', (snapshot) => {
+        //     let user = snapshot.val();
+        //     url = user.photoURL
+        // }, (errorObj) => {
+        //     if (errorObj) {
+        //         this.props.errorCallback(errorObj);
+        //     }
+        // })
         return (
             <div id="nav-search" className="sticky-top">
                 <header>
@@ -72,6 +74,7 @@ export default class Header extends React.Component {
                                     <NavLink to='/mygroup' className="text-uppercase font-weight-bold" onClick={this.handleMyGroupClick}
                                         >MyGroups</NavLink>
                                     <NavLink to='/myprofile' className="text-uppercase font-weight-bold">Profile</NavLink>
+                                    {/* TODO: Change this to an api call. */}
                                     <NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
                                     <NavLink to='/myprofile'><img className="avatar" src={url}  alt="User Profile" /></NavLink>
                                 </div>
@@ -88,6 +91,7 @@ export default class Header extends React.Component {
                                         <div className="dropdown-divider"></div>
                                         <NavLink to='/myprofile' className="dropdown-item" >Profile</NavLink>
                                         <div className="dropdown-divider"></div>
+                                        {/* TODO: Change this to an api call. */}
                                         <NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
                                     </div>
                                     
