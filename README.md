@@ -14,7 +14,7 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 **Architectural Diagram Mapping** 
 
-![img](https://lh4.googleusercontent.com/R2Da_YVtOBGv_d5gkcPn6whNBuY_Ndh8Z4Qh0C1hL8TO5aqwB-3VOxsgpi2CZFWLMtLLYyafLYAL-3DQguOp6W0kmIBahkWX_OLRq2mzzm4SNlOfJ6FYeTMjGiBtHkALNMh5nh5h)
+![img](https://user-images.githubusercontent.com/43760622/118579750-86f7a300-b743-11eb-9072-bff83e4eeb73.png)
 
  <br />
 
