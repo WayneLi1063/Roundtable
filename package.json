@@ -1,0 +1,57 @@
+{
+  "name": "roundtable",
+  "version": "1.0.0",
+  "description": "As UW students, we often need to find study groups to understand new concepts, tackle hard problems, and build relationships. However, the pandemic has limited our ability to talk to people face-to-face, often there is no way to know your colleagues except in those awkward zoom breakout rooms. Additionally, remote courses and courses without mandatory sections will continue to exist post-pandemic, it is difficult to find study pals with similar schedules in these settings. Social anxiety can also be a factor that hurts students’ ability to find study groups. Therefore, we want to make that process easier by building an online study group finder. Students can create study groups that other students can join, or join groups that have been already created. They will also be able to browse the study groups by filtering for a specific class or section. In the group information page, students can share contact information, time schedule, and preferred collaboration methods.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WayneLi1063/Roundtable.git"
+  },
+  "keywords": [],
+  "author": "Wayne Li, Andi Ren, Aryan Varshney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WayneLi1063/Roundtable/issues"
+  },
+  "homepage": "https://github.com/WayneLi1063/Roundtable#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-brands-svg-icons": "^5.11.2",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
+    "BufferList": "0.0.0",
+    "bootstrap": "^4.3.1",
+    "firebase": "^7.5.0",
+    "formik": "^2.0.4",
+    "fs-stream": "^0.2.1",
+    "live-server": "^1.2.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-firebaseui": "^4.0.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.2.0",
+    "reactstrap": "^8.1.1",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
