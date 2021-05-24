@@ -153,14 +153,14 @@ func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Reques
 		//Find the user in the database by credential email
 		usr, err1 := ctx.usersStore.GetByEmail(cred.Email)
 		if err1 != nil {
-			time.Sleep(time.Second)
+			time.Sleep(400 * time.Millisecond)
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
 		//Try to Authenticate the user
 		err2 := usr.Authenticate(cred.Password)
 		if err2 != nil {
-			time.Sleep(5 * time.Second)
+			time.Sleep(400 * time.Millisecond)
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
