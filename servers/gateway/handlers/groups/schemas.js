@@ -29,4 +29,9 @@ const groupSchema = new Schema ({
     maxSize: { type: Number, required: true }
 });
 
-module.exports = { groupSchema }
+const enrollmentSchema = new Schema ({
+    userID: { type: Number, required: true },
+    classList: { type: [String], required: true }
+});
+
+module.exports = { groupSchema, enrollmentSchema }
