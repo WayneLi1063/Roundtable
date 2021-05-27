@@ -58,6 +58,7 @@ export default class Header extends React.Component {
         //         this.props.errorCallback(errorObj);
         //     }
         // })
+        
         return (
             <div id="nav-search" className="sticky-top">
                 <header>

@@ -177,7 +177,7 @@ export default class FilteredCardList extends React.Component {
         card.members[this.props.user.uid] = null;
         card.currNumber--;
         // TODO: Change this into an api call.
-
+            
         // let cardRef = firebase.database().ref("groups/" + card.id);
         // cardRef.set(card, (errorObj) => {
         //     if (errorObj) {
