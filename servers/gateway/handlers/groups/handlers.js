@@ -91,57 +91,35 @@ const getGroupHandler = async (req, res, { Group }) => {
 
 // TODO: Returns a specific group's info, if the user has permission
 const getOneGroupHandler = async (req, res, { Group }) => {
-    // const channelID = req.params.channelID
-    // var messageID = null
-    // if (req.query !== null) {
-    //     messageID = req.query.before
-    // }
+    const groupID = req.params.groupID
+    Group.findById(groupID, async (err, grp) => {
+        if (err || grp === null) {
+            res.status(400).send("Cannot find group")
+            return
+        }
 
-    // //locate the target channel by id
-    // Channel.findById(channelID, async (err, ch) => {
-    //     if (err || ch === null) {
-    //         res.status(400).send('Cannot find channel')
-    //         return
-    //     }
+        const user = req.header('X-User')
+        var userObject = ""
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+        const userID = userObject.id
 
-    //     //gets the user from header
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
+        if (grp.private && !grp.members.includes(userID)) {
+            res.status(403).send("unauthorized")
+            return;
+        }
 
-    //     if (ch.private && !ch.members.includes(userID)) {
-    //         res.status(403).send("unauthorized")
-    //         return;
-    //     }
-        
-    //     try {
-    //         var messages = []
-
-    //         if (messageID != null) {
-    //             Message.findById(messageID, (err, msg) => {
-    //                 if (msg.channelID != channelID)
-    //                 res.status(403).send("unauthorized")
-    //                 return
-    //             })
-
-    //             messages = await Message.find( {_id: { $lt: messageID}, channelID: channelID} ).limit(100).sort({createdAt:-1})
-    //         } else {
-    //             messages = await Message.find({channelID: channelID}).sort({createdAt:-1}).limit(100)
-    //         }
-
-            
-    //         res.set('Content-Type', 'application/json')
-    //         res.status(201).json(messages)
-    //     } catch (e) {
-    //         res.status(500).send("unable to get messages")
-    //     }
-    // })
+        try {
+            res.set('Content-Type', 'application/json')
+            res.status(200).json(grp)
+        } catch (e) {
+            res.status(500).send("unable to get the group")
+        }
+    })
 }
 
 // TODO: Updates a group's information
@@ -276,68 +254,106 @@ const deleteOneGroupHandler = async (req, res, { Group }) => {
 
 // TODO: adds a new member to the group
 const postMemberHandler = async (req, res, { Group }) => {
-    // // obtain the channelID
-    // const channelID = req.params.channelID
+    const groupID = req.params.groupID
+    
+    Group.findById(groupID, (err, grp) => {
+        if (err || grp === null ) {
+            res.status(400).send('Cannot find such group')
+            return
+        }
 
-    // // check if such channel exists and extracts the channel
-    // Channel.findById(channelID, (err, ch) => {
-    //     if (err || ch === null) {
-    //         res.status(400).send('Cannot find such channel')
-    //         return
-    //     }
-
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
+        const user = req.header('X-User')
+        var userObject = ""
+    
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+    
+        const userID = userObject.id
+        if (!userID) {
+            res.status(401).send("User is not authenticated.")
+            return
+        }
         
-    //     if (!userID) {
-    //         res.status(401).send("User is not authenticated.")
-    //         return
-    //     }
+        if (length(grp.members) === grp.maxSize) {
+            res.status(400).send("Group already full")
+            return;
+        }
 
-    //     // check if the user is the channel creator
-    //     if (userID !== ch.creator.userID) {
-    //         res.status(403).send("user is not the channel creator")
-    //         return;
-    //     }
+        const index = grp.members.indexOf(userID)
+        if (index >= 0) {
+            res.status(400).send("Member already exists.");
+            return
+        }
 
-    //     const { id } = req.body;
+        //add the user from group
+        const groupMembers = grp.members.concat(userID)
+        
+        Group.findByIdAndUpdate(groupID, {members: groupMembers}, (err, c) => {
+            if (err) {
+                res.status(500).send("Unable to join.");
+                return;
+            }
 
-    //     //check if id is provided
-    //     if (!id) {
-    //         res.status(400).send("Must provide the new member info");
-    //         return
-    //     }
-
-    //     // Add the new user (its userID) to the member list, if they aren't already there
-    //     const index = ch.members.indexOf(id)
-    //     if (index >= 0) {
-    //         res.status(400).send("Member already exists.");
-    //         return
-    //     }
-    //     const channelMembers = ch.members.concat(id)
-
-    //     // update the member list
-    //     Channel.findByIdAndUpdate(channelID, {members: channelMembers}, (err, c) => {
-    //         if (err) {
-    //             res.status(500).send("Unable to add the new member.");
-    //             return;
-    //         }
-
-    //         res.status(201).send("New member added.");
-    //     })
-
-    // })
+            res.status(201).send("joined successfully.");
+        })
+    })
 }
 
-// TODO: deletes the member from the channel if user is creator
+// TODO: deletes the member from the channel if user is creator or the user themselves
 const deleteMemberHandler = async (req, res, { Group }) => {
+    const groupId = req.params.groupID
+    
+    Group.findById(groupID, (err, grp) => {
+        if (err || grp === null ) {
+            res.status(400).send('Cannot find such group')
+            return
+        }
+
+        const user = req.header('X-User')
+        var userObject = ""
+    
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+    
+        const userID = userObject.id
+        if (!userID) {
+            res.status(401).send("User is not authenticated.")
+            return
+        }
+        
+        if (userID === ch.creator.userID) {
+            res.status(403).send("user is the creator")
+            return;
+        }
+
+        const index = grp.members.indexOf(userID)
+
+        if (index < 0) {
+            res.status(400).send("User is not part of the group");
+            return
+        }
+
+        //removes the user from group
+        const groupMembers = grp.members.splice(index, 1)
+        
+        Group.findByIdAndUpdate(groupID, {members: groupMembers}, (err, c) => {
+            if (err) {
+                res.status(500).send("Unable to leave.");
+                return;
+            }
+
+            res.status(201).send("left group successfully.");
+        })
+    })
+
     // // obtain the channelID
     // const channelID = req.params.channelID
 
@@ -556,3 +572,5 @@ module.exports = {
     getCourseHandler,
     postCourseHandler,
     deleteCourseHandler }
+
+    

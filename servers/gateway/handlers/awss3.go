@@ -5,7 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	_ "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
@@ -33,8 +33,8 @@ func UploadFile(filePath string) error {
 	}
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String("info441images"),
-		Key: aws.String(file.Name()),
-		Body: file,
+		Key:    aws.String(file.Name()),
+		Body:   file,
 	})
 	return err
 }
