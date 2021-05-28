@@ -1,6 +1,7 @@
 import React from 'react';
 // import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
+import api from './APIEndpoints'
 
 const HOMEWORK_HELP = "homeworkHelp";
 const EXAM_SQUAD = "examSquad";
@@ -31,6 +32,38 @@ export default class GroupDetailsPage extends React.Component {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
 
+        fetch(api.base + api.handlers.thisgroup + groupID)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if (result) {
+                    let members = result.members
+                    let leader = result.leader
+
+                    if (members) {
+                        this.getMembersInfo(members)
+                    }
+                    
+                    if (leader) {
+                        this.getLeaderInfo(leader)
+                    }
+                    
+                    if (teamName) {
+                        this.setState(() => {
+                            return ({
+                                card: result,
+                                teamName: result.groupName
+                            })
+                        })
+                    } 
+                }
+            }, (errorObj) = {
+                if (errorObj) {
+                    this.props.errorCallback(errorObj);
+                }
+            }
+        )
+
         // TODO: Change this into an api call.
 
         // this.groupRef = firebase.database().ref("groups/").child(groupID);
@@ -57,6 +90,29 @@ export default class GroupDetailsPage extends React.Component {
 
     // build the data arrays for group leader and memebers
     getMembersInfo = (members) => {
+        members.array.forEach(memberID => {
+            fetch(api.base + api.handlers.thisgroup + memberID)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result) {
+                        this.setState((prevState) => {
+                            let dataArray = prevState.userDataArray
+                            dataArray.push(result)
+                            return {
+                                userDataArray: dataArray
+                            }
+                        })
+                    }
+                }, (errorObj) => {
+                    if(errorObj) {
+                        this.props.errorCallback(errorObj)
+                    }
+                }
+            )
+        })
+
+
         // TODO: Change this into an api call.
 
         // Object.keys(members).forEach((key) => {
@@ -92,6 +148,26 @@ export default class GroupDetailsPage extends React.Component {
         //         })
         //     }
         // })
+    }
+
+    getLeaderInfo = (leader) => {
+        fetch(api.base + api.handlers.thisgroup + leader)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if (result) {
+                    this.setState(() => {
+                        return {
+                            leader: [result]
+                        }
+                    })
+                }
+            }, (errorObj) => {
+                if(errorObj) {
+                    this.props.errorCallback(errorObj)
+                }
+            }
+        )
     }
 
     //pre-prosess member data

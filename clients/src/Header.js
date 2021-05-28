@@ -1,5 +1,6 @@
 import React from 'react';
 import {NavLink, Redirect} from 'react-router-dom';
+import api from './APIEndpoints'
 // import firebase from 'firebase/app';
 
 export default class Header extends React.Component {
@@ -46,6 +47,38 @@ export default class Header extends React.Component {
                 return <Redirect to={'/mygroup'} />
             }
         } 
+
+        let url = ''
+        fetch(api.base + api.handlers.myuser + this.props.uid)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if (result) {
+                    let members = result.members
+                    let leader = result.leader
+
+                    if (members) {
+                        this.getMembersInfo(members)
+                    }
+                    
+                    if (leader) {
+                        this.getLeaderInfo(leader)
+                    }
+                    
+                    if (teamName) {
+                        this.setState(() => {
+                            return ({
+                                card: result,
+                                teamName: result.groupName
+                            })
+                        })
+                    } 
+                }
+            }, (errorObj) = {
+                if (errorObj) {
+                    this.props.errorCallback(errorObj);
+                }
+            }
 
         // TODO: Change this into an api call.
 
