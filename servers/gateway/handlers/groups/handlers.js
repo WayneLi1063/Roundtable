@@ -1,72 +1,92 @@
 // TODO: Creates a new group with user as creator
 const postGroupHandler = async (req, res, { Group }) => {
-    // const user = req.header('X-User')
-    // var userObject = ""
-    // try {
-    //     userObject = JSON.parse(user)
-    // } catch (e) {
-    //     res.status(400).send('Cannot parse JSON')
-    //     return
-    // }
-    // const userID = userObject.id
-    // const userEmail = userObject.email
-    // const { name, description, private } = req.body;
+    const user = req.header('X-User')
+    var userObject = ""
+    try {
+        userObject = JSON.parse(user)
+    } catch (e) {
+        res.status(400).send('Cannot parse JSON')
+        return
+    }
+    const userID = userObject.id
+    const userEmail = userObject.email
+    const { 
+        teamName, 
+        className, 
+        descrption, 
+        private, 
+        img, 
+        when2meet,
+        homeworkHelp,
+        examSquad,
+        noteExchange,
+        labMates,
+        projectPartners,
+        totalNumber
+    } = req.body;
 
-    // //check if channel name is provided
-    // if (name === null | !name) {
-    //     res.status(400).send("Must provide channel name");
-    // }
+    // check if the required fields are provided
+    if (!teamName || !className || private === null || 
+        homeworkHelp === null || examSquad === null ||
+        noteExchange === null || labMates === null ||
+        projectPartners === null || !totalNumber) {
+        res.status(400).send("Must provide the requiured information");
+    }
 
-    // //check if channel access setting is provided
-    // if (private === null) {
-    //     res.status(400).send("Must provide channel access setting (private/public)");
-    // }
+    // store the id and email of the creator
+    const creator = {
+        userID: userID,
+        userEmail: userEmail
+    }
 
-    // //store the id and email of the creator
-    // creator = {
-    //     userID: userID,
-    //     userEmail: userEmail
-    // }
+    // log current time as created time
+    const createdAt = new Date();
 
-    // //log current time as created time
-    // const createdAt = new Date();
+    const tags = {
+        homeworkHelp,
+        examSquad,
+        noteExchange,
+        labMates,
+        projectPartners
+    }
 
-    // //initialize the edited date as date(0) to be the default date(to indicate that no edit has been done)
-    // const editedDate = new Date(0);
+    // construct the group object
+    const group = {
+        groupName: teamName,
+        className: className,
+        descrption: descrption,
+        private: private,
+        creator: creator,
+        members: [userID],
+        createdAt: createdAt,
+        imgURL: img,
+        when2meetURL: when2meet,
+        tags: tags,
+        maxSize: totalNumber
+    }
 
-    // //construct the channel object
-    // const channel = {
-    //     name: name,
-    //     description: description,
-    //     private: private,
-    //     members: [userID],
-    //     createdAt: createdAt,
-    //     creator: creator,
-    //     editedAt: editedDate
-    // }
+    // send query to database
+    const query = new Group(group)
+    query.save((err, newgroup) => {
+        if (err) {
+            res.status(500).send('Unable to create new group.');
+            return;
+        }
 
-    // //send query to database
-    // const query = new Channel(channel)
-    // query.save((err, newChannel) => {
-    //     if (err) {
-    //         res.status(500).send('Unable to create channel.');
-    //         return;
-    //     }
-
-    //     res.set('Content-Type', 'application/json')
-    //     res.status(201).json(newChannel);
-    // })
+        res.set('Content-Type', 'application/json')
+        res.status(201).json(newgroup);
+    })
 }
 
 // TODO: Responds with all groups that fit the filters
 const getGroupHandler = async (req, res, { Group }) => {
-    // try {
-    //     const channels = await Channel.find();
-    //     res.set('Content-Type', 'application/json')
-    //     res.status(200).json(channels)
-    // } catch (e) {
-    //     res.status(500).send("unable to get channels")
-    // }
+    try {
+        const groups = await Group.find();
+        res.set('Content-Type', 'application/json')
+        res.status(200).json(groups)
+    } catch (e) {
+        res.status(500).send("unable to get groups")
+    }
 }
 
 // TODO: Returns a specific group's info, if the user has permission
@@ -126,119 +146,132 @@ const getOneGroupHandler = async (req, res, { Group }) => {
 
 // TODO: Updates a group's information
 const patchOneGroupHandler = async (req, res, { Group }) => {
-    // //gets the channelID from the address
-    // const channelID = req.params.channelID
+    // gets the groupID from the address
+    const groupID = req.params.groupID
 
-    // //locate the target channel by id
-    // Channel.findById(channelID, (err, ch) => {
-    //     if (err || ch === null) {
-    //         res.status(400).send('Cannot find channel')
-    //         return
-    //     }
+    //locate the target channel by id
+    Group.findById(groupID, (err, foundGroup) => {
+        if (err || foundGroup === null) {
+            res.status(400).send('Cannot find group')
+            return
+        }
+    
+        const user = req.header('X-User')
+        var userObject = ""
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+        const userID = userObject.id
 
-    //     //gets the user from header
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
+        //see if the user is authorized to edit
+        if (ch.creator.userID != userID) {
+            res.status(403).send("unauthorized")
+            return
+        }
 
-    //     //see if the user is authorized to post in this channel
-    //     if (ch.creator.userID != userID) {
-    //         res.status(403).send("unauthorized")
-    //         return
-    //     }
+        const { 
+            teamName, 
+            className, 
+            descrption, 
+            private, 
+            img,
+            when2meet,
+            homeworkHelp,
+            examSquad,
+            noteExchange,
+            labMates,
+            projectPartners,
+            totalNumber
+        } = req.body;
 
-    //     //get the new name and description from request body
-    //     var { name, description } = req.body
+        // check if the required fields are provided
+        if (!teamName || !className || private === null || 
+            homeworkHelp === null || examSquad === null ||
+            noteExchange === null || labMates === null ||
+            projectPartners === null || !totalNumber) {
+            res.status(400).send("Must provide the requiured information");
+        }
 
-    //     //set the name and description to the original if they are null
-    //     if (name == null & "") {
-    //         name = ch.name
-    //     }
+        const tags = {
+            homeworkHelp,
+            examSquad,
+            noteExchange,
+            labMates,
+            projectPartners
+        }
 
-    //     if (description == null) {
-    //         description = ch.description
-    //     }
+        // construct the group object
+        const newGroup = {
+            groupName: teamName,
+            className: className,
+            descrption: descrption,
+            private: private,
+            creator: foundGroup.creator,
+            members: foundGroup.members,
+            createdAt: foundGroup.createdAt,
+            imgURL: img,
+            when2meetURL: when2meet,
+            tags: tags,
+            maxSize: totalNumber
+        }
 
-    //     //construct new channel
-    //     newChannel = {
-    //         name: name,
-    //         description: description,
-    //         private: ch.private,
-    //         members: ch.members,
-    //         createdAt: ch.createdAt,
-    //         creator: ch.creator,
-    //         editedAt: new Date()
-    //     }
+        //update group
+        Group.findByIdAndUpdate(groupID, newGroup, {new: true}, (err, nGroup) => {
+            if (err) {
+                res.status(500).send('Unable to update group')
+                return
+            }
 
-    //     //update channel
-    //     Channel.findByIdAndUpdate(channelID, newChannel, {new: true}, (err, nch) => {
-    //         if (err) {
-    //             res.status(500).send('Unable to update channel')
-    //             return
-    //         }
-
-    //         res.set('Content-Type', 'application/json')
-    //         res.status(201).json(nch)
-    //     })
-    // })
+            res.set('Content-Type', 'application/json')
+            res.status(201).json(nGroup)
+        })
+    })
 }
 
-// TODO: Deletes a group
+// TODO: Disbands a group
 const deleteOneGroupHandler = async (req, res, { Group }) => {
-    // //gets the channelID from the address
-    // const channelID = req.params.channelID
+    // gets the groupID from the address
+    const groupID = req.params.groupID
 
-    // //locate the target channel by id
-    // Channel.findById(channelID, (err, ch) => {
-    //     if (err || ch === null) {
-    //         res.status(400).send('Cannot find channel')
-    //         return
-    //     }
+    //locate the target channel by id
+    Group.findById(groupID, (err, foundGroup) => {
+        if (err || foundGroup === null) {
+            res.status(400).send('Cannot find group')
+            return
+        }
+    
+        const user = req.header('X-User')
+        var userObject = ""
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+        const userID = userObject.id
 
-    //     //gets the user from header
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
+        //see if the user is authorized to edit
+        if (ch.creator.userID != userID) {
+            res.status(403).send("unauthorized")
+            return
+        }
 
-    //     //check if user is authorized to delete the channel
-    //     if (ch.creator.userID != userID) {
-    //         res.status(403).send("unauthorized")
-    //         return
-    //     }
+        //finders for group
+        const groupFinder = {_id : groupID}
 
-    //     //finders for channel and messages
-    //     const channelFinder = {_id : channelID}
-    //     const messageFinder = {channelID : channelID}
+        //delete the group
+        Group.deleteOne(groupFinder, (err) => {
+            if (err) {
+                res.status(500).send('Unable to delete group')
+                return
+            }
 
-    //     //delete the channel
-    //     Channel.deleteOne(channelFinder, (err) => {
-    //         if (err) {
-    //             res.status(500).send('Unable to delete channel')
-    //             return
-    //         }
-    //     })
-
-    //     //delete all messages in the channel
-    //     Message.deleteMany(messageFinder, (err) => {
-    //         if (err) {
-    //             res.status(500).send('Unable to delete messages on target channel')
-    //             return
-    //         } 
-    //         res.send("delete was successful")
-    //     })
-    // })
+            res.status(200).send('Group disbanded.')
+        })
+    })
 }
 
 // TODO: adds a new member to the group
@@ -366,99 +399,150 @@ const deleteMemberHandler = async (req, res, { Group }) => {
     // })
 }
 
+// TODO: gets a list of courses the user is taking
+const getCourseHandler = async (req, res, { Enrollment }) => {
+    // extract userID from X-User header
+    const user = req.header('X-User')
+    var userObject = ""
+    try {
+        userObject = JSON.parse(user)
+    } catch (e) {
+        res.status(400).send('Cannot parse JSON')
+        return
+    }
+    const userID = userObject.id
+    
+    if (!userID) {
+        res.status(401).send("User is not authenticated.")
+        return
+    }
+
+    Enrollment.findByID(userID, (err, enr) => {
+        // if there's an error or enrollment could not be found
+        if (err || enr === null) {
+            res.status(400).send('Cannot find enrollment by ID')
+            return
+        }
+
+        res.set('Content-Type', 'application/json')
+        res.status(200).json(enr)
+    })
+}
+
 // TODO: adds a course to the list of courses the user is taking
-const postCourseHandler = async (req, res, { Group }) => {
-    // // extract the message ID
-    // const messageID = req.params.messageID
+const postCourseHandler = async (req, res, { Enrollment }) => {
+    // extract user from X-User header
+    const user = req.header('X-User')
+    var userObject = ""
+    try {
+        userObject = JSON.parse(user)
+    } catch (e) {
+        res.status(400).send('Cannot parse JSON')
+        return
+    }
+    const userID = userObject.id
     
-    // Message.findById(messageID, (err, msg) => {
-    //     // if there's an error or message could not be found
-    //     if (err || msg === null) {
-    //         res.status(400).send('Cannot find message by ID')
-    //         return
-    //     }
-
-    //     // extract user from X-User header
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
-        
-    //     if (!userID) {
-    //         res.status(401).send("User is not authenticated.")
-    //         return
-    //     }
-
-    //     // check if the user editing is the creator of the message
-    //     if (userID !== msg.creator.userID) {
-    //         res.status(403).send("Users cannot edit messages not of their own.")
-    //         return;
-    //     }
-
-    //     const { body } = req.body;
-
-    //     if (!body) {
-    //         res.status(400).send("Must provide new body.")
-    //         return
-    //     }
-
-    //     Message.findByIdAndUpdate(messageID, {body: body, editedAt: new Date()}, {new: true}, (err, msg) => {
-    //         if (err) {
-    //             res.status(500).send('Cannot update')
-    //             return
-    //         }
-
-    //         res.set('Content-Type', 'application/json')
+    if (!userID) {
+        res.status(401).send("User is not authenticated.")
+        return
+    }
     
-    //         res.status(201).json(msg)
-    //     })
-    // })
+    // // extract the enrollment
+    Enrollment.findByID(userID, (err, enr) => {
+        // if there's an error or enrollment could not be found
+        if (err || enr === null) {
+            res.status(400).send('Cannot find enrollment by ID')
+            return
+        }
+
+        var { course } = req.course;
+
+        if (!course) {
+            res.status(400).send("Must provide a new course.")
+            return
+        }
+
+        course = course.toUpperCase()
+        course = course.replace(" ", "")
+        var reg = new RegExp("[A-Z0-9]+")
+        if (!reg.test(course)) {
+            res.status(400).send("Please provide a valid course format without any special symbols.")
+            return
+        }
+
+        // Add the new course to the enrollment, if they aren't already there
+        const index = enr.classList.indexOf(course)
+        if (index >= 0) {
+            res.status(400).send("Course already exists.");
+            return
+        }
+        const newClassList = enr.classList.concat(course)
+
+        // update the course list
+        Enrollment.findByIdAndUpdate(userID, {classList: newClassList}, (err, enr) => {
+            if (err) {
+                res.status(500).send("Unable to add course.");
+                return;
+            }
+
+            res.status(201).send("New course added.");
+        })
+    })
 }; 
 
 // TODO: deletes the course from the list of courses the user is taking
-const deleteCourseHandler = async (req, res, { Group }) => {
-    // const messageID = req.params.messageID
-
-    // Message.findById(messageID, (err, msg) => {
-    //     if (err || msg === null) {
-    //         res.status(400).send('Cannot find message by ID')
-    //         return
-    //     }
-
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
+const deleteCourseHandler = async (req, res, { Enrollment }) => {
+        // extract user from X-User header
+        const user = req.header('X-User')
+        var userObject = ""
+        try {
+            userObject = JSON.parse(user)
+        } catch (e) {
+            res.status(400).send('Cannot parse JSON')
+            return
+        }
+        const userID = userObject.id
         
-    //     if (!userID) {
-    //         res.status(401).send("User is not authenticated.")
-    //         return
-    //     }
+        if (!userID) {
+            res.status(401).send("User is not authenticated.")
+            return
+        }
+        
+        // // extract the enrollment
+        Enrollment.findByID(userID, (err, enr) => {
+            // if there's an error or enrollment could not be found
+            if (err || enr === null) {
+                res.status(400).send('Cannot find enrollment by ID')
+                return
+            }
     
-    //     if (userID !== msg.creator.userID) {
-    //         res.status(403).send("Users cannot delete messages not of their own")
-    //         return;
-    //     }
+            const { course } = req.course;
+    
+            if (!course) {
+                res.status(400).send("Must provide the course to delete.")
+                return
+            }
+    
+            // Add the new course to the enrollment, if they aren't already there
+            const index = enr.classList.indexOf(course)
+            if (index < 0) {
+                res.status(400).send("Must provide valid course");
+                return
+            }
 
-    //     Message.findByIdAndRemove(messageID, (err) => {
-    //         if (err) {
-    //             res.status(500).send('Cannot remove')
-    //             return
-    //         }
+            // delete the course from the class list
+            var classList = enr.classList
+            classList.splice(index, 1);
 
-    //         res.status(200).send("Message deleted.")
-    //     })
-    // })
+            Enrollment.findByIdAndUpdate(userID, {classList: classList}, (err, enr) => {
+                if (err) {
+                    res.status(500).send('Cannot remove')
+                    return
+                }
+
+                res.status(200).send('Course removed.')
+            })
+        })
 }
 
 module.exports = { 
@@ -469,5 +553,6 @@ module.exports = {
     deleteOneGroupHandler,
     postMemberHandler,
     deleteMemberHandler,
+    getCourseHandler,
     postCourseHandler,
     deleteCourseHandler }

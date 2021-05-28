@@ -7,7 +7,7 @@ import (
 
 // This is the struct declaration for HandlerContext
 type HandlerContext struct {
-	signingKey    string
-	sessionsStore sessions.Store
-	usersStore    users.Store
+	SigningKey    string
+	SessionsStore sessions.Store
+	UsersStore    users.Store
 }

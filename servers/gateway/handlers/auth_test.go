@@ -445,7 +445,7 @@ func TestSpecificSessionHandler(t *testing.T) {
 		}
 
 		rr := httptest.NewRecorder()
-		sid, err4 := sessions.BeginSession(ctx.signingKey, sessionsStore, sessionState, rr)
+		sid, err4 := sessions.BeginSession(ctx.SigningKey, sessionsStore, sessionState, rr)
 		if err4 != nil {
 			t.Fatal(err4)
 		}
@@ -474,13 +474,13 @@ func TestSpecificSessionHandler(t *testing.T) {
 					status, c.expectedStatusCode, c.name)
 			}
 			//check if sessiohn is not deleted
-			err3 := ctx.sessionsStore.Get(sid, sessionState)
+			err3 := ctx.SessionsStore.Get(sid, sessionState)
 			if err3 == sessions.ErrStateNotFound && c.name != "Connection to Session DB lost" {
 				t.Errorf("session was deleted by mistake: " + err3.Error() + c.name)
 			}
 		} else {
 			// checked if the session is deleted
-			err3 := ctx.sessionsStore.Get(sid, sessionState)
+			err3 := ctx.SessionsStore.Get(sid, sessionState)
 			if err3 != sessions.ErrStateNotFound {
 				t.Errorf("session was not deleted " + "case: " + c.name)
 			}
@@ -1186,7 +1186,7 @@ func TestSpecificUsersHandler(t *testing.T) {
 				newSession = &SessionState{time.Now(), receivedUser3}
 			}
 
-			_, err := sessions.BeginSession(ctx.signingKey, ctx.sessionsStore, newSession, rr)
+			_, err := sessions.BeginSession(ctx.SigningKey, ctx.SessionsStore, newSession, rr)
 			if err != nil {
 				t.Fatal(err)
 			}
