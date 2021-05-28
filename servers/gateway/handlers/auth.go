@@ -41,7 +41,7 @@ func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) 
 				return
 			}
 
-			user, err = ctx.usersStore.Insert(user)
+			user, err = ctx.UsersStore.Insert(user)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
@@ -49,7 +49,7 @@ func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) 
 
 			newSession := &SessionState{time.Now(), user}
 
-			_, err = sessions.BeginSession(ctx.signingKey, ctx.sessionsStore, newSession, w)
+			_, err = sessions.BeginSession(ctx.SigningKey, ctx.SessionsStore, newSession, w)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -69,7 +69,7 @@ func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) 
 // This is a handler for getting user info or updating a particular user's info.
 func (ctx *HandlerContext) SpecificUsersHandler(w http.ResponseWriter, r *http.Request) {
 	tempSessionState := &SessionState{}
-	sessionID, err := sessions.GetState(r, ctx.signingKey, ctx.sessionsStore, tempSessionState)
+	sessionID, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionsStore, tempSessionState)
 	if sessionID == "" || err != nil {
 		http.Error(w, "You are not authenticated.", http.StatusUnauthorized)
 		return
@@ -89,7 +89,7 @@ func (ctx *HandlerContext) SpecificUsersHandler(w http.ResponseWriter, r *http.R
 	// encode it as JSON and respond.
 	user := &users.User{}
 	if r.Method == http.MethodGet {
-		user, err = ctx.usersStore.GetByID(userID)
+		user, err = ctx.UsersStore.GetByID(userID)
 		if err != nil {
 			http.Error(w, "Could not find user", http.StatusNotFound)
 			return
@@ -114,7 +114,7 @@ func (ctx *HandlerContext) SpecificUsersHandler(w http.ResponseWriter, r *http.R
 			return
 		}
 
-		user, err = ctx.usersStore.Update(userID, newUpdates)
+		user, err = ctx.UsersStore.Update(userID, newUpdates)
 		if err != nil {
 			http.Error(w, "Bad Request, update info is likely not valid.", http.StatusBadRequest)
 			return
@@ -151,7 +151,7 @@ func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		//Find the user in the database by credential email
-		usr, err1 := ctx.usersStore.GetByEmail(cred.Email)
+		usr, err1 := ctx.UsersStore.GetByEmail(cred.Email)
 		if err1 != nil {
 			time.Sleep(400 * time.Millisecond)
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -175,14 +175,14 @@ func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Reques
 		}
 
 		//logs the login attempt into the database
-		ctx.usersStore.Log(usr.ID, ipaddr)
+		ctx.UsersStore.Log(usr.ID, ipaddr)
 
 		sessionState := SessionState{
 			time.Now(),
 			usr,
 		}
 
-		_, err3 := sessions.BeginSession(ctx.signingKey, ctx.sessionsStore, sessionState, w)
+		_, err3 := sessions.BeginSession(ctx.SigningKey, ctx.SessionsStore, sessionState, w)
 
 		if err3 != nil {
 			http.Error(w, "failed to Begin session", http.StatusBadGateway)
@@ -222,7 +222,7 @@ func (ctx *HandlerContext) SpecificSessionHandler(w http.ResponseWriter, r *http
 	}
 
 	//Ends the session
-	_, err := sessions.EndSession(r, ctx.signingKey, ctx.sessionsStore)
+	_, err := sessions.EndSession(r, ctx.SigningKey, ctx.SessionsStore)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

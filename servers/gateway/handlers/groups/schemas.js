@@ -30,7 +30,7 @@ const groupSchema = new Schema ({
 });
 
 const enrollmentSchema = new Schema ({
-    userID: { type: Number, required: true },
+    userID: { type: Number, required: true, unique: true },
     classList: { type: [String], required: true }
 });
 

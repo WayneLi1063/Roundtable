@@ -79,7 +79,7 @@ export default class Header extends React.Component {
                     this.props.errorCallback(errorObj);
                 }
             }
-
+        )
         // TODO: Change this into an api call.
 
         // let url = ''

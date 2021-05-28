@@ -41,6 +41,18 @@ export default class App extends React.Component {
             groupCount: 0,
             errorMessage: ''
         }
+        const api = {
+            base: "https://api.roundtablefinder.com",
+            testbase: "https://localhost:443",
+            handlers: {
+                users: "/v1/users",
+                myuser: "/v1/users/me",
+                sessions: "/v1/sessions",
+                sessionsMine: "/v1/sessions/mine",
+                groups: "/v1/groups",
+                courses: "/v1/users/courses",
+            }
+        }
     }
 
     // firebaseUiConfig = {
@@ -53,6 +65,27 @@ export default class App extends React.Component {
     //         signInSuccessWithAuthResult: () => false
     //     }
     // }
+
+    getCurrentUser = async () => {
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(api.testbase + api.handlers.myuser, {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Authentication failed. Please relog.");
+            localStorage.setItem("Authorization", "");
+            this.setAuthToken("");
+            this.setUser(null)
+            return;
+        }
+        const user = await response.json()
+        this.setUser(user);
+    }
 
     // fetch data from database and handles user sign in
     componentDidMount() {
@@ -159,6 +192,18 @@ export default class App extends React.Component {
     submitCreateForm = (newGroup) => {
         // TODO: Change this into an api call.
 
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'POST',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            }),
+            body: JSON.stringify(newGroup)
+        });
+        if (response.status >= 300) {
+            this.toggleOnError(response.body);
+            return;
+        }
+
         // newGroup.id = this.state.groupCount + 1;
         // this.rootRef.child("groups").child(newGroup.id).set(newGroup, (errorObj) => {
         //     if (errorObj) {
@@ -176,6 +221,18 @@ export default class App extends React.Component {
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = (card) => {
         // TODO: Change this into an api call.
+
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'PATCH',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            }),
+            body: JSON.stringify(card)
+        });
+        if (response.status >= 300) {
+            this.toggleOnError(response.body);
+            return;
+        }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
         //     if (errorObj) {
@@ -255,6 +312,18 @@ export default class App extends React.Component {
         this.toggleEditForm();
 
         // TODO: Change this into an api call.
+
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'DELETE',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            }),
+            body: JSON.stringify(card)
+        });
+        if (response.status >= 300) {
+            this.toggleOnError(response.body);
+            return;
+        }
 
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
         //     if (errorObj) {
