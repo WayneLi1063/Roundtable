@@ -85,8 +85,7 @@ export default class App extends React.Component {
             return;
         }
         const user = await response.json()
-        this.setState({user: user});
-        this.setState({uid: user.ID});
+        return user;
     }
 
     getCurrentGroups = async () => {
@@ -103,8 +102,8 @@ export default class App extends React.Component {
             this.toggleOnError("Retrieving group info failed. Please retry.");
             return;
         }
-        const user = await response.json()
-
+        const groups = await response.json()
+        return groups;
     }
     
 
@@ -167,11 +166,18 @@ export default class App extends React.Component {
     }
 
     // Fetch the groups the user is currently enrolled and user's current attending courses in from json.
-    fetch = () => {
+    fetch = async () => {
         this.setSpinnerOnDisplay();
 
         // TODO: Change this into an api call.
+        const user = this.getCurrentUser();
+        this.setState({user: user});
+        this.setState({uid: user.ID});
 
+        const groups = this.getCurrentGroups();
+        this.setState({myGroups: groups});
+
+        this.setSpinnerOffDisplay();
         // this.rootRef = firebase.database().ref();
         // this.rootRef.on('value', (snapshot) => {
         //     let groupList = snapshot.val().groups;
@@ -207,6 +213,25 @@ export default class App extends React.Component {
         //     }
 
         // })
+    }
+
+    // This callback gets the current course enrollment of the user
+    getCourse = async () => {
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(this.api.testbase + this.api.handlers.courses, {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Get course failed. Please retry");
+            return;
+        }
+        const courses = await response.json().classList
+        this.setState({ myCourses: courses });
     }
 
     // The callback function that allows Create form to submit a new group to app.
@@ -424,7 +449,7 @@ export default class App extends React.Component {
                             <Confirm toggleConfirm={this.togglePopUp} confirmFunction={this.disbandGroup} cardData={this.state.tempEditData} confirmDisplay={this.state.popUpDisplay} />
                         }
                         {this.state.addCourseDisplay &&
-                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.currentCourses} user={this.state.user} errorCallback={this.toggleOnError} />
+                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.myCourses} user={this.state.user} getCourseCallback={this.getCourse} errorCallback={this.toggleOnError} />
                         }
                         <JoinCreateFeedback feedbackDisplay={this.state.feedbackDisplay} toggleFeedback={this.toggleFeedback}
                             feedbackInfo={this.state.feedbackInfo} />

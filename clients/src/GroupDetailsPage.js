@@ -193,7 +193,10 @@ export default class GroupDetailsPage extends React.Component {
         let users = this.state.userDataArray;
         let members = (
             users.map((user) => {
-                let userEmailString = 'mailto: ' + user.email
+                let userEmailString = ''
+                if (card.private) {
+                    userEmailString = 'mailto: ' + user.email
+                }
                 return (
                     <div key={user.uid}>
                         <div className='memberRow'>

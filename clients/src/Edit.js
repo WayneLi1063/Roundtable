@@ -9,6 +9,8 @@ export default class Create extends React.Component {
             img: this.props.editData.img,
             groupName: this.props.editData.teamName,
             courseName: this.props.editData.className,
+            description: this.props.editData.description,
+            private: this.props.editData.private,
             groupSize: this.props.editData.totalNumber,
             homeworkHelp: this.props.editData.homeworkHelp,
             examSquad: this.props.editData.examSquad,
@@ -64,10 +66,10 @@ export default class Create extends React.Component {
 
     // Handles the interaction when user types in group name field.
     handleGroupNameChange = (event) => {
-        if (this.state.emptyAlertDisplay /* === true */) {
+        if (this.state.emptyAlertDisplay) {
             this.toggleEmpty();
         }
-        if (this.state.exceedCharDisplay /* === true */) {
+        if (this.state.exceedCharDisplay) {
             this.toggleExceed();
         }
         let newString = event.target.value;
@@ -90,6 +92,21 @@ export default class Create extends React.Component {
         this.setState({
             groupSize: newSize
         });
+    }
+
+    // Handles the interaction when user types in description field.
+    handleDescriptionChange = (event) => {
+        let newString = event.target.value;
+        this.setState({
+            description: newString
+        });
+    }
+
+    // Handles the interaction when user checks the private button.
+    handlePrivateChange = (event) => {
+        this.setState((prevState) => {
+            return { private: !prevState.private }
+        })
     }
 
     // Handles the interaction when user selects the Homework Help option.
@@ -167,6 +184,8 @@ export default class Create extends React.Component {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
         newGroup.totalNumber = parseInt(this.state.groupSize, 10);
+        newGroup.description = this.state.description;
+        newGroup.private = this.state.private;
         newGroup.currNumber = this.props.editData.currNumber;
         newGroup.members = this.props.editData.members;
         newGroup.id = this.props.editData.id;
@@ -215,7 +234,10 @@ export default class Create extends React.Component {
                             {courseOptions}
                         </select>
                     </div>
-
+                    <div className="form-group">
+                        <label htmlFor="g-descr" className="font-weight-bold">Group Name</label><br />
+                        <input type="text" id="g-descr" value={this.state.description} onChange={this.handleDescriptionChange} /><br />
+                    </div>
                     <div className="form-group">
                         <label htmlFor="g-size" className="font-weight-bold">Group Size (2-5)</label><br />
                         <input type="range" name="g-size" max="5" min="2" id="g-size" className="g-size" value={this.state.groupSize} onChange={this.handleGroupSizeChange} />
@@ -223,6 +245,11 @@ export default class Create extends React.Component {
                         {this.state.manyMemberDisplay &&
                             <p className="alert-red alert-edit many-member">You have {this.props.editData.currNumber} members which exceeds desired group size.</p>
                         }
+                    </div>
+
+                    <div className="form-group">
+                                <label htmlFor="g-descr" className="font-weight-bold">Group Description</label>
+                                <input type="text" className="form-control" id="g-descr" value={this.state.description} onChange={this.handleDescriptionChange} />
                     </div>
 
                     <div className="form-group">
@@ -265,6 +292,12 @@ export default class Create extends React.Component {
 
                     <label htmlFor="leave">Disband the group?</label>
                     <button type="button" className="btn disband" id="leave" onClick={this.props.togglePopUpForm}>Disband</button>
+
+                    <div class="form-check">
+                                <input type="checkbox" class="form-check-input" 
+                                    id="g-private" onClick={this.handlePrivateChange}/>
+                                <label class="form-check-label" for="g-private">Private Group</label>
+                    </div>
 
                     <div className="formButton">
                         <button type="button" id="submit-edit" className="btn save" onClick={this.handleSubmit}>Save</button>
