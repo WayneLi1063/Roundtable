@@ -19,6 +19,18 @@ import GroupDetailsPage from './GroupDetailsPage.js';
 export default class App extends React.Component {
     constructor(props) {
         super(props)
+        const api = {
+            base: "https://api.roundtablefinder.com",
+            testbase: "https://localhost:443",
+            handlers: {
+                users: "/v1/users",
+                myuser: "/v1/users/me",
+                sessions: "/v1/sessions",
+                sessionsMine: "/v1/sessions/mine",
+                groups: "/v1/groups",
+                courses: "/v1/users/courses",
+            }
+        }
         this.state = {
             user: null,
             uid: null,
@@ -39,19 +51,8 @@ export default class App extends React.Component {
             twoButtonDisplay: true,
             coverDisplay: false,
             groupCount: 0,
-            errorMessage: ''
-        }
-        const api = {
-            base: "https://api.roundtablefinder.com",
-            testbase: "https://localhost:443",
-            handlers: {
-                users: "/v1/users",
-                myuser: "/v1/users/me",
-                sessions: "/v1/sessions",
-                sessionsMine: "/v1/sessions/mine",
-                groups: "/v1/groups",
-                courses: "/v1/users/courses",
-            }
+            errorMessage: '',
+            api: api
         }
     }
 
@@ -84,8 +85,28 @@ export default class App extends React.Component {
             return;
         }
         const user = await response.json()
-        this.setUser(user);
+        this.setState({user: user});
+        this.setState({uid: user.ID});
     }
+
+    getCurrentGroups = async () => {
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Retrieving group info failed. Please retry.");
+            return;
+        }
+        const user = await response.json()
+
+    }
+    
 
     // fetch data from database and handles user sign in
     componentDidMount() {
@@ -189,7 +210,7 @@ export default class App extends React.Component {
     }
 
     // The callback function that allows Create form to submit a new group to app.
-    submitCreateForm = (newGroup) => {
+    submitCreateForm = async (newGroup) => {
         // TODO: Change this into an api call.
 
         const response = await fetch(api.testbase + api.handlers.groups, {
@@ -219,7 +240,7 @@ export default class App extends React.Component {
     }
 
     // The callback function that allows Edit form to submit edited group info to app.
-    submitEditForm = (card) => {
+    submitEditForm = async (card) => {
         // TODO: Change this into an api call.
 
         const response = await fetch(api.testbase + api.handlers.groups, {
@@ -307,7 +328,7 @@ export default class App extends React.Component {
     }
 
     // disbands the group
-    disbandGroup = (card) => {
+    disbandGroup = async (card) => {
         this.fetch()
         this.toggleEditForm();
 
