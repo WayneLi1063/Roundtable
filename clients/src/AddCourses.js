@@ -20,6 +20,8 @@ export default class AddCourses extends React.Component {
 
         // TODO: change to api call
 
+        getCourse()
+
         // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
         // this.courseRef.on('value', (snapshot) => {
         //     let courses = snapshot.val();
@@ -46,23 +48,72 @@ export default class AddCourses extends React.Component {
         this.setState({ emptyAlertDisplay: false })
     }
 
+    getCourse = async () => {
+        if (!this.props.authToken) {
+            return;
+        }
+        const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.props.authToken
+            })
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Get course failed. Please retry");
+            return;
+        }
+        const courses = await response.json().classList
+        this.setState({ courses: courses });
+    }
+
     //delete a course from the user's list
-    deleteCourse = (courseKey) => {
-        let uid = this.props.user.uid;
+    deleteCourse = async (courseKey) => {
+        // let uid = this.props.user.uid;
 
         // TODO: change to api call
+
+        if (!this.props.authToken) {
+            return;
+        }
+        const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
+            method: 'DELETE',
+            headers: new Headers({
+                "Authorization": this.props.authToken
+            }),
+            body: JSON.stringify({course: courseKey})
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Delete course failed. Please retry");
+            return;
+        }
+        // getCourse();
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
         // courseRef.remove()
     }
 
     //add a course to the user's list
-    addOneCourse = (newCourseName) => {
+    addOneCourse = async (newCourseName) => {
         if (newCourseName === '') {
             this.showEmpty();
         } else {
 
             // TODO: change to api call
+
+            if (!this.props.authToken) {
+                return;
+            }
+            const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
+                method: 'POST',
+                headers: new Headers({
+                    "Authorization": this.props.authToken
+                }),
+                body: JSON.stringify({course: newCourseName})
+            });
+            if (response.status >= 300) {
+                this.toggleOnError("Add course failed. Please retry");
+                return;
+            }
 
             // this.courseRef.update({
             //     [newCourseName]: newCourseName
