@@ -20,7 +20,7 @@ export default class AddCourses extends React.Component {
 
         // TODO: change to api call
 
-        getCourse()
+        this.props.getCourseCallback()
 
         // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
         // this.courseRef.on('value', (snapshot) => {
@@ -48,24 +48,6 @@ export default class AddCourses extends React.Component {
         this.setState({ emptyAlertDisplay: false })
     }
 
-    getCourse = async () => {
-        if (!this.props.authToken) {
-            return;
-        }
-        const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
-            method: 'GET',
-            headers: new Headers({
-                "Authorization": this.props.authToken
-            })
-        });
-        if (response.status >= 300) {
-            this.toggleOnError("Get course failed. Please retry");
-            return;
-        }
-        const courses = await response.json().classList
-        this.setState({ courses: courses });
-    }
-
     //delete a course from the user's list
     deleteCourse = async (courseKey) => {
         // let uid = this.props.user.uid;
@@ -83,10 +65,10 @@ export default class AddCourses extends React.Component {
             body: JSON.stringify({course: courseKey})
         });
         if (response.status >= 300) {
-            this.toggleOnError("Delete course failed. Please retry");
+            this.props.toggleOnError("Delete course failed. Please retry");
             return;
         }
-        // getCourse();
+        this.props.getCourseCallback()
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
         // courseRef.remove()
@@ -111,7 +93,7 @@ export default class AddCourses extends React.Component {
                 body: JSON.stringify({course: newCourseName})
             });
             if (response.status >= 300) {
-                this.toggleOnError("Add course failed. Please retry");
+                this.props.toggleOnError("Add course failed. Please retry");
                 return;
             }
 
@@ -156,10 +138,10 @@ export default class AddCourses extends React.Component {
         let content = [];
         let courses = this.state.courses;
         if (courses) {
-            Object.keys(courses).forEach((key) => {
-                content.push(<div key={key} className='course-tag'>
-                    {courses[key]}
-                    <FontAwesomeIcon icon={faTrashAlt} size="xs" className="white trash mt-1 mr-2" onClick={() => this.deleteCourse(key)} />
+            courses.forEach((course) => {
+                content.push(<div className='course-tag'>
+                    {course}
+                    <FontAwesomeIcon icon={faTrashAlt} size="xs" className="white trash mt-1 mr-2" onClick={() => this.deleteCourse(course)} />
                 </div>)
             })
         }

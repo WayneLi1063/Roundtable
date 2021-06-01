@@ -1,7 +1,7 @@
 import React from 'react';
 // import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
-import api from './APIEndpoints'
+//import api from './APIEndpoints'
 
 const HOMEWORK_HELP = "homeworkHelp";
 const EXAM_SQUAD = "examSquad";
@@ -27,18 +27,21 @@ export default class GroupDetailsPage extends React.Component {
         this.setState({ shouldRedirect: true });
     }
 
+
+
     // get members info when component is created
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
 
-        fetch(api.base + api.handlers.thisgroup + groupID)
+        /*fetch(api.base + api.handlers.thisgroup + groupID)
         .then(res => res.json())
         .then(
             (result) => {
                 if (result) {
                     let members = result.members
                     let leader = result.leader
+                    let teamName = result.groupName
 
                     if (members) {
                         this.getMembersInfo(members)
@@ -62,7 +65,7 @@ export default class GroupDetailsPage extends React.Component {
                     this.props.errorCallback(errorObj);
                 }
             }
-        )
+        )*/
 
         // TODO: Change this into an api call.
 
@@ -90,8 +93,12 @@ export default class GroupDetailsPage extends React.Component {
 
     // build the data arrays for group leader and memebers
     getMembersInfo = (members) => {
+        if (!this.state.authToken) {
+            return;
+        }
+        var api = this.props.api
         members.array.forEach(memberID => {
-            fetch(api.base + api.handlers.thisgroup + memberID)
+            fetch(api.base + api.handlers.groups + "/" + memberID)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -111,8 +118,6 @@ export default class GroupDetailsPage extends React.Component {
                 }
             )
         })
-
-
         // TODO: Change this into an api call.
 
         // Object.keys(members).forEach((key) => {
@@ -151,7 +156,12 @@ export default class GroupDetailsPage extends React.Component {
     }
 
     getLeaderInfo = (leader) => {
-        fetch(api.base + api.handlers.thisgroup + leader)
+        if (!this.state.authToken) {
+            return;
+        }
+        let api = this.props.api
+
+        fetch(api.base + api.handlers.groups + leader)
         .then(res => res.json())
         .then(
             (result) => {
@@ -193,7 +203,10 @@ export default class GroupDetailsPage extends React.Component {
         let users = this.state.userDataArray;
         let members = (
             users.map((user) => {
-                let userEmailString = 'mailto: ' + user.email
+                let userEmailString = ''
+                if (card.private) {
+                    userEmailString = 'mailto: ' + user.email
+                }
                 return (
                     <div key={user.uid}>
                         <div className='memberRow'>

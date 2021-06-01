@@ -83,6 +83,21 @@ export default class Create extends React.Component {
         });
     }
 
+    // Handles the interaction when user types in description field.
+    handleDescriptionChange = (event) => {
+        let newString = event.target.value;
+        this.setState({
+            description: newString
+        });
+    }
+
+    // Handles the interaction when user checks the private button.
+    handlePrivateChange = (event) => {
+        this.setState((prevState) => {
+            return { private: !prevState.private }
+        })
+    }
+
     // Handles the interaction when user selects the Homeeork Help option.
     handleHomeworkHelpChange = () => {
         this.setState((prevState) => {
@@ -175,6 +190,8 @@ export default class Create extends React.Component {
         newGroup.currNumber = 1;
         newGroup.members = {};
         newGroup.img = url;
+        newGroup.description = this.state.description;
+        newGroup.private = this.state.private;
         newGroup.members[this.props.user.uid] = true;
         newGroup.homeworkHelp = this.state.homeworkHelp;
         newGroup.examSquad = this.state.examSquad;
@@ -242,6 +259,11 @@ export default class Create extends React.Component {
                             </div>
 
                             <div className="form-group">
+                                <label htmlFor="create-group-descr" className="font-weight-bold">Group Description</label>
+                                <input type="text" className="form-control" id="create-group-descr" value={this.state.description} onChange={this.handleDescriptionChange} />
+                            </div>
+
+                            <div className="form-group">
                                 <label htmlFor="create-group-size" className="font-weight-bold">Group Size (2-5)</label><br />
                                 <input type="range" name="create-group-size" max="5" min="2" id="create-group-size"
                                     className="g-size" value={this.state.groupSize} onChange={this.handleGroupSizeChange} />
@@ -284,6 +306,12 @@ export default class Create extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" 
+                                    id="create-private" onClick={this.handlePrivateChange}/>
+                                <label class="form-check-label" for="create-private">Private Group</label>
                             </div>
 
                             <div className="form-button">

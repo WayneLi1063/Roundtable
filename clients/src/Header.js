@@ -48,38 +48,10 @@ export default class Header extends React.Component {
             }
         } 
 
-        let url = ''
-        fetch(api.base + api.handlers.myuser + this.props.uid)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if (result) {
-                    let members = result.members
-                    let leader = result.leader
-
-                    if (members) {
-                        this.getMembersInfo(members)
-                    }
-                    
-                    if (leader) {
-                        this.getLeaderInfo(leader)
-                    }
-                    
-                    if (teamName) {
-                        this.setState(() => {
-                            return ({
-                                card: result,
-                                teamName: result.groupName
-                            })
-                        })
-                    } 
-                }
-            }, (errorObj) = {
-                if (errorObj) {
-                    this.props.errorCallback(errorObj);
-                }
-            }
-        )
+        let user = this.props.getUser()
+        //should this be PhotoURL or photo_url
+        let url = user.photoURL
+        
         // TODO: Change this into an api call.
 
         // let url = ''
@@ -109,7 +81,7 @@ export default class Header extends React.Component {
                                         >MyGroups</NavLink>
                                     <NavLink to='/myprofile' className="text-uppercase font-weight-bold">Profile</NavLink>
                                     {/* TODO: Change this to an api call. */}
-                                    <NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
+                                    {/*<NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
                                     <NavLink to='/myprofile'><img className="avatar" src={url}  alt="User Profile" /></NavLink>
                                 </div>
                                 
@@ -126,7 +98,7 @@ export default class Header extends React.Component {
                                         <NavLink to='/myprofile' className="dropdown-item" >Profile</NavLink>
                                         <div className="dropdown-divider"></div>
                                         {/* TODO: Change this to an api call. */}
-                                        <NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
+                                        {/*<NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
                                     </div>
                                     
                                 </div>

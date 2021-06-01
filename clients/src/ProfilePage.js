@@ -8,7 +8,8 @@ export default class Profile extends React.Component {
         super(props)
         this.state = {
             display: 'profile',
-            name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             courses: '',
             newPassword: '',
@@ -64,97 +65,138 @@ export default class Profile extends React.Component {
 
     // handle clicks on save change button
     submitEdit = () => {
-        let uid = this.props.user.uid;
-        if (this.state.newPassword === this.state.confirmPassword) {
+        if (!this.state.authToken) {
+            return;
+        }
 
-            if (this.state.name === '' && this.state.email === '') {
+        let id = this.props.user.id;
+        //if (this.state.newPassword === this.state.confirmPassword) {
+
+        if (this.state.firstName === '' && this.state.LastName === '' && this.state.email === '') {
+            this.setState({
+                nameErr: true,
+                emailErr: true,
+                emailErr2: false
+            });
+        } else if (this.state.email === '' && (this.state.firstName !== '' || this.state.LastName !== '')) {
+            this.setState({
+                nameErr: false,
+                emailErr: true,
+                emailErr2: false
+            });
+        } else if (this.state.email !== '' && (this.state.firstName === '' && this.state.LastName === '')) {
+            if (!this.validateEmail(this.state.email)) {
                 this.setState({
                     nameErr: true,
-                    emailErr: true,
+                    emailErr2: true,
+                    emailErr: false
+                });
+            } else {
+                this.setState({
+                    nameErr: true,
+                    emailErr: false,
                     emailErr2: false
                 });
-            } else if (this.state.email === '' && this.state.name !== '') {
+            }
+        } else {
+            if (!this.validateEmail(this.state.email)) {
                 this.setState({
                     nameErr: false,
-                    emailErr: true,
-                    emailErr2: false
+                    emailErr2: true,
+                    emailErr: false
                 });
-            } else if (this.state.email !== '' && this.state.name === '') {
-                if (!this.validateEmail(this.state.email)) {
-                    this.setState({
-                        nameErr: true,
-                        emailErr2: true,
-                        emailErr: false
-                    });
-                } else {
-                    this.setState({
-                        nameErr: true,
-                        emailErr: false,
-                        emailErr2: false
-                    });
-                }
             } else {
-                if (!this.validateEmail(this.state.email)) {
-                    this.setState({
-                        nameErr: false,
-                        emailErr2: true,
-                        emailErr: false
-                    });
-                } else {
-                    if (this.state.newPassword !== '') {
-                        this.props.user.updatePassword(this.state.newPassword);
-                    }
-                    // TODO: Change this into an api call.
 
-                    // firebase.database().ref('/users/' + uid).update({
-                    //     name: this.state.name,
-                    //     email: this.state.email
-                    // }, (errorObj) => {
+                this.submitUpdate()
+                //const user = await response.json()
+
+                // firebase.database().ref('/users/' + uid).update({
+                //     name: this.state.name,
+                //     email: this.state.email
+                // }, (errorObj) => {
+                //     if (errorObj) {
+                //         this.props.errorCallback(errorObj);
+                //     }
+                // })
+
+                if (this.state.newPhoto !== '') {
+                    // TODO: Change the img handling process.
+
+                    // this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
+                    //     this.imgStorageRef.child(this.state.newPhoto.name).getDownloadURL().then((url) => {
+                    //         this.props.user.updateProfile({ photoURL: url})
+                    //         firebase.database().ref('users').child(this.props.user.uid).update({
+                    //             photoURL: url
+                    //         })
+                    //         this.setState({ url: url })
+                    //     }).catch((errorObj) => {
+                    //         if (errorObj) {
+                    //             this.props.errorCallback(errorObj);
+                    //         }
+                    //     });
+                    // }).catch((errorObj) => {
                     //     if (errorObj) {
                     //         this.props.errorCallback(errorObj);
                     //     }
-                    // })
-
-                    if (this.state.newPhoto !== '') {
-                        // TODO: Change the img handling process.
-
-                        // this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
-                        //     this.imgStorageRef.child(this.state.newPhoto.name).getDownloadURL().then((url) => {
-                        //         this.props.user.updateProfile({ photoURL: url})
-                        //         firebase.database().ref('users').child(this.props.user.uid).update({
-                        //             photoURL: url
-                        //         })
-                        //         this.setState({ url: url })
-                        //     }).catch((errorObj) => {
-                        //         if (errorObj) {
-                        //             this.props.errorCallback(errorObj);
-                        //         }
-                        //     });
-                        // }).catch((errorObj) => {
-                        //     if (errorObj) {
-                        //         this.props.errorCallback(errorObj);
-                        //     }
-                        // });
-                    }
-
-                    this.setState({
-                        passwordErr: false,
-                        nameErr: false,
-                        emailErr: false,
-                        emailErr2: false
-                    })
-                    this.setUserProfile();
-                    this.toggleMenu('profile');
+                    // });
                 }
+
+                this.setState({
+                    passwordErr: false,
+                    nameErr: false,
+                    emailErr: false,
+                    emailErr2: false
+                })
+                this.setUserProfile();
+                this.toggleMenu('profile');
             }
-        } else {
-            this.setState({ passwordErr: true })
         }
+        /*} else {
+            this.setState({ passwordErr: true })
+        }*/
+    }
+
+    submitUpdate = async () => {
+        let api = this.props.api
+        
+        const update = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            email: this.state.email
+        }
+
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'PATCH',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            }),
+            body: JSON.stringify(update)
+        });
+        if (response.status >= 300) {
+            this.toggleOnError(response.body);
+            return;
+        }
+
+        // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
+        //     if (errorObj) {
+        //         this.toggleOnError(errorObj);
+        //     }
+        // });
     }
 
     // fetch user information from the database
     setUserProfile = () => {
-        // TODO: Change this into an api call.
+        let user = this.getCurrentUser()
+        this.setState({
+            name: user.name,
+            email: user.email,
+            url: user.photoURL
+        })
+        if (user.courses) {
+            this.setState({
+                courses: user.courses
+            })
+        }
 
         // let uid = this.props.user.uid;
         // this.currentUserRef = firebase.database().ref('/users/' + uid);
@@ -175,6 +217,29 @@ export default class Profile extends React.Component {
         //         this.props.errorCallback(errorObj);
         //     }
         // });
+    }
+
+    getCurrentUser = async () => {
+        let api = this.props.api
+
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(api.testbase + api.handlers.myuser, {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            this.toggleOnError("Authentication failed. Please relog.");
+            localStorage.setItem("Authorization", "");
+            this.setAuthToken("");
+            this.setUser(null)
+            return;
+        }
+        const user = await response.json()
+        return user;
     }
 
     // handle name change when users edit their profiles
@@ -231,8 +296,10 @@ export default class Profile extends React.Component {
                                     <h5 className="mb-3">User Profile</h5>
                                     <div className="row">
                                         <div className="user-profile ml-3">
-                                            <h6>Name</h6>
-                                            <p>{this.state.name}</p>
+                                            <h6>firstName</h6>
+                                            <p>{this.state.firstName}</p>
+                                            <h6>LastName</h6>
+                                            <p>{this.state.lastName}</p>
                                             <h6>E-mail</h6>
                                             <p>{this.state.email}</p>
                                             <h6>Current Courses</h6>
@@ -282,19 +349,6 @@ export default class Profile extends React.Component {
                                             </div>
                                             {this.state.emailErr && <p className='email-err'>Email cannot be empty!</p>}
                                             {this.state.emailErr2 && <p className='email-err'>Email is not validated!</p>}
-                                        </div>
-                                        <div className="form-group row">
-                                            <label className="col-lg-3 col-form-label form-control-label">New Password</label>
-                                            <div className="col-lg-9">
-                                                <input className="form-control" type="password" onChange={this.handlePassword}></input>
-                                            </div>
-                                        </div>
-                                        <div className="form-group row">
-                                            <label className="col-lg-3 col-form-label form-control-label">Confirm New Password</label>
-                                            <div className="col-lg-9">
-                                                <input className="form-control" type="password" onChange={this.handleConfirmPassword}></input>
-                                            </div>
-                                            {this.state.passwordErr && <p className='password-err'>Password doesn't match!</p>}
                                         </div>
                                         <div className="form-group row">
                                             <label className="col-lg-3 col-form-label form-control-label"></label>

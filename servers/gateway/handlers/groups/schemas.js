@@ -1,9 +1,9 @@
 const Schema = require("mongoose").Schema;
 
 const groupSchema = new Schema ({
-    groupName: { type: String, required: true },
+    teamName: { type: String, required: true },
     className: { type: String, required: true },
-    descrption: { type: String, required: false },
+    description: { type: String, required: false },
     private: { type : Boolean, required: true },
     creator:{ 
         type: {

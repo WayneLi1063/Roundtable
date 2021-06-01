@@ -52,7 +52,7 @@ const postGroupHandler = async (req, res, { Group }) => {
 
     // construct the group object
     const group = {
-        groupName: teamName,
+        teamName: teamName,
         className: className,
         descrption: descrption,
         private: private,
@@ -183,7 +183,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
 
         // construct the group object
         const newGroup = {
-            groupName: teamName,
+            teamName: teamName,
             className: className,
             descrption: descrption,
             private: private,
