@@ -94,7 +94,7 @@ func (ms *MysqlStore) Update(id int64, updates *Updates) (*User, error) {
 		return nil, err
 	}
 
-	_, err = ms.db.Exec("UPDATE Users SET first_name = ?, last_name = ? WHERE id = ?", updates.FirstName, updates.LastName, id)
+	_, err = ms.db.Exec("UPDATE Users SET first_name = ?, last_name = ?, email = ? WHERE id = ?", updates.FirstName, updates.LastName, updates.Email, id)
 	if err != nil {
 		return nil, err
 	}

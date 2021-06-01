@@ -47,6 +47,7 @@ type NewUser struct {
 type Updates struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
 }
 
 //Validate validates the new user and returns an error if
@@ -154,7 +155,16 @@ func (u *User) Authenticate(password string) error {
 //is returned if the updates are invalid
 func (u *User) ApplyUpdates(updates *Updates) error {
 	if updates == nil {
-		return fmt.Errorf("updates is invalid.")
+		return fmt.Errorf("updates is invalid")
+	}
+
+	if updates.Email != "" {
+		_, err := mail.ParseAddress(updates.Email)
+		if err != nil {
+			return fmt.Errorf("invalid email address")
+		} else {
+			u.Email = updates.Email
+		}
 	}
 
 	u.FirstName = updates.FirstName
