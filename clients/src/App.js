@@ -73,7 +73,7 @@ export default class App extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.testbase + api.handlers.myuser, {
+        const response = await fetch(api.base + api.handlers.myuser, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -96,7 +96,7 @@ export default class App extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.testbase + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -222,12 +222,11 @@ export default class App extends React.Component {
 
     // This callback gets the current course enrollment of the user
     getCourse = async () => {
-        let api = this.state.api
 
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(this.api.testbase + this.api.handlers.courses, {
+        const response = await fetch(this.state.api.base + this.state.api.handlers.courses, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -247,7 +246,7 @@ export default class App extends React.Component {
 
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.testbase + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups, {
             method: 'POST',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -278,7 +277,7 @@ export default class App extends React.Component {
         let api = this.state.api
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.testbase + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups, {
             method: 'PATCH',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -370,7 +369,7 @@ export default class App extends React.Component {
 
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.testbase + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups, {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken

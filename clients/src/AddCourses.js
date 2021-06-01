@@ -16,8 +16,6 @@ export default class AddCourses extends React.Component {
 
     //called when component shows
     componentDidMount() {
-        let uid = this.props.user.uid;
-
         // TODO: change to api call
 
         this.props.getCourseCallback()
@@ -57,7 +55,7 @@ export default class AddCourses extends React.Component {
         if (!this.props.authToken) {
             return;
         }
-        const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
+        const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.props.authToken
@@ -85,7 +83,7 @@ export default class AddCourses extends React.Component {
             if (!this.props.authToken) {
                 return;
             }
-            const response = await fetch(this.props.api.testbase + this.props.api.handlers.courses, {
+            const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
                 method: 'POST',
                 headers: new Headers({
                     "Authorization": this.props.authToken

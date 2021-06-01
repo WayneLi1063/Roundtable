@@ -181,7 +181,7 @@ export default class FilteredCardList extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.testbase + api.handlers.groups + '/' + card.id + '/members', {
+        const response = await fetch(api.base + api.handlers.groups + '/' + card.id + '/members', {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -201,7 +201,7 @@ export default class FilteredCardList extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.testbase + api.handlers.groups + '/' + card.id + '/members', {
+        const response = await fetch(api.base + api.handlers.groups + '/' + card.id + '/members', {
             method: 'POST',
             headers: new Headers({
                 "Authorization": this.state.authToken

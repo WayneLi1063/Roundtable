@@ -2,7 +2,7 @@
 
 docker push wayneli1063/group_handlers
 
-ssh ec2-user@api.wayneli.me << EOF
+ssh ec2-user@api.roundtablefinder.com << EOF
 
 docker rm -f group_handlers
 docker rm -f group_mongo

@@ -69,7 +69,7 @@ export default class Profile extends React.Component {
             return;
         }
 
-        let id = this.props.user.id;
+        // let id = this.props.user.id;
         //if (this.state.newPassword === this.state.confirmPassword) {
 
         if (this.state.firstName === '' && this.state.LastName === '' && this.state.email === '') {
@@ -165,7 +165,7 @@ export default class Profile extends React.Component {
             email: this.state.email
         }
 
-        const response = await fetch(api.testbase + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups, {
             method: 'PATCH',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -225,7 +225,7 @@ export default class Profile extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.testbase + api.handlers.myuser, {
+        const response = await fetch(api.base + api.handlers.myuser, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
