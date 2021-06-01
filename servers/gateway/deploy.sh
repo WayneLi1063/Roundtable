@@ -15,25 +15,25 @@ docker pull wayneli1063/roundtable_mysqldb
 
 docker run -d -p 6379:6379 --name rt_redis --network rt_network redis
 
-docker run -d \
--p 3306:3306 \
---name rt_mysqldb \
--e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
--e MYSQL_DATABASE=live \
---network rt_network \
-wayneli1063/roundtable_mysqldb
-
-docker run -d \
--p 443:443 \
---name rt_gateway \
--v /etc/letsencrypt:/etc/letsencrypt:ro \
--e TLSCERT=/etc/letsencrypt/live/api.roundtablefinder.com/fullchain.pem \
--e TLSKEY=/etc/letsencrypt/live/api.roundtablefinder.com/privkey.pem \
--e SESSIONKEY=$SESSIONKEY \
--e REDISADDR=$REDISADDR \
--e DSN=root:$MYSQL_ROOT_PASSWORD@tcp\($MYSQLADDR\)/live \
---network rt_network \
---restart unless-stopped \
-wayneli1063/roundtable_gateway
-
 EOF
+
+# docker run -d \
+# -p 3306:3306 \
+# --name rt_mysqldb \
+# -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
+# -e MYSQL_DATABASE=live \
+# --network rt_network \
+# wayneli1063/roundtable_mysqldb
+
+# docker run -d \
+# -p 443:443 \
+# --name rt_gateway \
+# -v /etc/letsencrypt:/etc/letsencrypt:ro \
+# -e TLSCERT=/etc/letsencrypt/live/api.roundtablefinder.com/fullchain.pem \
+# -e TLSKEY=/etc/letsencrypt/live/api.roundtablefinder.com/privkey.pem \
+# -e SESSIONKEY=$SESSIONKEY \
+# -e REDISADDR=$REDISADDR \
+# -e DSN=root:$MYSQL_ROOT_PASSWORD@tcp\($MYSQLADDR\)/live \
+# --network rt_network \
+# --restart unless-stopped \
+# wayneli1063/roundtable_gateway

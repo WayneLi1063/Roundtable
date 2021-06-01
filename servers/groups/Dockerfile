@@ -1,5 +1,5 @@
 FROM node
-WORKDIR /messaging
+WORKDIR /groups
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
