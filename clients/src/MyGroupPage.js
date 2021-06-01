@@ -9,7 +9,7 @@ export default class RenderMyGroups extends React.Component {
     render() {
         let groups = [];
         if (this.props.cards) {
-            this.props.cards.forEach((group) => {
+            Array.prototype.forEach.call(this.props.cards, group => {
                 for (let member of Object.keys(group.members)) {
                     if (member === this.props.user.uid) {
                         groups.push(group)

@@ -33,8 +33,10 @@ export default class GroupDetailsPage extends React.Component {
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
+        var api = this.props.api
 
-        /*fetch(api.base + api.handlers.thisgroup + groupID)
+
+        fetch(api.base + api.handlers.thisgroup + groupID)
         .then(res => res.json())
         .then(
             (result) => {
@@ -60,12 +62,12 @@ export default class GroupDetailsPage extends React.Component {
                         })
                     } 
                 }
-            }, (errorObj) = {
+            }, (errorObj) => {
                 if (errorObj) {
                     this.props.errorCallback(errorObj);
                 }
             }
-        )*/
+        )
 
         // TODO: Change this into an api call.
 

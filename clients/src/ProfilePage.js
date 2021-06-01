@@ -32,7 +32,7 @@ export default class Profile extends React.Component {
 
     // disables all event listeners when component gets destoryed.
     componentWillUnmount() {
-        this.currentUserRef.off();
+        //this.currentUserRef.off();
     }
 
     // decide to show the profile or edit tab
