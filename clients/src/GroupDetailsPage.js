@@ -36,7 +36,7 @@ export default class GroupDetailsPage extends React.Component {
         var api = this.props.api
 
 
-        fetch(api.base + api.handlers.thisgroup + groupID)
+        fetch(api.testbase + api.handlers.thisgroup + groupID)
         .then(res => res.json())
         .then(
             (result) => {
@@ -100,7 +100,7 @@ export default class GroupDetailsPage extends React.Component {
         }
         var api = this.props.api
         members.array.forEach(memberID => {
-            fetch(api.base + api.handlers.groups + "/" + memberID)
+            fetch(api.testbase + api.handlers.groups + "/" + memberID)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -163,7 +163,7 @@ export default class GroupDetailsPage extends React.Component {
         }
         let api = this.props.api
 
-        fetch(api.base + api.handlers.groups + leader)
+        fetch(api.testbase + api.handlers.groups + leader)
         .then(res => res.json())
         .then(
             (result) => {
