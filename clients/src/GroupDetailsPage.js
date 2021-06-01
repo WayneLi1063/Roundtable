@@ -1,7 +1,7 @@
 import React from 'react';
 // import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
-import api from './APIEndpoints'
+//import api from './APIEndpoints'
 
 const HOMEWORK_HELP = "homeworkHelp";
 const EXAM_SQUAD = "examSquad";
@@ -27,12 +27,14 @@ export default class GroupDetailsPage extends React.Component {
         this.setState({ shouldRedirect: true });
     }
 
+
+
     // get members info when component is created
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
 
-        fetch(api.base + api.handlers.thisgroup + groupID)
+        /*fetch(api.base + api.handlers.thisgroup + groupID)
         .then(res => res.json())
         .then(
             (result) => {
@@ -63,7 +65,7 @@ export default class GroupDetailsPage extends React.Component {
                     this.props.errorCallback(errorObj);
                 }
             }
-        )
+        )*/
 
         // TODO: Change this into an api call.
 
@@ -94,7 +96,7 @@ export default class GroupDetailsPage extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        api = this.props.api
+        var api = this.props.api
         members.array.forEach(memberID => {
             fetch(api.base + api.handlers.groups + "/" + memberID)
             .then(res => res.json())
@@ -116,7 +118,6 @@ export default class GroupDetailsPage extends React.Component {
                 }
             )
         })
-s
         // TODO: Change this into an api call.
 
         // Object.keys(members).forEach((key) => {
@@ -158,7 +159,7 @@ s
         if (!this.state.authToken) {
             return;
         }
-        api = this.props.api
+        let api = this.props.api
 
         fetch(api.base + api.handlers.groups + leader)
         .then(res => res.json())

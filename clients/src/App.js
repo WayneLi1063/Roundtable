@@ -68,6 +68,8 @@ export default class App extends React.Component {
     // }
 
     getCurrentUser = async () => {
+        let api = this.state.api
+
         if (!this.state.authToken) {
             return;
         }
@@ -89,6 +91,8 @@ export default class App extends React.Component {
     }
 
     getCurrentGroups = async () => {
+        let api = this.state.api
+
         if (!this.state.authToken) {
             return;
         }
@@ -162,11 +166,12 @@ export default class App extends React.Component {
     // unregister all listeners
     componentWillUnmount() {
         // this.rootRef.off();
-        this.unregisterAuthObserver();
+        //this.unregisterAuthObserver();
     }
 
     // Fetch the groups the user is currently enrolled and user's current attending courses in from json.
     fetch = async () => {
+        
         this.setSpinnerOnDisplay();
 
         // TODO: Change this into an api call.
@@ -217,6 +222,8 @@ export default class App extends React.Component {
 
     // This callback gets the current course enrollment of the user
     getCourse = async () => {
+        let api = this.state.api
+
         if (!this.state.authToken) {
             return;
         }
@@ -236,6 +243,8 @@ export default class App extends React.Component {
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
+        let api = this.state.api
+
         // TODO: Change this into an api call.
 
         const response = await fetch(api.testbase + api.handlers.groups, {
@@ -266,6 +275,7 @@ export default class App extends React.Component {
 
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = async (card) => {
+        let api = this.state.api
         // TODO: Change this into an api call.
 
         const response = await fetch(api.testbase + api.handlers.groups, {
@@ -354,6 +364,7 @@ export default class App extends React.Component {
 
     // disbands the group
     disbandGroup = async (card) => {
+        let api = this.state.api
         this.fetch()
         this.toggleEditForm();
 

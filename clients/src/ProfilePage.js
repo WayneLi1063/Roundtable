@@ -107,26 +107,7 @@ export default class Profile extends React.Component {
                 });
             } else {
 
-                const update = {
-                    firstName: this.state.firstName,
-                    lastName: this.state.lastName,
-                    email: this.state.email
-                }
-
-                const response = await fetch(api.testbase + api.handlers.myuser, {
-                    method: 'PATCH',
-                    headers: new Headers({
-                        "Authorization": this.state.authToken
-                    }),
-                    body: JSON.stringify(update)
-                });
-                if (response.status >= 300) {
-                    this.toggleOnError("Authentication failed. Please relog.");
-                    localStorage.setItem("Authorization", "");
-                    this.setAuthToken("");
-                    this.setUser(null)
-                    return;
-                }
+                this.submitUpdate()
                 //const user = await response.json()
 
                 // firebase.database().ref('/users/' + uid).update({
@@ -175,6 +156,34 @@ export default class Profile extends React.Component {
         }*/
     }
 
+    submitUpdate = async () => {
+        let api = this.props.api
+        
+        const update = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            email: this.state.email
+        }
+
+        const response = await fetch(api.testbase + api.handlers.groups, {
+            method: 'PATCH',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            }),
+            body: JSON.stringify(update)
+        });
+        if (response.status >= 300) {
+            this.toggleOnError(response.body);
+            return;
+        }
+
+        // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
+        //     if (errorObj) {
+        //         this.toggleOnError(errorObj);
+        //     }
+        // });
+    }
+
     // fetch user information from the database
     setUserProfile = () => {
         let user = this.getCurrentUser()
@@ -211,6 +220,8 @@ export default class Profile extends React.Component {
     }
 
     getCurrentUser = async () => {
+        let api = this.props.api
+
         if (!this.state.authToken) {
             return;
         }

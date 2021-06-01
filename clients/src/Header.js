@@ -50,7 +50,7 @@ export default class Header extends React.Component {
 
         let user = this.props.getUser()
         //should this be PhotoURL or photo_url
-        url = user.photoURL
+        let url = user.photoURL
         
         // TODO: Change this into an api call.
 
@@ -81,7 +81,7 @@ export default class Header extends React.Component {
                                         >MyGroups</NavLink>
                                     <NavLink to='/myprofile' className="text-uppercase font-weight-bold">Profile</NavLink>
                                     {/* TODO: Change this to an api call. */}
-                                    <NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
+                                    {/*<NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
                                     <NavLink to='/myprofile'><img className="avatar" src={url}  alt="User Profile" /></NavLink>
                                 </div>
                                 
@@ -98,7 +98,7 @@ export default class Header extends React.Component {
                                         <NavLink to='/myprofile' className="dropdown-item" >Profile</NavLink>
                                         <div className="dropdown-divider"></div>
                                         {/* TODO: Change this to an api call. */}
-                                        <NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>
+                                        {/*<NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
                                     </div>
                                     
                                 </div>

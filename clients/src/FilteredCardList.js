@@ -173,7 +173,9 @@ export default class FilteredCardList extends React.Component {
     }
 
     // confirm user's decision on leaving the passed in study group.
-    confirmLeave = (card) => {
+    confirmLeave = async (card) => {
+        let api = this.props.api
+
         card.members[this.props.user.uid] = null;
         card.currNumber--;
         if (!this.state.authToken) {
@@ -193,7 +195,9 @@ export default class FilteredCardList extends React.Component {
     }
 
     // Add the user to the group when they join the group
-    joinGroup = (card) => {
+    joinGroup = async (card) => {
+        let api = this.props.api
+
         if (!this.state.authToken) {
             return;
         }
