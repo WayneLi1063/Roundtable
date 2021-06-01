@@ -48,38 +48,10 @@ export default class Header extends React.Component {
             }
         } 
 
-        let url = ''
-        fetch(api.base + api.handlers.myuser + this.props.uid)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if (result) {
-                    let members = result.members
-                    let leader = result.leader
-
-                    if (members) {
-                        this.getMembersInfo(members)
-                    }
-                    
-                    if (leader) {
-                        this.getLeaderInfo(leader)
-                    }
-                    
-                    if (teamName) {
-                        this.setState(() => {
-                            return ({
-                                card: result,
-                                teamName: result.groupName
-                            })
-                        })
-                    } 
-                }
-            }, (errorObj) = {
-                if (errorObj) {
-                    this.props.errorCallback(errorObj);
-                }
-            }
-        )
+        let user = this.props.getUser()
+        //should this be PhotoURL or photo_url
+        url = user.photoURL
+        
         // TODO: Change this into an api call.
 
         // let url = ''

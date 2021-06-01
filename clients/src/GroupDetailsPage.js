@@ -39,6 +39,7 @@ export default class GroupDetailsPage extends React.Component {
                 if (result) {
                     let members = result.members
                     let leader = result.leader
+                    let teamName = result.groupName
 
                     if (members) {
                         this.getMembersInfo(members)
@@ -90,8 +91,12 @@ export default class GroupDetailsPage extends React.Component {
 
     // build the data arrays for group leader and memebers
     getMembersInfo = (members) => {
+        if (!this.state.authToken) {
+            return;
+        }
+        api = this.props.api
         members.array.forEach(memberID => {
-            fetch(api.base + api.handlers.thisgroup + memberID)
+            fetch(api.base + api.handlers.groups + "/" + memberID)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -111,8 +116,7 @@ export default class GroupDetailsPage extends React.Component {
                 }
             )
         })
-
-
+s
         // TODO: Change this into an api call.
 
         // Object.keys(members).forEach((key) => {
@@ -151,7 +155,12 @@ export default class GroupDetailsPage extends React.Component {
     }
 
     getLeaderInfo = (leader) => {
-        fetch(api.base + api.handlers.thisgroup + leader)
+        if (!this.state.authToken) {
+            return;
+        }
+        api = this.props.api
+
+        fetch(api.base + api.handlers.groups + leader)
         .then(res => res.json())
         .then(
             (result) => {

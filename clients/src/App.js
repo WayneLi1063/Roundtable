@@ -428,7 +428,7 @@ export default class App extends React.Component {
         } else {
             content = (
                 <div>
-                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} uid={this.state.uid} errorCallback={this.toggleOnError} />
+                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} uid={this.state.uid} errorCallback={this.toggleOnError} getUser={this.getCurrentUser}/>
                     {this.state.coverDisplay &&
                         <div className="grey-cover"></div>
                     }

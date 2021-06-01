@@ -176,18 +176,38 @@ export default class FilteredCardList extends React.Component {
     confirmLeave = (card) => {
         card.members[this.props.user.uid] = null;
         card.currNumber--;
-        // TODO: Change this into an api call.
-            
-        // let cardRef = firebase.database().ref("groups/" + card.id);
-        // cardRef.set(card, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // });
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(api.testbase + api.handlers.groups + '/' + card.id + '/members', {
+            method: 'DELETE',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        })
+
+        if (response.status >= 300) {
+            this.toggleOnError("leaving group failed. Please retry.");
+            return;
+        }
     }
 
     // Add the user to the group when they join the group
     joinGroup = (card) => {
+        if (!this.state.authToken) {
+            return;
+        }
+        const response = await fetch(api.testbase + api.handlers.groups + '/' + card.id + '/members', {
+            method: 'POST',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        })
+
+        if (response.status >= 300) {
+            this.toggleOnError("joining group failed. Please retry.");
+            return;
+        }
         // TODO: change this into an api call
 
         // let cardRef = firebase.database().ref("groups/" + card.id);
