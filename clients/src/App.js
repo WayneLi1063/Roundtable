@@ -24,6 +24,10 @@ const { Search } = Input;
 const client = new W3CWebSocket('ws://localhost:8000');
 /////////WEBSOCKET/////////
 
+import SignUp from './SignUp.js'
+import Login from './Login.js'
+
+
 export default class App extends React.Component {
     constructor(props) {
         super(props)
@@ -338,6 +342,21 @@ export default class App extends React.Component {
         })
     }
 
+    // Sets the Auth token for the current user
+
+    setAuthToken = (auth) => {
+        this.state.authToken = auth;
+    }
+
+    setUid = (uid) => {
+        this.state.uid = uid;
+    }
+
+    setUser = (user) => {
+        this.state.user = user;
+        console.log(this.state.user)
+    }
+
     // Toggle filter group form
     toggleFilter = () => {
         this.setState((prevState) => {
@@ -513,8 +532,10 @@ export default class App extends React.Component {
 
 
                         <Switch>
-                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} wsUpdate = {this.valueChange} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
-                            <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} wsUpdate = {this.valueChange} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
+                            <Route exact path='/login' render={() => <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser}/>} />
+                            <Route exact path='/signup' render={() => (<SignUp />)} />
+                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
+                            <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />

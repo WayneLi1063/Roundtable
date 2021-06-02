@@ -8,6 +8,7 @@ export default class Create extends React.Component {
         this.state = {
             img: '',
             groupName: '',
+            description: '',
             courseName: '',
             groupSize: 2,
             emptyAlertDisplay: false,
@@ -308,10 +309,10 @@ export default class Create extends React.Component {
                                 </div>
                             </div>
 
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" 
+                            <div className="form-check">
+                                <input type="checkbox" className="form-check-input" 
                                     id="create-private" onClick={this.handlePrivateChange}/>
-                                <label class="form-check-label" for="create-private">Private Group</label>
+                                <label className="form-check-label" htmlFor="create-private">Private Group</label>
                             </div>
 
                             <div className="form-button">
