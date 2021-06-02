@@ -174,6 +174,8 @@ export default class Profile extends React.Component {
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.props.wsUpdate()
         }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {

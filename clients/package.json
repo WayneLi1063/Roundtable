@@ -23,6 +23,7 @@
     "BufferList": "0.0.0",
     "bootstrap": "^4.6.0",
     "formik": "^2.2.8",
+    "antd": "^4.16.1",
     "fs-stream": "^0.2.1",
     "jquery": "^1.9.1",
     "live-server": "^1.2.1",
@@ -32,7 +33,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.2.0",
     "reactstrap": "^8.9.0",
-    "whatwg-fetch": "^3.6.2"
+    "whatwg-fetch": "^3.6.2",
+    "websocket": "^1.0.34"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -15,9 +15,19 @@ import MyGroupPage from './MyGroupPage.js';
 import Homepage from './Homepage.js';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+
+import { Card, Avatar, Input, Typography } from 'antd';
+
+/////////WEBSOCKET/////////
+const { Search } = Input;
+const client = new W3CWebSocket('ws://localhost:8000');
+/////////WEBSOCKET/////////
+
 import SignUp from './SignUp.js'
 import Login from './Login.js'
 import api from './APIEndpoints.js'
+
 
 export default class App extends React.Component {
     constructor(props) {
@@ -85,11 +95,26 @@ export default class App extends React.Component {
         const groups = await response.json()
         this.setState({myGroups: groups});
     }
-    
+
+    /////////WEBSOCKET/////////
+    valueChange = () => {
+        client.send("update happened")
+    }
+    /////////WEBSOCKET/////////
+
 
     // fetch data from database and handles user sign in
     componentDidMount() {
         // this.fetch();
+
+        client.onopen = () => {
+            console.log('Websocket Client Connected')
+        }
+
+        client.onmessage = (message) => {
+            console.log(message)
+            this.fetch();
+        }
 
         // TODO: Change this into the auth we wrote
         this.getCurrentUser();
@@ -230,6 +255,8 @@ export default class App extends React.Component {
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.valueChange()
         }
 
         // newGroup.id = this.state.groupCount + 1;
@@ -243,6 +270,7 @@ export default class App extends React.Component {
         //         this.toggleOnError(errorObj);
         //     }
         // });
+
         this.fetch()
     }
 
@@ -261,6 +289,8 @@ export default class App extends React.Component {
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
@@ -367,6 +397,8 @@ export default class App extends React.Component {
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
@@ -467,17 +499,29 @@ export default class App extends React.Component {
                             </div>
                         }
 
+                        <div className="bottom">
+                            <Search
+                            placeholder="input message and send"
+                            enterButton="Send"
+                            value={this.state.searchVal}
+                            size="large"
+                            onChange={(e) => this.setState({ searchVal: e.target.value })}
+                            onSearch={value => this.valueChange()}
+                            />
+                        </div> 
+
+
                         <Switch>
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
-                            <Route exact path='/home' render={(props) => (<Homepage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
+                            <Route exact path='/home' render={(props) => (<Homepage {...props} wsUpdate = {this.valueChange} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} fetch={this.fetch}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
-                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} uid={this.state.uid} />)} />
+                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} wsUpdate = {this.valueChange} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} uid={this.state.uid} />)} />
                             <Redirect to='/home' />
                         </Switch>
 

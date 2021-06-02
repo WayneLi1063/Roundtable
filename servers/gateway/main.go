@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,11 +16,15 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 
 	"github.com/go-redis/redis"
 	"wayneli.me/m/servers/gateway/handlers"
 	"wayneli.me/m/servers/gateway/models/users"
 	"wayneli.me/m/servers/gateway/sessions"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 // Director is the director used for routing to microservices
@@ -71,8 +76,32 @@ func getURLs(addrString string) []*url.URL {
 	return URLs
 }
 
+var upgrader = websocket.Upgrader{}
+
 //main is the main entry point for the server
 func main() {
+
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Logger.Fatal(e.Start(":8080"))
+
+	e.GET("/ws", func(c echo.Context) error {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+		ws, err := upgrader.Upgrade(c.Response().Writer, c.Request(), nil)
+		if !errors.Is(err, nil) {
+			log.Println(err)
+		}
+		defer ws.Close()
+
+		log.Println("Connected!")
+
+		return nil
+	})
+
+	/////////////////////////////////////////////////////////////////////////
 	addr := os.Getenv("ADDR")
 
 	if len(addr) == 0 {
