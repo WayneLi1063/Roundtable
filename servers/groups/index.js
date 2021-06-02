@@ -14,6 +14,8 @@ const {
     deleteCourseHandler
 } = require('./handlers')
 
+//websocket
+
 
 const mongoEndpoint = `mongodb://${process.env.MONGOADDR}/test`
 const port = 80;
@@ -50,6 +52,7 @@ connect();
 mongoose.connection.on('error', console.error)
     .on('disconnected', connect)
     .once('open', main);
+
 
 async function main() {
     app.listen(port, "", () => {

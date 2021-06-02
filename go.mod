@@ -8,6 +8,8 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/gorilla/websocket v1.4.2
+	github.com/labstack/echo/v4 v4.3.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect

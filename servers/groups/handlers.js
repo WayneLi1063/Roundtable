@@ -278,7 +278,7 @@ const postMemberHandler = async (req, res, { Group }) => {
             return
         }
         
-        if (length(grp.members) === grp.maxSize) {
+        if (grp.members.length === grp.maxSize) {
             res.status(400).send("Group already full")
             return;
         }
