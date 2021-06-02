@@ -1,7 +1,7 @@
 import React from 'react';
 // import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
-//import api from './APIEndpoints'
+import api from './APIEndpoints.js'
 
 const HOMEWORK_HELP = "homeworkHelp";
 const EXAM_SQUAD = "examSquad";
@@ -33,8 +33,6 @@ export default class GroupDetailsPage extends React.Component {
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
-        var api = this.props.api
-
 
         fetch(api.testbase + api.handlers.thisgroup + groupID)
         .then(res => res.json())
@@ -98,7 +96,6 @@ export default class GroupDetailsPage extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        var api = this.props.api
         members.array.forEach(memberID => {
             fetch(api.testbase + api.handlers.groups + "/" + memberID)
             .then(res => res.json())
@@ -161,7 +158,6 @@ export default class GroupDetailsPage extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        let api = this.props.api
 
         fetch(api.testbase + api.handlers.groups + leader)
         .then(res => res.json())

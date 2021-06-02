@@ -10,6 +10,7 @@ export default class Create extends React.Component {
             groupName: '',
             description: '',
             courseName: '',
+            when2meetURL: '',
             groupSize: 2,
             emptyAlertDisplay: false,
             emptyCourseDisplay: false,
@@ -89,6 +90,14 @@ export default class Create extends React.Component {
         let newString = event.target.value;
         this.setState({
             description: newString
+        });
+    }
+
+    // Handles the interaction when user types in description field.
+    handleMeetChange = (event) => {
+        let newString = event.target.value;
+        this.setState({
+            when2meetURL: newString
         });
     }
 
@@ -187,18 +196,24 @@ export default class Create extends React.Component {
     handleSubmitHelper(newGroup, url) {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
-        newGroup.totalNumber = parseInt(this.state.groupSize, 10);
-        newGroup.currNumber = 1;
-        newGroup.members = {};
+        newGroup.maxSize = parseInt(this.state.groupSize, 10);
+        newGroup.createdAt = Date.now();
         newGroup.img = url;
+        newGroup.tags = {
+            homeworkHelp: this.state.homeworkHelp,
+            examSquad: this.state.examSquad,
+            noteExchange: this.state.noteExchange,
+            labMates: this.state.labMates,
+            projectPartners: this.state.projectPartners
+        }
+        newGroup.creator = {
+            userID: this.props.user.uid,
+            userEmail: this.props.user.email
+        }
         newGroup.description = this.state.description;
         newGroup.private = this.state.private;
-        newGroup.members[this.props.user.uid] = true;
-        newGroup.homeworkHelp = this.state.homeworkHelp;
-        newGroup.examSquad = this.state.examSquad;
-        newGroup.noteExchange = this.state.noteExchange;
-        newGroup.labMates = this.state.labMates;
-        newGroup.projectPartners = this.state.projectPartners;
+        newGroup.members = [this.props.user.uid];
+        newGroup.when2meetURL = this.state.when2meetURL;
         this.props.onSubmit(newGroup);
         if (this.props.feedbackDisplay) {
             this.props.toggleFeedback();
@@ -262,6 +277,11 @@ export default class Create extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="create-group-descr" className="font-weight-bold">Group Description</label>
                                 <input type="text" className="form-control" id="create-group-descr" value={this.state.description} onChange={this.handleDescriptionChange} />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="create-meet" className="font-weight-bold">When2meet URL</label>
+                                <input type="text" className="form-control" id="create-meet" value={this.state.when2meetURL} onChange={this.handleMeetChange} />
                             </div>
 
                             <div className="form-group">

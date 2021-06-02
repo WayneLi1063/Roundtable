@@ -2,6 +2,7 @@ import React from 'react';
 // import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import api from './APIEndpoints.js'
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -18,8 +19,7 @@ export default class Profile extends React.Component {
             nameErr: false,
             emailErr: false,
             emailErr2: false,
-            newPhoto: '',
-            url: this.props.user.photoURL
+            newPhoto: ''
         }
         // this.imgStorageRef = firebase.storage().ref("img");
     }
@@ -157,7 +157,6 @@ export default class Profile extends React.Component {
     }
 
     submitUpdate = async () => {
-        let api = this.props.api
         
         const update = {
             firstName: this.state.firstName,
@@ -192,11 +191,6 @@ export default class Profile extends React.Component {
             email: user.email,
             url: user.photoURL
         })
-        if (user.courses) {
-            this.setState({
-                courses: user.courses
-            })
-        }
 
         // let uid = this.props.user.uid;
         // this.currentUserRef = firebase.database().ref('/users/' + uid);
@@ -272,9 +266,15 @@ export default class Profile extends React.Component {
 
     render() {
         let content = [];
+
+        let url = ""
+        if (this.props.user !== null) {
+            url = this.props.user.photoURL
+        }
+
         let courses = this.state.courses;
-        if (typeof courses !== "undefined") {
-            Object.keys(courses).forEach((key) => {
+        if (courses.length !== 0) {
+            courses.forEach((key) => {
                 content.push(<div key={key} id="class-name" className={`class-name + ${courses[key]}`}> {courses[key]} </div>)
             })
         }
@@ -314,7 +314,7 @@ export default class Profile extends React.Component {
                             </div>
                         </div>
                         <div className="col-lg-4 order-lg-1">
-                            <img src={this.state.url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
+                            <img src={url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
                         </div>
                     </div>
                 </div>
@@ -362,7 +362,7 @@ export default class Profile extends React.Component {
                             </div>
                         </div>
                         <div className="col-lg-4 order-lg-1">
-                            <img src={this.state.url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
+                            <img src={url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
                             <div className="custom-file">
                                 <input type="file" className="custom-file-input" onChange={this.handlePhoto} />
                                 <label className="custom-file-label">Upload a different photo</label>

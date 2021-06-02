@@ -1,9 +1,9 @@
 import React from 'react';
 import Form from "@rjsf/core";
+import api from './APIEndpoints.js'
 
 var querystring = require('querystring');
 var https = require('https');
-
 
 export default class SignUp extends React.Component {
   constructor(props) {
@@ -11,8 +11,8 @@ export default class SignUp extends React.Component {
   }
 
   formSchema = {
-    "title": "Sign up",
-    "description": "Enter basic information to create an account",
+    "title": "LOG IN",
+    "description": "Log in to your exisitng account",
     "type": "object",
     "required": [
       "email",
@@ -39,41 +39,22 @@ export default class SignUp extends React.Component {
     }
   }
 
-  onSubmit = ({formData}, e) => {
-    var post_options = {
-      host: 'api.roundtablefinder.com',
-      port: '443',
-      path: '/v1/sessions',
+  onSubmit = async ({formData}) => {
+    const response = await fetch(api.base + api.handlers.sessions, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    };
-
-    const setAuthToken = this.props.setAuthToken;
-    const setUid = this.props.setUid;
-    const setUser = this.props.setUser
-
-    var post_req = https.request(post_options, (res) => {
-      res.setEncoding('utf8');
-      let auth = "";
-      let uid = "";
-      let user = {};
-      res.on('data', function (chunk) {
-          user = JSON.parse(chunk)
-          console.log('Response: ' + chunk);
-          auth = res.headers.authorization
-          uid = user.uid
-      });
-      res.on('end', function () {
-        setAuthToken(auth)
-        setUid(uid)
-        setUser(user)
-      })
+      headers: new Headers({
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify(formData)
     });
-
-    post_req.write(JSON.stringify(formData));
-    post_req.end();
+    if (response.status >= 300) {
+        this.props.errorCallback("Log in unsuccessful. Please retry.");
+        return;
+    }
+    const user = await response.json()
+    this.props.setUser(user);
+    this.props.setUid(user.uid);
+    this.props.setAuthToken(response.headers.get("Authorization"));
   }
 
   render() {

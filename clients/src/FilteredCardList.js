@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from './Card.js';
 // import firebase from 'firebase/app';
+import api from './APIEndpoints.js'
 
 export default class FilteredCardList extends React.Component {
     constructor(props) {
@@ -109,7 +110,6 @@ export default class FilteredCardList extends React.Component {
                 labMates: false,
                 projectPartners: false,
                 cardList: this.props.renderedCards,
-                // detailsDisplay: false,
                 fullGroup: false,
                 currentCard: null,
                 applied: false
@@ -174,8 +174,6 @@ export default class FilteredCardList extends React.Component {
 
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
-        let api = this.props.api
-
         card.members[this.props.user.uid] = null;
         card.currNumber--;
         if (!this.state.authToken) {
@@ -196,8 +194,6 @@ export default class FilteredCardList extends React.Component {
 
     // Add the user to the group when they join the group
     joinGroup = async (card) => {
-        let api = this.props.api
-
         if (!this.state.authToken) {
             return;
         }

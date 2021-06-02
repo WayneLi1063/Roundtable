@@ -11,7 +11,7 @@ export default class Homepage extends React.Component {
         if (this.props.cards) {
             Array.prototype.forEach.call(this.props.cards, group => {
                 let userIsMember = false;
-                for (let member of Object.keys(group.members)) {
+                for (let member of group.members) {
                     if (member === this.props.user.uid) {
                         userIsMember = true;
                     }

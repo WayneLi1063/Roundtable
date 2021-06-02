@@ -17,22 +17,11 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
 import SignUp from './SignUp.js'
 import Login from './Login.js'
+import api from './APIEndpoints.js'
 
 export default class App extends React.Component {
     constructor(props) {
         super(props)
-        const api = {
-            base: "https://api.roundtablefinder.com",
-            testbase: "https://localhost:443",
-            handlers: {
-                users: "/v1/users",
-                myuser: "/v1/users/me",
-                sessions: "/v1/sessions",
-                sessionsMine: "/v1/sessions/mine",
-                groups: "/v1/groups",
-                courses: "/v1/users/courses",
-            }
-        }
         this.state = {
             user: null,
             uid: null,
@@ -54,28 +43,15 @@ export default class App extends React.Component {
             coverDisplay: false,
             groupCount: 0,
             errorMessage: '',
-            api: api
+            authToken: localStorage.getItem("Authorization") || null
         }
     }
 
-    // firebaseUiConfig = {
-    //     signInOptions: [
-    //         firebase.auth.EmailAuthProvider.PROVIDER_ID,
-    //         firebase.auth.GoogleAuthProvider.PROVIDER_ID
-    //     ],
-    //     signInFlow: 'popup',
-    //     callbacks: {
-    //         signInSuccessWithAuthResult: () => false
-    //     }
-    // }
-
     getCurrentUser = async () => {
-        let api = this.state.api
-
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.base + api.handlers.myuser, {
+        const response = await fetch(api.base + api.handlers.myuser + "me", {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -83,18 +59,16 @@ export default class App extends React.Component {
         });
         if (response.status >= 300) {
             this.toggleOnError("Authentication failed. Please relog.");
-            localStorage.setItem("Authorization", "");
             this.setAuthToken("");
             this.setUser(null)
             return;
         }
         const user = await response.json()
-        return user;
+        this.setState({user: user});
+        this.setState({uid: user.ID});
     }
 
     getCurrentGroups = async () => {
-        let api = this.state.api
-
         if (!this.state.authToken) {
             return;
         }
@@ -109,16 +83,18 @@ export default class App extends React.Component {
             return;
         }
         const groups = await response.json()
-        return groups;
+        this.setState({myGroups: groups});
     }
     
 
     // fetch data from database and handles user sign in
     componentDidMount() {
-        this.fetch();
+        // this.fetch();
 
         // TODO: Change this into the auth we wrote
-
+        this.getCurrentUser();
+        this.getCurrentGroups();
+        this.getCourse();
         // this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         //     (user) => {
         //         if (user) {
@@ -177,12 +153,9 @@ export default class App extends React.Component {
         this.setSpinnerOnDisplay();
 
         // TODO: Change this into an api call.
-        const user = this.getCurrentUser();
-        this.setState({user: user});
-        this.setState({uid: user.ID});
+        this.getCurrentUser();
 
-        const groups = this.getCurrentGroups();
-        this.setState({myGroups: groups});
+        this.getCurrentGroups();
 
         this.setSpinnerOffDisplay();
         // this.rootRef = firebase.database().ref();
@@ -228,7 +201,7 @@ export default class App extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(this.state.api.base + this.state.api.handlers.courses, {
+        const response = await fetch(api.base + api.handlers.courses, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -244,14 +217,13 @@ export default class App extends React.Component {
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
-        let api = this.state.api
-
         // TODO: Change this into an api call.
 
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'POST',
             headers: new Headers({
-                "Authorization": this.state.authToken
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
             }),
             body: JSON.stringify(newGroup)
         });
@@ -276,13 +248,13 @@ export default class App extends React.Component {
 
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = async (card) => {
-        let api = this.state.api
         // TODO: Change this into an api call.
 
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'PATCH',
             headers: new Headers({
-                "Authorization": this.state.authToken
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
             }),
             body: JSON.stringify(card)
         });
@@ -315,16 +287,16 @@ export default class App extends React.Component {
     // Sets the Auth token for the current user
 
     setAuthToken = (auth) => {
-        this.state.authToken = auth;
+        localStorage.setItem("Authorization", auth)
+        this.setState({authToken: auth});
     }
 
     setUid = (uid) => {
-        this.state.uid = uid;
+        this.setState({uid: uid});
     }
 
     setUser = (user) => {
-        this.state.user = user;
-        console.log(this.state.user)
+        this.setState({user: user});
     }
 
     // Toggle filter group form
@@ -380,7 +352,6 @@ export default class App extends React.Component {
 
     // disbands the group
     disbandGroup = async (card) => {
-        let api = this.state.api
         this.fetch()
         this.toggleEditForm();
 
@@ -438,24 +409,33 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        if (!this.state.user) {
+        console.log(this.state.authToken)
+        if (!this.state.authToken) {
             content = (
                 <div>
                     <main>
                         <img className='loginLogo' src='img/loginLogo.png' alt='Round Table Logo'></img>
                         <div className='loginBG'>
                             <div className='login'>
-                                {/* TODO: Change to our own auth */}
-                                {/* <StyledFirebaseAuth uiConfig={this.firebaseUiConfig} firebaseAuth={firebase.auth()} /> */}
+                                <div className='login-form text-center container'>
+                                        <div className="row justify-content-center">
+                                            <div className="col">
+                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} setUid={this.setUid} errorCallback={this.toggleOnError}/>
+                                            </div>
+                                            <div className="col">
+                                                <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                     </main>
                 </div>
             )
         } else {
             content = (
                 <div>
-                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} uid={this.state.uid} errorCallback={this.toggleOnError} getUser={this.getCurrentUser}/>
+                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} setAuthToken={this.setAuthToken}/>
                     {this.state.coverDisplay &&
                         <div className="grey-cover"></div>
                     }
@@ -488,8 +468,6 @@ export default class App extends React.Component {
                         }
 
                         <Switch>
-                            <Route exact path='/login' render={() => <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser}/>} />
-                            <Route exact path='/signup' render={() => (<SignUp />)} />
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}

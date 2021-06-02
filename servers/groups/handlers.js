@@ -31,6 +31,7 @@ const postGroupHandler = async (req, res, { Group }) => {
         noteExchange === null || labMates === null ||
         projectPartners === null || !totalNumber) {
         res.status(400).send("Must provide the requiured information");
+        return;
     }
 
     // store the id and email of the creator
@@ -171,6 +172,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
             noteExchange === null || labMates === null ||
             projectPartners === null || !totalNumber) {
             res.status(400).send("Must provide the requiured information");
+            return;
         }
 
         const tags = {

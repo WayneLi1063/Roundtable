@@ -58,7 +58,8 @@ export default class AddCourses extends React.Component {
         const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
             method: 'DELETE',
             headers: new Headers({
-                "Authorization": this.props.authToken
+                "Authorization": this.props.authToken,
+                "Content-Type": "application/json"
             }),
             body: JSON.stringify({course: courseKey})
         });

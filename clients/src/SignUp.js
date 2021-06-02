@@ -1,13 +1,18 @@
 import React from 'react';
 import Form from "@rjsf/core";
+import api from './APIEndpoints.js'
 
 var https = require('https');
 
 
 export default class SignUp extends React.Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   formSchema = {
-    "title": "Sign up",
+    "title": "SIGN UP",
     "description": "Enter basic information to create an account",
     "type": "object",
     "required": [
@@ -69,29 +74,22 @@ export default class SignUp extends React.Component {
     }
   }
 
-  onSubmit = ({formData}, e) => {
-    console.log(formData)
-    console.log(JSON.stringify(formData))
-    var post_options = {
-      host: 'api.roundtablefinder.com',
-      port: '443',
-      path: '/v1/users',
+  onSubmit = async ({formData}) => {
+    const response = await fetch(api.base + api.handlers.users, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    };
-
-    var post_req = https.request(post_options, function(res) {
-      res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-          console.log('Response: ' + chunk);
-      });
+      headers: new Headers({
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify(formData)
     });
-
-    post_req.write(JSON.stringify(formData));
-    post_req.end();
-
+    if (response.status >= 300) {
+        this.props.errorCallback("Sign up unsuccessful. Please retry.");
+        return;
+    }
+    const user = await response.json()
+    this.props.setUser(user);
+    this.props.setUid(user.uid);
+    this.props.setAuthToken(response.headers.get("Authorization"));
   }
 
   render() {

@@ -48,9 +48,12 @@ export default class Header extends React.Component {
             }
         } 
 
-        let user = this.props.getUser()
+        let url = ""
         //should this be PhotoURL or photo_url
-        let url = user.photoURL
+        if (this.props.user !== null) {
+            url = this.props.user.photoURL
+        }
+
         
         // TODO: Change this into an api call.
 
@@ -75,15 +78,12 @@ export default class Header extends React.Component {
                         <div className="nav-search">
                             <div className="profile-setting">
                                 <div className="nav-links">
-                                    <NavLink to='/login' className="text-uppercase font-weight-bold"> Login </NavLink>
-                                    <NavLink to='/signup' className="text-uppercase font-weight-bold"> Sign Up </NavLink>
                                     <NavLink to='/home' className="text-uppercase font-weight-bold" onClick={this.handleHomePageClick}
                                         >Homepage</NavLink>
                                     <NavLink to='/mygroup' className="text-uppercase font-weight-bold" onClick={this.handleMyGroupClick}
                                         >MyGroups</NavLink>
                                     <NavLink to='/myprofile' className="text-uppercase font-weight-bold">Profile</NavLink>
-                                    {/* TODO: Change this to an api call. */}
-                                    {/*<NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
+                                    <NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => this.props.setAuthToken(null)}>Sign out</NavLink>
                                     <NavLink to='/myprofile'><img className="avatar" src={url}  alt="User Profile" /></NavLink>
                                 </div>
                                 
@@ -100,7 +100,7 @@ export default class Header extends React.Component {
                                         <NavLink to='/myprofile' className="dropdown-item" >Profile</NavLink>
                                         <div className="dropdown-divider"></div>
                                         {/* TODO: Change this to an api call. */}
-                                        {/*<NavLink to='/' className="dropdown-item signout" onClick={() => firebase.auth().signOut()}>Sign out</NavLink>*/}
+                                        <NavLink to='/' className="dropdown-item signout" onClick={() => this.props.setAuthToken(null)}>Sign out</NavLink>
                                     </div>
                                     
                                 </div>
