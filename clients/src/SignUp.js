@@ -1,17 +1,12 @@
+import React from 'react';
 import Form from "@rjsf/core";
 
-const Form = JSONSchemaForm.default;
+var https = require('https');
 
-// type NewUser struct {
-// 	Email        string `json:"email"`
-// 	Password     string `json:"password"`
-// 	PasswordConf string `json:"passwordConf"`
-// 	UserName     string `json:"userName"`
-// 	FirstName    string `json:"firstName"`
-// 	LastName     string `json:"lastName"`
-// }
 
-const formSchema = {
+export default class SignUp extends React.Component {
+
+  formSchema = {
     "title": "Sign up",
     "description": "Enter basic information to create an account",
     "type": "object",
@@ -51,29 +46,55 @@ const formSchema = {
     }
   }
 
-const UIschema = {
-  "email": {
-    "ui:format": "email"
-  },
-  "firstName": {
-    "ui:autofocus": true,
-    "ui:emptyValue": "",
-    "ui:autocomplete": "family-name"
-  },
-  "lastName": {
-    "ui:emptyValue": "",
-    "ui:autocomplete": "given-name"
-  },
-  "password": {
-    "ui:widget": "password",
-    "ui:help": "Hint: Make it strong!"
-  },
-  "password": {
-    "ui:widget": "password",
-    "ui:help": "Make sure the passwords match... "
+  UIschema = {
+    "email": {
+      "ui:format": "email"
+    },
+    "firstName": {
+      "ui:autofocus": true,
+      "ui:emptyValue": "",
+      "ui:autocomplete": "family-name"
+    },
+    "lastName": {
+      "ui:emptyValue": "",
+      "ui:autocomplete": "given-name"
+    },
+    "password": {
+      "ui:widget": "password",
+      "ui:help": "Hint: Make it strong!"
+    },
+    "passwordConf": {
+      "ui:widget": "password",
+      "ui:help": "Make sure the passwords match... "
+    }
+  }
+
+  onSubmit = ({formData}, e) => {
+    console.log(formData)
+    console.log(JSON.stringify(formData))
+    var post_options = {
+      host: 'api.roundtablefinder.com',
+      port: '443',
+      path: '/v1/users',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    var post_req = https.request(post_options, function(res) {
+      res.setEncoding('utf8');
+      res.on('data', function (chunk) {
+          console.log('Response: ' + chunk);
+      });
+    });
+
+    post_req.write(JSON.stringify(formData));
+    post_req.end();
+
+  }
+
+  render() {
+    return <Form schema={this.formSchema} UIschema={this.UIschema} onSubmit={this.onSubmit}/>
   }
 }
-
-ReactDOM.render((
-  <Form schema={formSchema} UIschema={UIschema}/>
-), document.getElementById("app"));

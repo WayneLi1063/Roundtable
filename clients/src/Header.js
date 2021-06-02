@@ -75,6 +75,8 @@ export default class Header extends React.Component {
                         <div className="nav-search">
                             <div className="profile-setting">
                                 <div className="nav-links">
+                                    <NavLink to='/login' className="text-uppercase font-weight-bold"> Login </NavLink>
+                                    <NavLink to='/signup' className="text-uppercase font-weight-bold"> Sign Up </NavLink>
                                     <NavLink to='/home' className="text-uppercase font-weight-bold" onClick={this.handleHomePageClick}
                                         >Homepage</NavLink>
                                     <NavLink to='/mygroup' className="text-uppercase font-weight-bold" onClick={this.handleMyGroupClick}
