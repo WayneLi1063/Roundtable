@@ -81,14 +81,12 @@ func (nu *NewUser) Validate() error {
 //ToUser converts the NewUser to a User, setting the
 //PhotoURL and PassHash fields appropriately
 func (nu *NewUser) ToUser() (*User, error) {
-
 	err := nu.Validate()
 	if err != nil {
 		return nil, err
 	}
 
 	u := User{}
-	u.Email = nu.Email
 	u.FirstName = nu.FirstName
 	u.LastName = nu.LastName
 	u.SetPassword(nu.Password)
@@ -96,6 +94,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 	u.ID = 0
 	e := strings.Trim(nu.Email, " ")
 	e = strings.ToLower(e)
+	u.Email = e
 
 	emailHash := md5.Sum([]byte(e))
 	u.PhotoURL = gravatarBasePhotoURL + fmt.Sprintf("%x", emailHash[:])

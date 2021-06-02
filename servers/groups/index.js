@@ -34,17 +34,32 @@ const RequestWrapper = (handler, SchemeAndDbForwarder) => {
     }
 }
 
-app.post('/v1/groups', RequestWrapper(postGroupHandler, { Group }))
-app.get('/v1/groups', RequestWrapper(getGroupHandler, { Group }))
-app.get('/v1/groups/:groupID', RequestWrapper(getOneGroupHandler, { Group }))
-app.patch('/v1/groups/:groupID', RequestWrapper(patchOneGroupHandler, { Group }))
-app.delete('/v1/groups/:groupID', RequestWrapper(deleteOneGroupHandler, { Group }))
-//app.get('/v1/groups/:groupID/members', RequestWrapper(getMemberHandler, { Group }))
-app.post('/v1/groups/:groupID/members', RequestWrapper(postMemberHandler, { Group }))
-app.delete('/v1/groups/:groupID/members', RequestWrapper(deleteMemberHandler, { Group }))
-app.get('/v1/users/courses', RequestWrapper(getCourseHandler, { Enrollment }))
-app.post('/v1/users/courses', RequestWrapper(postCourseHandler, { Enrollment }))
-app.delete('/v1/users/courses', RequestWrapper(deleteCourseHandler, { Enrollment }))
+app.route('/v1/groups')
+    .post(RequestWrapper(postGroupHandler, { Group }))
+    .get(RequestWrapper(getGroupHandler, { Group }))
+    .all((req, res) => {
+        res.status(405).send();
+    })
+app.route('/v1/groups/:groupID')
+    .get(RequestWrapper(getOneGroupHandler, { Group }))
+    .patch(RequestWrapper(patchOneGroupHandler, { Group }))
+    .delete(RequestWrapper(deleteOneGroupHandler, { Group }))
+    .all((req, res) => {
+        res.status(405).send();
+    })
+app.route('/v1/groups/:groupID/members')
+    .post(RequestWrapper(postMemberHandler, { Group }))
+    .delete(RequestWrapper(deleteMemberHandler, { Group }))
+    .all((req, res) => {
+        res.status(405).send();
+    })
+app.route('/v1/users/courses')
+    .get(RequestWrapper(getCourseHandler, { Enrollment }))
+    .post(RequestWrapper(postCourseHandler, { Enrollment }))
+    .delete(RequestWrapper(deleteCourseHandler, { Enrollment }))
+    .all((req, res) => {
+        res.status(405).send();
+    })
 
 connect();
 mongoose.connection.on('error', console.error)

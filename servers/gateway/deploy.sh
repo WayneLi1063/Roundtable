@@ -32,6 +32,7 @@ EOF
 # -e TLSCERT=/etc/letsencrypt/live/api.roundtablefinder.com/fullchain.pem \
 # -e TLSKEY=/etc/letsencrypt/live/api.roundtablefinder.com/privkey.pem \
 # -e SESSIONKEY=$SESSIONKEY \
+# -e GROUPSADDRS=$GROUPSADDRS \
 # -e REDISADDR=$REDISADDR \
 # -e DSN=root:$MYSQL_ROOT_PASSWORD@tcp\($MYSQLADDR\)/live \
 # --network rt_network \
