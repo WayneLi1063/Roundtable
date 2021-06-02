@@ -15,6 +15,8 @@ import MyGroupPage from './MyGroupPage.js';
 import Homepage from './Homepage.js';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
+import SignUp from './SignUp.js'
+import Login from './Login.js'
 
 export default class App extends React.Component {
     constructor(props) {
@@ -310,6 +312,21 @@ export default class App extends React.Component {
         })
     }
 
+    // Sets the Auth token for the current user
+
+    setAuthToken = (auth) => {
+        this.state.authToken = auth;
+    }
+
+    setUid = (uid) => {
+        this.state.uid = uid;
+    }
+
+    setUser = (user) => {
+        this.state.user = user;
+        console.log(this.state.user)
+    }
+
     // Toggle filter group form
     toggleFilter = () => {
         this.setState((prevState) => {
@@ -471,6 +488,8 @@ export default class App extends React.Component {
                         }
 
                         <Switch>
+                            <Route exact path='/login' render={() => <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser}/>} />
+                            <Route exact path='/signup' render={() => (<SignUp />)} />
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
