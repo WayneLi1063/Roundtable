@@ -145,7 +145,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
         const userID = userObject.id
 
         //see if the user is authorized to edit
-        if (ch.creator.userID != userID) {
+        if (foundGroup.creator.userID != userID) {
             res.status(403).send("unauthorized")
             return
         }
@@ -232,7 +232,7 @@ const deleteOneGroupHandler = async (req, res, { Group }) => {
         const userID = userObject.id
 
         //see if the user is authorized to edit
-        if (ch.creator.userID != userID) {
+        if (foundGroup.creator.userID != userID) {
             res.status(403).send("unauthorized")
             return
         }
