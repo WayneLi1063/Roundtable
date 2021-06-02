@@ -8,26 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import JoinCreateFeedback from './JoinCreateFeedback.js';
 import AddCourses from './AddCourses.js'
-// import firebase from 'firebase/app';
-// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import ProfilePage from './ProfilePage.js';
 import MyGroupPage from './MyGroupPage.js';
 import Homepage from './Homepage.js';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-
+import SignUp from './SignUp.js'
+import Login from './Login.js'
+import api from './APIEndpoints.js'
 import { Card, Avatar, Input, Typography } from 'antd';
 
 /////////WEBSOCKET/////////
 const { Search } = Input;
 const client = new W3CWebSocket('ws://localhost:8000');
 /////////WEBSOCKET/////////
-
-import SignUp from './SignUp.js'
-import Login from './Login.js'
-import api from './APIEndpoints.js'
-
 
 export default class App extends React.Component {
     constructor(props) {
@@ -102,7 +97,6 @@ export default class App extends React.Component {
     }
     /////////WEBSOCKET/////////
 
-
     // fetch data from database and handles user sign in
     componentDidMount() {
         // this.fetch();
@@ -117,9 +111,11 @@ export default class App extends React.Component {
         }
 
         // TODO: Change this into the auth we wrote
-        this.getCurrentUser();
-        this.getCurrentGroups();
-        this.getCourse();
+        if (this.state.authToken) {
+            this.getCurrentUser();
+            this.getCurrentGroups();
+            this.getCourse();
+        }
         // this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         //     (user) => {
         //         if (user) {
@@ -181,6 +177,8 @@ export default class App extends React.Component {
         this.getCurrentUser();
 
         this.getCurrentGroups();
+
+        this.getCourse();
 
         this.setSpinnerOffDisplay();
         // this.rootRef = firebase.database().ref();
@@ -442,7 +440,7 @@ export default class App extends React.Component {
     render() {
         let content = null;
         console.log(this.state.authToken)
-        if (!this.state.authToken) {
+        if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
                     <main>

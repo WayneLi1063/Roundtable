@@ -2,13 +2,7 @@ import React from 'react';
 import Form from "@rjsf/core";
 import api from './APIEndpoints.js'
 
-var querystring = require('querystring');
-var https = require('https');
-
 export default class SignUp extends React.Component {
-  constructor(props) {
-    super(props)
-  }
 
   formSchema = {
     "title": "LOG IN",

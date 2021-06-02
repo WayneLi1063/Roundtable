@@ -40,14 +40,14 @@ export default class GroupDetailsPage extends React.Component {
             (result) => {
                 if (result) {
                     let members = result.members
-                    let leader = result.leader
-                    let teamName = result.groupName
+                    let leader = result.creator
+                    let teamName = result.teamName
 
                     if (members) {
                         this.getMembersInfo(members)
                     }
                     
-                    if (leader) {
+                    if (leader.userID === this.props.user.id) {
                         this.getLeaderInfo(leader)
                     }
                     
@@ -55,7 +55,7 @@ export default class GroupDetailsPage extends React.Component {
                         this.setState(() => {
                             return ({
                                 card: result,
-                                teamName: result.groupName
+                                teamName: result.teamName
                             })
                         })
                     } 
@@ -88,7 +88,7 @@ export default class GroupDetailsPage extends React.Component {
 
     // unregister event listener when component is destroyed
     componentWillUnmount() {
-        this.groupRef.off();
+        // this.groupRef.off();
     }
 
     // build the data arrays for group leader and memebers
@@ -223,7 +223,7 @@ export default class GroupDetailsPage extends React.Component {
         let card = this.state.card;
         let content = null
         let goals = (
-            Object.keys(card).map((cardKey) => {
+            card.tags.map((cardKey) => {
                 if (card[cardKey] === true) {
                     if (cardKey === HOMEWORK_HELP) {
                         cardKey = "Homework Help";

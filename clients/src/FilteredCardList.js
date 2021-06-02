@@ -175,7 +175,6 @@ export default class FilteredCardList extends React.Component {
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
         card.members[this.props.user.uid] = null;
-        card.currNumber--;
         if (!this.state.authToken) {
             return;
         }
@@ -201,7 +200,8 @@ export default class FilteredCardList extends React.Component {
             method: 'POST',
             headers: new Headers({
                 "Authorization": this.state.authToken
-            })
+            }),
+            body: JSON.stringify({id: this.props.user.id})
         })
 
         if (response.status >= 300) {

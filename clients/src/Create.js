@@ -207,7 +207,7 @@ export default class Create extends React.Component {
             projectPartners: this.state.projectPartners
         }
         newGroup.creator = {
-            userID: this.props.user.uid,
+            userID: this.props.user.id,
             userEmail: this.props.user.email
         }
         newGroup.description = this.state.description;

@@ -2,6 +2,7 @@ import React from 'react';
 // import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import api from './APIEndpoints.js'
 
 export default class AddCourses extends React.Component {
 
@@ -55,7 +56,7 @@ export default class AddCourses extends React.Component {
         if (!this.props.authToken) {
             return;
         }
-        const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
+        const response = await fetch(api.base + api.handlers.courses, {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.props.authToken,
@@ -67,7 +68,6 @@ export default class AddCourses extends React.Component {
             this.props.toggleOnError("Delete course failed. Please retry");
             return;
         }
-        this.props.getCourseCallback()
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
         // courseRef.remove()
@@ -84,10 +84,11 @@ export default class AddCourses extends React.Component {
             if (!this.props.authToken) {
                 return;
             }
-            const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
+            const response = await fetch(api.base + api.handlers.courses, {
                 method: 'POST',
                 headers: new Headers({
-                    "Authorization": this.props.authToken
+                    "Authorization": this.props.authToken,
+                    "Content-Type": "application/json"
                 }),
                 body: JSON.stringify({course: newCourseName})
             });

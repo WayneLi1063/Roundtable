@@ -70,8 +70,8 @@ class Card extends React.Component {
     // Returns a serie of icons to represent the current member status(joined / group size).
     getMemberIcons() {
         let iconIndicators = [];
-        for (let i = 0; i < this.props.cardData.totalNumber; i++) {
-            if (i < this.props.cardData.currNumber) {
+        for (let i = 0; i < this.props.cardData.maxSize; i++) {
+            if (i < this.props.cardData.members.length) {
                 iconIndicators.push(true);
             } else {
                 iconIndicators.push(false);
@@ -127,7 +127,7 @@ class Card extends React.Component {
 
     // not display the group when the group is full
     displayStyleCheck() {
-        if (this.props.cardData.currNumber === this.props.cardData.totalNumber && this.reportGroupStatus() === NOT_JOINED) {
+        if (this.props.cardData.members.length === this.props.cardData.maxSize && this.reportGroupStatus() === NOT_JOINED) {
             return { display: 'none' }
         } else {
             return { display: 'inline-block' }
@@ -154,10 +154,10 @@ class Card extends React.Component {
 
                             <div className="group-info">
                                 <div className="group-size">
-                                    Group of {this.props.cardData.totalNumber}
+                                    Group of {this.props.cardData.maxSize}
                                     <button className={this.returnStatusString().toLowerCase()} style={this.displayStyleCheck()} onClick={this.handleManageGroup}> {this.returnStatusString()} </button>
                                 </div>
-                                <div className="looking-for"> Looking for {this.props.cardData.totalNumber - this.props.cardData.currNumber} more</div>
+                                <div className="looking-for"> Looking for {this.props.cardData.maxSize - this.props.cardData.members.length} more</div>
                             </div>
                         </div>
                     </div>
