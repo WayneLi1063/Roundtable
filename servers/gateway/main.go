@@ -119,7 +119,7 @@ func main() {
 	rtr.Handle("/v1/groups", groupsProxy)
 	rtr.Handle("/v1/groups/{groupID}", groupsProxy)
 	rtr.Handle("/v1/groups/{groupID}/members", groupsProxy)
-	rtr.Handle("/v1/users/courses", groupsProxy)
+	rtr.Handle("/v1/courses/users", groupsProxy)
 
 	wrappedMux := handlers.NewCORS(rtr)
 

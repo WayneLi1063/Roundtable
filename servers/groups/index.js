@@ -53,7 +53,7 @@ app.route('/v1/groups/:groupID/members')
     .all((req, res) => {
         res.status(405).send();
     })
-app.route('/v1/users/courses')
+app.route('/v1/courses/users')
     .get(RequestWrapper(getCourseHandler, { Enrollment }))
     .post(RequestWrapper(postCourseHandler, { Enrollment }))
     .delete(RequestWrapper(deleteCourseHandler, { Enrollment }))
