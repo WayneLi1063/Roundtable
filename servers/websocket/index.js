@@ -19,7 +19,6 @@ wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   clients[clientID] = connection;
   console.log('connected: ' + clientID + ' in ' + Object.getOwnPropertyNames(clients))
-
   connection.on('message', function(message) {
     if (message.type === 'utf8') {
         console.log('Received Message: ', message.utf8Data);

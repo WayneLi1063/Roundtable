@@ -20,7 +20,7 @@ export default class AddCourses extends React.Component {
         // TODO: change to api call
 
         this.props.getCourseCallback()
-
+        
         // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
         // this.courseRef.on('value', (snapshot) => {
         //     let courses = snapshot.val();

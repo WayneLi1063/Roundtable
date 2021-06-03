@@ -21,7 +21,7 @@ import { Card, Avatar, Input, Typography } from 'antd';
 
 /////////WEBSOCKET/////////
 const { Search } = Input;
-const client = new W3CWebSocket('ws://localhost:8000');
+const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
 /////////WEBSOCKET/////////
 
 export default class App extends React.Component {
@@ -54,6 +54,7 @@ export default class App extends React.Component {
 
     getCurrentUser = async () => {
         if (!this.state.authToken) {
+            console.log("no auth token found, aborting")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
@@ -99,7 +100,7 @@ export default class App extends React.Component {
 
     // fetch data from database and handles user sign in
     componentDidMount() {
-        // this.fetch();
+        this.fetch();
 
         client.onopen = () => {
             console.log('Websocket Client Connected')
@@ -510,7 +511,7 @@ export default class App extends React.Component {
 
 
                         <Switch>
-                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
+                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}
