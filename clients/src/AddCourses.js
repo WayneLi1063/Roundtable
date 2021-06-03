@@ -53,7 +53,6 @@ export default class AddCourses extends React.Component {
         // let uid = this.props.user.uid;
 
         // TODO: change to api call
-        console.log(course)
         if (!this.state.authToken) {
             return;
         }
@@ -83,7 +82,7 @@ export default class AddCourses extends React.Component {
             // TODO: change to api call
 
             if (!this.state.authToken) {
-                console.log("no auth")
+                console.error("no auth")
                 return;
             }
             const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -95,8 +94,7 @@ export default class AddCourses extends React.Component {
                 body: JSON.stringify({course: newCourseName})
             });
             if (response.status >= 300) {
-                console.log(newCourseName)
-                console.log("Add course failed. Please retry");
+                console.error("Add course failed. Please retry");
                 return;
             }
 
@@ -126,7 +124,6 @@ export default class AddCourses extends React.Component {
         this.setState({
             newName: event.target.value
         })
-        console.log(this.state.newName)
     }
 
     //closes the pop up, and resets the input field

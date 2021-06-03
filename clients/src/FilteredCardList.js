@@ -195,7 +195,7 @@ export default class FilteredCardList extends React.Component {
     // Add the user to the group when they join the group
     joinGroup = async (card) => {
         if (!this.state.authToken) {
-            console.log("no auth")
+            console.error("no auth")
             this.props.errorCallback("not authenticated, aborting")
             return;
         }
@@ -209,8 +209,7 @@ export default class FilteredCardList extends React.Component {
         })
 
         if (response.status >= 300) {
-            console.log(card)
-            console.log("something went wrong for " + card._id + "： " + this.props.user.id)
+            console.error("something went wrong for " + card._id + "： " + this.props.user.id)
             this.props.errorCallback("joining group failed. Please retry.");
             return;
         }

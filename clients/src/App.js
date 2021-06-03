@@ -53,7 +53,7 @@ export default class App extends React.Component {
 
     getCurrentUser = async () => {
         if (!this.state.authToken) {
-            console.err("no auth token found, aborting")
+            console.error("no auth token found, aborting")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
@@ -221,7 +221,7 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
-            console.err("no auth")
+            console.error("no auth")
             return;
         }
         
@@ -244,11 +244,10 @@ export default class App extends React.Component {
     submitCreateForm = async (newGroup) => {
         // TODO: Change this into an api call.
         if (!this.state.authToken) {
-            console.log("no auth")
+            console.error("no auth")
             return;
         }
 
-        console.log(newGroup)
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'POST',
             headers: new Headers({
@@ -384,7 +383,7 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
-            console.err("no auth")
+            console.error("no auth")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -394,7 +393,7 @@ export default class App extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.err("Get course failed. Please retry");
+            console.error("Get course failed. Please retry");
             return;
         }
         const courses = await response.json()
@@ -463,7 +462,6 @@ export default class App extends React.Component {
     }
 
     render() {
-        console.log(this.state.authToken)
         let content = null;
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (

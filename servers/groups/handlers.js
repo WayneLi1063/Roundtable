@@ -346,8 +346,9 @@ const deleteMemberHandler = async (req, res, { Group }) => {
         }
 
         //removes the user from group
-        const groupMembers = grp.members.splice(index, 1)
-        
+        var groupMembers = grp.members
+        groupMembers.splice(index, 1)
+
         Group.findByIdAndUpdate(groupID, {members: groupMembers}, (err, c) => {
             if (err) {
                 res.status(500).send("Unable to leave.");

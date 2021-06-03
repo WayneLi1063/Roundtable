@@ -164,6 +164,7 @@ export default class GroupDetailsPage extends React.Component {
         .then(
             (result) => {
                 if (result) {
+                    console.log(result)
                     this.setState(() => {
                         return {
                             leader: [result]
