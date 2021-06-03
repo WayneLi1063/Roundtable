@@ -56,10 +56,10 @@ class Card extends React.Component {
     // returns the group status for this current user
     reportGroupStatus() {
         let members = this.props.cardData.members;
-        if (members[this.props.user.uid] !== undefined) {
-            if (members[this.props.user.uid] === true /* required to prevent coercion */) {
+        if (members[this.props.user.id] !== undefined) {
+            if (members[this.props.user.id] === true /* required to prevent coercion */) {
                 return LEADER;
-            } else if (members[this.props.user.uid] === false) {
+            } else if (members[this.props.user.id] === false) {
                 return MEMBER;
             }
         } else {
@@ -137,7 +137,7 @@ class Card extends React.Component {
     // Renders a single card (group) object.
     render() {
         if (this.state.shouldRedirect) {
-            return <Redirect to={'/group/' + this.props.cardData.id} />
+            return <Redirect to={'/group/' + this.props.cardData._id} />
         }
         return (
                 <div>

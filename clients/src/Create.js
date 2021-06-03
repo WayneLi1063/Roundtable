@@ -212,7 +212,7 @@ export default class Create extends React.Component {
         }
         newGroup.description = this.state.description;
         newGroup.private = this.state.private;
-        newGroup.members = [this.props.user.uid];
+        newGroup.members = [this.props.user.id];
         newGroup.when2meetURL = this.state.when2meetURL;
         this.props.onSubmit(newGroup);
         if (this.props.feedbackDisplay) {

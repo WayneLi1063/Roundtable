@@ -174,7 +174,7 @@ export default class FilteredCardList extends React.Component {
 
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
-        card.members[this.props.user.uid] = null;
+        card.members[this.props.user.id] = null;
         if (!this.state.authToken) {
             return;
         }

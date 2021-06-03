@@ -16,7 +16,7 @@ export default class GroupDetailsPage extends React.Component {
         this.state = {
             userDataArray: [],
             leader: [],
-            card: [],
+            card: {},
             teamName: '',
             shouldRedirect: false
         }
@@ -34,7 +34,7 @@ export default class GroupDetailsPage extends React.Component {
         this.props.toggleTwoButtons(false);
         let groupID = this.props.match.params.groupID;
 
-        fetch(api.testbase + api.handlers.thisgroup + groupID)
+        fetch(api.base + api.handlers.thisgroup + groupID)
         .then(res => res.json())
         .then(
             (result) => {
@@ -190,23 +190,28 @@ export default class GroupDetailsPage extends React.Component {
     //renders the Group Detail Pop Up form
     render() {
         if (this.state.shouldRedirect) {
-            let membersArr = Object.keys(this.state.card.members);
-            if (membersArr.includes(this.props.uid)) {
+            console.log(this.state.card)
+            if (this.state.card.members.includes(this.props.user.id)) {
                 return <Redirect to='/mygroup' />
             } else {
                 return <Redirect to='/home' />
             }
         }
-        //render the list of Members of the group
         let users = this.state.userDataArray;
-        let members = (
+        let members = null;
+        let card = this.state.card;
+        let content = null;
+        let goals = null;
+
+        //render the list of Members of the group
+        members = (
             users.map((user) => {
                 let userEmailString = ''
-                if (card.private) {
+                if (this.state.card.private) {
                     userEmailString = 'mailto: ' + user.email
                 }
                 return (
-                    <div key={user.uid}>
+                    <div key={user.id}>
                         <div className='memberRow'>
                             <img className="avatar" src={user.photoURL} alt="User Profile"></img>
                             <p className='memberInfos'>
@@ -218,42 +223,49 @@ export default class GroupDetailsPage extends React.Component {
                 )
             })
         )
-
+        
+        if (card) {
         //render the Goal Tags of the displayed group
-        let card = this.state.card;
-        let content = null
-        let goals = (
-            card.tags.map((cardKey) => {
-                if (card[cardKey] === true) {
-                    if (cardKey === HOMEWORK_HELP) {
-                        cardKey = "Homework Help";
-                    } else if (cardKey === EXAM_SQUAD) {
-                        cardKey = "Exam Squad";
-                    } else if (cardKey === NOTE_EXCHANGE) {
-                        cardKey = "Note Exchange";
-                    } else if (cardKey === LAB_MATES) {
-                        cardKey = "Lab Mates";
-                    } else if (cardKey === PROJECT_PARTNERS) {
-                        cardKey = "Project Partners";
-                    }
-                    return (
-                        <div key={cardKey}>
-                            <div className='goalTag'>
-                                {cardKey}
+        let tags = card.tags;
+        console.log(card)
+        if (tags) {
+            console.log(tags)
+            goals = (
+                Object.keys(tags).map((cardKey) => {
+                    if (card[cardKey] === true) {
+                        if (cardKey === HOMEWORK_HELP) {
+                            cardKey = "Homework Help";
+                        } else if (cardKey === EXAM_SQUAD) {
+                            cardKey = "Exam Squad";
+                        } else if (cardKey === NOTE_EXCHANGE) {
+                            cardKey = "Note Exchange";
+                        } else if (cardKey === LAB_MATES) {
+                            cardKey = "Lab Mates";
+                        } else if (cardKey === PROJECT_PARTNERS) {
+                            cardKey = "Project Partners";
+                        }
+                        return (
+                            <div key={cardKey}>
+                                <div className='goalTag'>
+                                    {cardKey}
+                                </div>
                             </div>
-                        </div>
-                    )
-                }
-                return content;
-            })
-        )
+                        )
+                    }
+                    return content;
+                })
+            )
+
+
+        }
+
         return (
             <section>
                 <div className='detailsContainer'>
                     <h1 className='detailsTitle'>{this.state.card.teamName}</h1>
                     <button className='detailsCloseButton' onClick={this.handleDetailClick}>Close</button>
                     <div className="class-name-details" > {this.state.card.className} </div>
-                    <div className="lookingFor"> Looking for {this.state.card.totalNumber - this.state.card.currNumber} more</div><br/>
+                    <div className="lookingFor"> Looking for {this.state.card.totalNumber - this.state.card.members.length} more</div><br/>
                     <div>
                         <p className='membersTitle'>
                             Members:
@@ -262,7 +274,7 @@ export default class GroupDetailsPage extends React.Component {
                     <div className='memberList'>
                         {(typeof (this.state.leader[0]) !== 'undefined') &&
                             <div>
-                                <div key={this.state.leader[0].uid}>
+                                <div key={this.state.leader[0].id}>
                                     <div className='memberRow'>
                                         <img className="avatar" src={this.state.leader[0].photoURL} alt="User Profile"></img>
                                         <img className="detailsLeader" src="/img/crown.svg" alt="You are leader"></img>
@@ -288,5 +300,5 @@ export default class GroupDetailsPage extends React.Component {
             </section>
         )
     }
-
+}
 }

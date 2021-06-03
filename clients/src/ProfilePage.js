@@ -9,7 +9,6 @@ export default class Profile extends React.Component {
         super(props)
         this.state = {
             display: 'profile',
-            uid: null,
             firstName: '',
             lastName: '',
             email: '',
@@ -54,7 +53,7 @@ export default class Profile extends React.Component {
     // handle clicks on save change button
     submitEdit = () => {
         if (!this.state.authToken) {
-            console.log("no auth token, aborting")
+            console.err("no auth token, aborting")
             return;
         }
 
@@ -121,8 +120,6 @@ export default class Profile extends React.Component {
             LastName: this.state.lastName,
         }
 
-        console.log("update: " + JSON.stringify(update))
-
         const response = await fetch("https://api.roundtablefinder.com/v1/users/me", {
             method: 'PATCH',
             headers: new Headers({
@@ -132,8 +129,7 @@ export default class Profile extends React.Component {
             body: JSON.stringify(update)
         });
         if (response.status >= 300) {
-            console.log("error:" + response.status);
-            //console.log(this.state.authToken)
+            console.err("error:" + response.status);
             return;
         } else {
             //this.props.wsUpdate()
@@ -151,10 +147,6 @@ export default class Profile extends React.Component {
         this.setState({authToken: auth});
     }
 
-    setUid = (uid) => {
-        this.setState({uid: uid});
-    }
-
     setUser = (user) => {
         this.setState({user: user});
     }
@@ -162,7 +154,7 @@ export default class Profile extends React.Component {
     // fetch user information from the database
     setUserProfile = async () => {
         if (!this.state.authToken) {
-            console.log("no auth token found, aborting")
+            console.err("no auth token found, aborting")
             return;
         }
         const response = await fetch(this.props.api.base + this.props.api.handlers.myuser + "me", {
@@ -172,7 +164,7 @@ export default class Profile extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.log("error:" + response.status);
+            console.err("error:" + response.status);
             return;
         }
         const user = await response.json()
@@ -181,15 +173,13 @@ export default class Profile extends React.Component {
             lastName: user.lastName,
             email: user.email,
             url: user.photoURL,
-            uid:user.id
         })
-        console.log(user)
     }
 
     getCourse = async () => {
 
         if (!this.state.authToken) {
-            console.log("no auth")
+            console.err("no auth")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -199,11 +189,10 @@ export default class Profile extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.log("Get course failed. Please retry");
+            console.err("Get course failed. Please retry");
             return;
         }
         const courses = await response.json()
-        console.log(courses.classList)
         this.setState({ courses: courses.classList });
     }
 

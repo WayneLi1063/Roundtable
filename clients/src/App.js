@@ -29,7 +29,6 @@ export default class App extends React.Component {
         super(props)
         this.state = {
             user: null,
-            uid: null,
             spinnerDisplay: false,
             myGroups: [],
             myCourses: [],
@@ -54,7 +53,7 @@ export default class App extends React.Component {
 
     getCurrentUser = async () => {
         if (!this.state.authToken) {
-            console.log("no auth token found, aborting")
+            console.err("no auth token found, aborting")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
@@ -71,7 +70,6 @@ export default class App extends React.Component {
         }
         const user = await response.json()
         this.setState({user: user});
-        this.setState({uid: user.ID});
     }
 
     getCurrentGroups = async () => {
@@ -223,7 +221,7 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
-            console.log("no auth")
+            console.err("no auth")
             return;
         }
         const response = await fetch(api.base + api.handlers.courses, {
@@ -239,7 +237,6 @@ export default class App extends React.Component {
         const enrArray = await response.json()
         const courses = enrArray[0].classList
         this.setState({ myCourses: courses });
-        console.log(courses)
     }
 
     // The callback function that allows Create form to submit a new group to app.
@@ -323,10 +320,6 @@ export default class App extends React.Component {
         this.setState({authToken: auth});
     }
 
-    setUid = (uid) => {
-        this.setState({uid: uid});
-    }
-
     setUser = (user) => {
         this.setState({user: user});
     }
@@ -385,7 +378,7 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
-            console.log("no auth")
+            console.err("no auth")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -395,11 +388,10 @@ export default class App extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.log("Get course failed. Please retry");
+            console.err("Get course failed. Please retry");
             return;
         }
         const courses = await response.json()
-        console.log(courses)
         this.setState({ myCourses: courses.classList });
     }
 
@@ -464,7 +456,6 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        console.log(this.state.authToken)
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
@@ -475,10 +466,10 @@ export default class App extends React.Component {
                                 <div className='login-form text-center container'>
                                         <div className="row justify-content-center">
                                             <div className="col">
-                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} setUid={this.setUid} errorCallback={this.toggleOnError}/>
+                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
                                             </div>
                                             <div className="col">
-                                                <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                                <Login setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
                                             </div>
                                         </div>
                                     </div>
@@ -544,7 +535,7 @@ export default class App extends React.Component {
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} fetch={this.fetch}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
-                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} wsUpdate = {this.valueChange} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} uid={this.state.uid} />)} />
+                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} wsUpdate = {this.valueChange} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} user={this.state.user} />)} />
                             <Redirect to='/home' />
                         </Switch>
 
