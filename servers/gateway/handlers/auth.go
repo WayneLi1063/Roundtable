@@ -110,13 +110,13 @@ func (ctx *HandlerContext) SpecificUsersHandler(w http.ResponseWriter, r *http.R
 
 		err := json.NewDecoder(r.Body).Decode(&newUpdates)
 		if err != nil {
-			http.Error(w, "Bad Request, update info is likely not valid.", http.StatusBadRequest)
+			http.Error(w, "Bad Request caes 1, update info is likely not valid.", http.StatusBadRequest)
 			return
 		}
 
 		user, err = ctx.UsersStore.Update(userID, newUpdates)
 		if err != nil {
-			http.Error(w, "Bad Request, update info is likely not valid.", http.StatusBadRequest)
+			http.Error(w, "Bad Request case 2, update info is likely not valid.", http.StatusBadRequest)
 			return
 		}
 	} else {

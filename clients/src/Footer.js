@@ -27,7 +27,7 @@ export default class Footer extends React.Component {
                     <div className="container">
                         <div className="d-flex text-center justify-content-center">
                             <div className="font-small">
-                                <p>&copy; 2019 Wanye Li, Coco Li, Andi Ren. All rights reserved.</p>
+                                <p>&copy; 2021 Wanye Li, Andi Ren, Aryan Varshney. All rights reserved.</p>
                             </div>
                         </div>
                     </div>

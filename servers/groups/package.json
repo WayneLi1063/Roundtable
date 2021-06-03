@@ -4,6 +4,7 @@
   "description": "This directory contains the source code for all groups related",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.12.10"
+    "http": "0.0.1-security",
+    "mongoose": "^5.12.10",
+    "websocket": "^1.0.34"
   }
 }

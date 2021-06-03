@@ -19,8 +19,8 @@ var bcryptCost = 13
 //User represents a user account in the database
 type User struct {
 	ID        int64  `json:"id"`
-	Email     string `json:"-"` //never JSON encoded/decoded
-	PassHash  []byte `json:"-"` //never JSON encoded/decoded
+	Email     string `json:"email"` //never JSON encoded/decoded
+	PassHash  []byte `json:"-"`     //never JSON encoded/decoded
 	UserName  string `json:"userName"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -47,7 +47,6 @@ type NewUser struct {
 type Updates struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
 }
 
 //Validate validates the new user and returns an error if
@@ -155,15 +154,6 @@ func (u *User) Authenticate(password string) error {
 func (u *User) ApplyUpdates(updates *Updates) error {
 	if updates == nil {
 		return fmt.Errorf("updates is invalid")
-	}
-
-	if updates.Email != "" {
-		_, err := mail.ParseAddress(updates.Email)
-		if err != nil {
-			return fmt.Errorf("invalid email address")
-		} else {
-			u.Email = updates.Email
-		}
 	}
 
 	u.FirstName = updates.FirstName

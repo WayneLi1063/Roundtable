@@ -8,34 +8,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import JoinCreateFeedback from './JoinCreateFeedback.js';
 import AddCourses from './AddCourses.js'
-// import firebase from 'firebase/app';
-// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import ProfilePage from './ProfilePage.js';
 import MyGroupPage from './MyGroupPage.js';
 import Homepage from './Homepage.js';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import SignUp from './SignUp.js'
 import Login from './Login.js'
+import api from './APIEndpoints.js'
+import { Card, Avatar, Input, Typography } from 'antd';
+
+/////////WEBSOCKET/////////
+const { Search } = Input;
+const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
+/////////WEBSOCKET/////////
 
 export default class App extends React.Component {
     constructor(props) {
         super(props)
-        const api = {
-            base: "https://api.roundtablefinder.com",
-            testbase: "https://localhost:443",
-            handlers: {
-                users: "/v1/users",
-                myuser: "/v1/users/me",
-                sessions: "/v1/sessions",
-                sessionsMine: "/v1/sessions/mine",
-                groups: "/v1/groups",
-                courses: "/v1/users/courses",
-            }
-        }
         this.state = {
             user: null,
-            uid: null,
             spinnerDisplay: false,
             myGroups: [],
             myCourses: [],
@@ -54,28 +47,16 @@ export default class App extends React.Component {
             coverDisplay: false,
             groupCount: 0,
             errorMessage: '',
-            api: api
+            authToken: localStorage.getItem("Authorization") || null
         }
     }
 
-    // firebaseUiConfig = {
-    //     signInOptions: [
-    //         firebase.auth.EmailAuthProvider.PROVIDER_ID,
-    //         firebase.auth.GoogleAuthProvider.PROVIDER_ID
-    //     ],
-    //     signInFlow: 'popup',
-    //     callbacks: {
-    //         signInSuccessWithAuthResult: () => false
-    //     }
-    // }
-
     getCurrentUser = async () => {
-        let api = this.state.api
-
         if (!this.state.authToken) {
+            console.error("no auth token found, aborting")
             return;
         }
-        const response = await fetch(api.base + api.handlers.myuser, {
+        const response = await fetch(api.base + api.handlers.myuser + "me", {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -83,18 +64,15 @@ export default class App extends React.Component {
         });
         if (response.status >= 300) {
             this.toggleOnError("Authentication failed. Please relog.");
-            localStorage.setItem("Authorization", "");
             this.setAuthToken("");
             this.setUser(null)
             return;
         }
         const user = await response.json()
-        return user;
+        this.setState({user: user});
     }
 
     getCurrentGroups = async () => {
-        let api = this.state.api
-
         if (!this.state.authToken) {
             return;
         }
@@ -109,16 +87,34 @@ export default class App extends React.Component {
             return;
         }
         const groups = await response.json()
-        return groups;
+        this.setState({myGroups: groups});
     }
-    
+
+    /////////WEBSOCKET/////////
+    valueChange = () => {
+        client.send("update happened")
+    }
+    /////////WEBSOCKET/////////
 
     // fetch data from database and handles user sign in
     componentDidMount() {
         this.fetch();
 
-        // TODO: Change this into the auth we wrote
+        client.onopen = () => {
+            console.log('Websocket Client Connected')
+        }
 
+        client.onmessage = (message) => {
+            console.log(message)
+            this.fetch();
+        }
+
+        // TODO: Change this into the auth we wrote
+        if (this.state.authToken) {
+            this.getCurrentUser();
+            this.getCurrentGroups();
+            this.getCourse();
+        }
         // this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
         //     (user) => {
         //         if (user) {
@@ -177,12 +173,11 @@ export default class App extends React.Component {
         this.setSpinnerOnDisplay();
 
         // TODO: Change this into an api call.
-        const user = this.getCurrentUser();
-        this.setState({user: user});
-        this.setState({uid: user.ID});
+        this.getCurrentUser();
 
-        const groups = this.getCurrentGroups();
-        this.setState({myGroups: groups});
+        this.getCurrentGroups();
+
+        this.getCourse();
 
         this.setSpinnerOffDisplay();
         // this.rootRef = firebase.database().ref();
@@ -226,9 +221,11 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
+            console.error("no auth")
             return;
         }
-        const response = await fetch(this.state.api.base + this.state.api.handlers.courses, {
+        
+        const response = await fetch(api.base + api.handlers.courses, {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -238,26 +235,32 @@ export default class App extends React.Component {
             this.toggleOnError("Get course failed. Please retry");
             return;
         }
-        const courses = await response.json().classList
+        const enrArray = await response.json()
+        const courses = enrArray[0].classList
         this.setState({ myCourses: courses });
     }
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
-        let api = this.state.api
-
         // TODO: Change this into an api call.
+        if (!this.state.authToken) {
+            console.error("no auth")
+            return;
+        }
 
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'POST',
             headers: new Headers({
-                "Authorization": this.state.authToken
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
             }),
             body: JSON.stringify(newGroup)
         });
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            //this.valueChange()
         }
 
         // newGroup.id = this.state.groupCount + 1;
@@ -271,24 +274,27 @@ export default class App extends React.Component {
         //         this.toggleOnError(errorObj);
         //     }
         // });
+
         this.fetch()
     }
 
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = async (card) => {
-        let api = this.state.api
         // TODO: Change this into an api call.
 
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'PATCH',
             headers: new Headers({
-                "Authorization": this.state.authToken
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
             }),
             body: JSON.stringify(card)
         });
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
@@ -385,9 +391,30 @@ export default class App extends React.Component {
         })
     }
 
+    getCourse = async () => {
+
+        if (!this.state.authToken) {
+            console.error("no auth")
+            return;
+        }
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            console.error("Get course failed. Please retry");
+            return;
+        }
+        const courses = await response.json()
+        if (courses !== null) {
+            this.setState({ myCourses: courses.classList });
+        }
+    }
+
     // disbands the group
     disbandGroup = async (card) => {
-        let api = this.state.api
         this.fetch()
         this.toggleEditForm();
 
@@ -403,6 +430,8 @@ export default class App extends React.Component {
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
+        } else {
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
@@ -445,24 +474,32 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        if (!this.state.user) {
+        if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
                     <main>
                         <img className='loginLogo' src='img/loginLogo.png' alt='Round Table Logo'></img>
                         <div className='loginBG'>
                             <div className='login'>
-                                {/* TODO: Change to our own auth */}
-                                {/* <StyledFirebaseAuth uiConfig={this.firebaseUiConfig} firebaseAuth={firebase.auth()} /> */}
+                                <div className='login-form text-center container'>
+                                        <div className="row justify-content-center">
+                                            <div className="col">
+                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                            </div>
+                                            <div className="col">
+                                                <Login setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                     </main>
                 </div>
             )
         } else {
             content = (
                 <div>
-                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} uid={this.state.uid} errorCallback={this.toggleOnError} getUser={this.getCurrentUser}/>
+                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} setAuthToken={this.setAuthToken}/>
                     {this.state.coverDisplay &&
                         <div className="grey-cover"></div>
                     }
@@ -494,19 +531,29 @@ export default class App extends React.Component {
                             </div>
                         }
 
+                        <div className="bottom">
+                            <Search
+                            placeholder="input message and send"
+                            enterButton="Send"
+                            value={this.state.searchVal}
+                            size="large"
+                            onChange={(e) => this.setState({ searchVal: e.target.value })}
+                            onSearch={value => this.valueChange()}
+                            />
+                        </div> 
+
+
                         <Switch>
-                            <Route exact path='/login' render={() => <Login setAuthToken={this.setAuthToken} setUid={this.setUid} setUser={this.setUser}/>} />
-                            <Route exact path='/signup' render={() => (<SignUp />)} />
-                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} />)} />
+                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
-                            <Route exact path='/home' render={(props) => (<Homepage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
+                            <Route exact path='/home' render={(props) => (<Homepage {...props} wsUpdate = {this.valueChange} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} fetch={this.fetch}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
-                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} uid={this.state.uid} />)} />
+                            <Route path='/group/:groupID' render={(props) => (<GroupDetailsPage {...props} wsUpdate = {this.valueChange} errorCallback={this.toggleOnError} toggleTwoButtons={this.toggleTwoButtons} user={this.state.user} />)} />
                             <Redirect to='/home' />
                         </Switch>
 

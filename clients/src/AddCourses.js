@@ -2,6 +2,7 @@ import React from 'react';
 // import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import api from './APIEndpoints.js'
 
 export default class AddCourses extends React.Component {
 
@@ -10,7 +11,8 @@ export default class AddCourses extends React.Component {
         this.state = {
             courses: this.props.courses,
             newName: '',
-            emptyAlertDisplay: false
+            emptyAlertDisplay: false,
+            authToken: localStorage.getItem("Authorization") || null
         }
     }
 
@@ -47,26 +49,25 @@ export default class AddCourses extends React.Component {
     }
 
     //delete a course from the user's list
-    deleteCourse = async (courseKey) => {
+    deleteCourse = async (course) => {
         // let uid = this.props.user.uid;
 
         // TODO: change to api call
-
-        if (!this.props.authToken) {
+        if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
             method: 'DELETE',
             headers: new Headers({
-                "Authorization": this.props.authToken
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
             }),
-            body: JSON.stringify({course: courseKey})
+            body: JSON.stringify({course: course})
         });
         if (response.status >= 300) {
-            this.props.toggleOnError("Delete course failed. Please retry");
+            this.props.errorCallback("Delete course failed. Please retry");
             return;
         }
-        this.props.getCourseCallback()
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
         // courseRef.remove()
@@ -80,18 +81,20 @@ export default class AddCourses extends React.Component {
 
             // TODO: change to api call
 
-            if (!this.props.authToken) {
+            if (!this.state.authToken) {
+                console.error("no auth")
                 return;
             }
-            const response = await fetch(this.props.api.base + this.props.api.handlers.courses, {
+            const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
                 method: 'POST',
                 headers: new Headers({
-                    "Authorization": this.props.authToken
+                    "Authorization": this.state.authToken,
+                    "Content-Type": "application/json"
                 }),
                 body: JSON.stringify({course: newCourseName})
             });
             if (response.status >= 300) {
-                this.props.toggleOnError("Add course failed. Please retry");
+                console.error("Add course failed. Please retry");
                 return;
             }
 

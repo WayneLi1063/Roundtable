@@ -519,20 +519,15 @@ form ::placeholder {
 	cursor: pointer;
 }
 
-.login {
-	position: fixed;
-	left: 50%;
-	top: 55%;
-	margin-top: -75px;
-	margin-left: -125px;
+.login-form {
+	padding-top: 320px;
 	z-index: 21;
-	width: 250px;
 }
 
 .loginLogo {
 	position: fixed;
 	left: 50%;
-	top: 40%;
+	top: 30%;
 	margin-top: -320px;
 	margin-left: -200px;
 	width: 400px;

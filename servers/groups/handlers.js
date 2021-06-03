@@ -31,6 +31,7 @@ const postGroupHandler = async (req, res, { Group }) => {
         noteExchange === null || labMates === null ||
         projectPartners === null || !totalNumber) {
         res.status(400).send("Must provide the requiured information");
+        return;
     }
 
     // store the id and email of the creator
@@ -127,7 +128,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
     // gets the groupID from the address
     const groupID = req.params.groupID
 
-    //locate the target channel by id
+    //locate the target group by id
     Group.findById(groupID, (err, foundGroup) => {
         if (err || foundGroup === null) {
             res.status(400).send('Cannot find group')
@@ -171,6 +172,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
             noteExchange === null || labMates === null ||
             projectPartners === null || !totalNumber) {
             res.status(400).send("Must provide the requiured information");
+            return;
         }
 
         const tags = {
@@ -214,7 +216,7 @@ const deleteOneGroupHandler = async (req, res, { Group }) => {
     // gets the groupID from the address
     const groupID = req.params.groupID
 
-    //locate the target channel by id
+    //locate the target group by id
     Group.findById(groupID, (err, foundGroup) => {
         if (err || foundGroup === null) {
             res.status(400).send('Cannot find group')
@@ -278,19 +280,21 @@ const postMemberHandler = async (req, res, { Group }) => {
             return
         }
         
-        if (length(grp.members) === grp.maxSize) {
+        if (grp.members.length === grp.maxSize) {
             res.status(400).send("Group already full")
             return;
         }
 
-        const index = grp.members.indexOf(userID)
+        const { id } = req.body;
+
+        const index = grp.members.indexOf(id)
         if (index >= 0) {
             res.status(400).send("Member already exists.");
             return
         }
 
         //add the user from group
-        const groupMembers = grp.members.concat(userID)
+        const groupMembers = grp.members.concat(id)
         
         Group.findByIdAndUpdate(groupID, {members: groupMembers}, (err, c) => {
             if (err) {
@@ -303,9 +307,9 @@ const postMemberHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: deletes the member from the channel if user is creator or the user themselves
+// TODO: deletes the member from the group if user is creator or the user themselves
 const deleteMemberHandler = async (req, res, { Group }) => {
-    const groupId = req.params.groupID
+    const groupID = req.params.groupID
     
     Group.findById(groupID, (err, grp) => {
         if (err || grp === null ) {
@@ -329,7 +333,7 @@ const deleteMemberHandler = async (req, res, { Group }) => {
             return
         }
         
-        if (userID === ch.creator.userID) {
+        if (userID === grp.creator.userID) {
             res.status(403).send("user is the creator")
             return;
         }
@@ -342,8 +346,9 @@ const deleteMemberHandler = async (req, res, { Group }) => {
         }
 
         //removes the user from group
-        const groupMembers = grp.members.splice(index, 1)
-        
+        var groupMembers = grp.members
+        groupMembers.splice(index, 1)
+
         Group.findByIdAndUpdate(groupID, {members: groupMembers}, (err, c) => {
             if (err) {
                 res.status(500).send("Unable to leave.");
@@ -353,66 +358,6 @@ const deleteMemberHandler = async (req, res, { Group }) => {
             res.status(201).send("left group successfully.");
         })
     })
-
-    // // obtain the channelID
-    // const channelID = req.params.channelID
-
-    // // check if such channel exists and extracts the channel
-    // Channel.findById(channelID, (err, ch) => {
-    //     if (err || ch === null) {
-    //         res.status(400).send('Cannot find such channel')
-    //         return
-    //     }
-
-    //     const user = req.header('X-User')
-    //     var userObject = ""
-    //     try {
-    //         userObject = JSON.parse(user)
-    //     } catch (e) {
-    //         res.status(400).send('Cannot parse JSON')
-    //         return
-    //     }
-    //     const userID = userObject.id
-        
-    //     if (!userID) {
-    //         res.status(401).send("User is not authenticated.")
-    //         return
-    //     }
-    
-    //     // check if the user is the channel creator
-    //     if (userID !== ch.creator.userID) {
-    //         res.status(403).send("user is not the channel creator")
-    //         return;
-    //     }
-
-    //     const { id } = req.body;
-
-    //     //check if id is provided
-    //     if (!id) {
-    //         res.status(400).send("Must provide the id of the member you want to delete");
-    //         return
-    //     }
-
-    //     // find the index of the user we want to delete
-    //     const index = ch.members.indexOf(id)
-    //     if (index < 0) {
-    //         res.status(400).send("Must provide valid id");
-    //         return
-    //     }
-
-    //     // delete the user from the member list
-    //     var channelMembers = ch.members
-    //     channelMembers.splice(index, 1);
-
-    //     Channel.findByIdAndUpdate(channelID, {members: channelMembers}, (err, ch) => {
-    //         if (err) {
-    //             res.status(500).send('Cannot remove')
-    //             return
-    //         }
-
-    //         res.status(200).send('Member removed.')
-    //     })
-    // })
 }
 
 // TODO: gets a list of courses the user is taking
@@ -433,10 +378,10 @@ const getCourseHandler = async (req, res, { Enrollment }) => {
         return
     }
 
-    Enrollment.findByID(userID, (err, enr) => {
+    Enrollment.findOne({userID: userID}, (err, enr) => {
         // if there's an error or enrollment could not be found
-        if (err || enr === null) {
-            res.status(400).send('Cannot find enrollment by ID')
+        if (err) {
+            res.status(500).send('Unexpected error.')
             return
         }
 
@@ -464,14 +409,14 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
     }
     
     // // extract the enrollment
-    Enrollment.findByID(userID, (err, enr) => {
+    Enrollment.findOne({userID: userID}, (err, enr) => {
         // if there's an error or enrollment could not be found
-        if (err || enr === null) {
-            res.status(400).send('Cannot find enrollment by ID')
+        if (err) {
+            res.status(500).send('Unexpected error.')
             return
         }
 
-        var { course } = req.course;
+        var { course } = req.body;
 
         if (!course) {
             res.status(400).send("Must provide a new course.")
@@ -486,23 +431,41 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
             return
         }
 
+        
         // Add the new course to the enrollment, if they aren't already there
-        const index = enr.classList.indexOf(course)
-        if (index >= 0) {
-            res.status(400).send("Course already exists.");
-            return
-        }
-        const newClassList = enr.classList.concat(course)
-
-        // update the course list
-        Enrollment.findByIdAndUpdate(userID, {classList: newClassList}, (err, enr) => {
-            if (err) {
-                res.status(500).send("Unable to add course.");
-                return;
+        if (enr && enr.classList) {
+            const index = enr.classList.indexOf(course)
+            if (index >= 0) {
+                res.status(400).send("Course already exists.");
+                return
             }
+            const newClassList = enr.classList.concat(course)
 
-            res.status(201).send("New course added.");
-        })
+            // update the course list
+            Enrollment.findOneAndUpdate({userID: userID}, {classList: newClassList}, {new: true}, (err, enr) => {
+                if (err) {
+                    res.status(500).send("Unable to add course.");
+                    return;
+                }
+
+                res.status(201).send(enr);
+            })
+        } else {
+            const newClassList = [course]
+
+            const enroll = new Enrollment({userID: userID, classList: newClassList})
+
+            enroll.save((err, enr) => {
+                if (err) {
+                    res.status(500).send("Unable to add course.");
+                    return;
+                }
+
+                res.status(201).send(enr);
+            })
+        }
+
+
     })
 }; 
 
@@ -524,39 +487,45 @@ const deleteCourseHandler = async (req, res, { Enrollment }) => {
             return
         }
         
-        // // extract the enrollment
-        Enrollment.findByID(userID, (err, enr) => {
+        // extract the enrollment
+        Enrollment.findOne({userID: userID}, (err, enr) => {
             // if there's an error or enrollment could not be found
             if (err || enr === null) {
                 res.status(400).send('Cannot find enrollment by ID')
                 return
             }
     
-            const { course } = req.course;
+            const { course } = req.body;
     
             if (!course) {
                 res.status(400).send("Must provide the course to delete.")
                 return
             }
     
+            var index = -1
             // Add the new course to the enrollment, if they aren't already there
-            const index = enr.classList.indexOf(course)
-            if (index < 0) {
-                res.status(400).send("Must provide valid course");
+            if (enr.classList !== null) {
+                index = enr.classList.indexOf(course)
+                if (index < 0) {
+                    res.status(400).send("Must provide valid course");
+                    return
+                }
+            } else {
+                res.status(400).send("Nothing to delete.");
                 return
             }
 
+            var newClassList = enr.classList
             // delete the course from the class list
-            var classList = enr.classList
-            classList.splice(index, 1);
+            newClassList.splice(index, 1);
 
-            Enrollment.findByIdAndUpdate(userID, {classList: classList}, (err, enr) => {
+            Enrollment.findOneAndUpdate({userID: userID}, {classList: newClassList}, {new: true}, (err, enr) => {
                 if (err) {
                     res.status(500).send('Cannot remove')
                     return
                 }
 
-                res.status(200).send('Course removed.')
+                res.status(200).send(enr)
             })
         })
 }

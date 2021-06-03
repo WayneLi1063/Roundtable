@@ -1,1 +1,2 @@
-docker build -t wayneli1063/roundtable_mysqldb ../db
+docker build -t penumbrapow/roundtable_mysqldb ../db
+docker push penumbrapow/roundtable_mysqldb

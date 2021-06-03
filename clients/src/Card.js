@@ -56,12 +56,11 @@ class Card extends React.Component {
     // returns the group status for this current user
     reportGroupStatus() {
         let members = this.props.cardData.members;
-        if (members[this.props.user.uid] !== undefined) {
-            if (members[this.props.user.uid] === true /* required to prevent coercion */) {
-                return LEADER;
-            } else if (members[this.props.user.uid] === false) {
-                return MEMBER;
-            }
+        let creator = this.props.cardData.creator;
+        if (creator.userID === this.props.user.id) {
+            return LEADER
+        } else if (members.includes(this.props.user.id)){
+            return MEMBER
         } else {
             return NOT_JOINED;
         }
@@ -70,8 +69,8 @@ class Card extends React.Component {
     // Returns a serie of icons to represent the current member status(joined / group size).
     getMemberIcons() {
         let iconIndicators = [];
-        for (let i = 0; i < this.props.cardData.totalNumber; i++) {
-            if (i < this.props.cardData.currNumber) {
+        for (let i = 0; i < this.props.cardData.maxSize; i++) {
+            if (i < this.props.cardData.members.length) {
                 iconIndicators.push(true);
             } else {
                 iconIndicators.push(false);
@@ -127,7 +126,7 @@ class Card extends React.Component {
 
     // not display the group when the group is full
     displayStyleCheck() {
-        if (this.props.cardData.currNumber === this.props.cardData.totalNumber && this.reportGroupStatus() === NOT_JOINED) {
+        if (this.props.cardData.members.length === this.props.cardData.maxSize && this.reportGroupStatus() === NOT_JOINED) {
             return { display: 'none' }
         } else {
             return { display: 'inline-block' }
@@ -137,33 +136,33 @@ class Card extends React.Component {
     // Renders a single card (group) object.
     render() {
         if (this.state.shouldRedirect) {
-            return <Redirect to={'/group/' + this.props.cardData.id} />
+            return <Redirect to={'/group/' + this.props.cardData._id} />
         }
         return (
-                <div>
-                    <div className="flex-card">
-                        <img id="g-img" src={this.props.cardData.img} alt={"Group " + this.props.cardData.teamName} onClick={this.handleDetailClick} aria-haspopup="true"/>
-                        <div className="card-content">
-                            <div className="card-text">
-                                <div className="group-name"> {this.props.cardData.teamName} </div>
-                                {this.groupLeaderCrown()}
-                                <div id="class-name" className={`class-name`}> {this.props.cardData.className} </div>
-                            </div>
+            <div>
+                <div className="flex-card">
+                    <img id="g-img" src={this.props.cardData.imgURL} alt={"Group " + this.props.cardData.teamName} onClick={this.handleDetailClick} aria-haspopup="true"/>
+                    <div className="card-content">
+                        <div className="card-text">
+                            <div className="group-name"> {this.props.cardData.teamName} </div>
+                            {this.groupLeaderCrown()}
+                            <div id="class-name" className={`class-name`}> {this.props.cardData.className} </div>
+                        </div>
 
-                            {this.getMemberIcons()}
+                        {this.getMemberIcons()}
 
-                            <div className="group-info">
-                                <div className="group-size">
-                                    Group of {this.props.cardData.totalNumber}
-                                    <button className={this.returnStatusString().toLowerCase()} style={this.displayStyleCheck()} onClick={this.handleManageGroup}> {this.returnStatusString()} </button>
-                                </div>
-                                <div className="looking-for"> Looking for {this.props.cardData.totalNumber - this.props.cardData.currNumber} more</div>
+                        <div className="group-info">
+                            <div className="group-size">
+                                Group of {this.props.cardData.maxSize}
+                                <button className={this.returnStatusString().toLowerCase()} style={this.displayStyleCheck()} onClick={this.handleManageGroup}> {this.returnStatusString()} </button>
                             </div>
+                            <div className="looking-for"> Looking for {this.props.cardData.maxSize - this.props.cardData.members.length} more</div>
                         </div>
                     </div>
-                    <Confirm confirmDisplay={this.state.confirmPopUp} confirmFunction={this.props.confirmFunction} cardData={this.props.cardData}
-                        toggleConfirm={this.toggleConfirm}></Confirm>
                 </div>
+                <Confirm confirmDisplay={this.state.confirmPopUp} confirmFunction={this.props.confirmFunction} cardData={this.props.cardData}
+                    toggleConfirm={this.toggleConfirm}></Confirm>
+            </div>
         )
     }
 }

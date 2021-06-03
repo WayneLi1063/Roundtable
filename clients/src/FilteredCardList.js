@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from './Card.js';
 // import firebase from 'firebase/app';
+import api from './APIEndpoints.js'
 
 export default class FilteredCardList extends React.Component {
     constructor(props) {
@@ -16,7 +17,8 @@ export default class FilteredCardList extends React.Component {
             cardList: this.props.renderedCards,
             fullGroup: false,
             fetched: false,
-            applied: false
+            applied: false,
+            authToken: localStorage.getItem("Authorization") || null
         }
     }
 
@@ -109,7 +111,6 @@ export default class FilteredCardList extends React.Component {
                 labMates: false,
                 projectPartners: false,
                 cardList: this.props.renderedCards,
-                // detailsDisplay: false,
                 fullGroup: false,
                 currentCard: null,
                 applied: false
@@ -174,14 +175,15 @@ export default class FilteredCardList extends React.Component {
 
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
-        let api = this.props.api
-
-        card.members[this.props.user.uid] = null;
-        card.currNumber--;
+        const index = card.members.indexOf(this.props.user.id)
+        if (index > -1) {
+            //card.members.splice(index, 1);
+          }
         if (!this.state.authToken) {
+            console.log("no auth")
             return;
         }
-        const response = await fetch(api.base + api.handlers.groups + '/' + card.id + '/members', {
+        const response = await fetch("https://api.roundtablefinder.com/v1/groups/" + card._id + '/members', {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -189,27 +191,30 @@ export default class FilteredCardList extends React.Component {
         })
 
         if (response.status >= 300) {
-            this.toggleOnError("leaving group failed. Please retry.");
+            console.log("leaving group failed. Please retry.");
             return;
         }
     }
 
     // Add the user to the group when they join the group
     joinGroup = async (card) => {
-        let api = this.props.api
-
         if (!this.state.authToken) {
+            console.error("no auth")
+            this.props.errorCallback("not authenticated, aborting")
             return;
         }
-        const response = await fetch(api.base + api.handlers.groups + '/' + card.id + '/members', {
+        const response = await fetch("https://api.roundtablefinder.com/v1/groups/" + card._id + '/members', {
             method: 'POST',
             headers: new Headers({
-                "Authorization": this.state.authToken
-            })
+                "Authorization": this.state.authToken,
+                "Content-Type": "application/json"
+            }),
+            body: JSON.stringify({id: this.props.user.id})
         })
 
         if (response.status >= 300) {
-            this.toggleOnError("joining group failed. Please retry.");
+            console.error("something went wrong for " + card._id + "： " + this.props.user.id)
+            this.props.errorCallback("joining group failed. Please retry.");
             return;
         }
         // TODO: change this into an api call
@@ -239,6 +244,7 @@ export default class FilteredCardList extends React.Component {
 
     // renders the filter form
     render() {
+        console.log(this.props.renderedCards)
         let listOfCards = [];
         let content = null;
         if (this.state.cardList) {

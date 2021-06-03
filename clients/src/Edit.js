@@ -10,6 +10,7 @@ export default class Create extends React.Component {
             groupName: this.props.editData.teamName,
             courseName: this.props.editData.className,
             description: this.props.editData.description,
+            when2meetURL: this.props.editData.when2meetURL,
             private: this.props.editData.private,
             groupSize: this.props.editData.totalNumber,
             homeworkHelp: this.props.editData.homeworkHelp,
@@ -102,6 +103,14 @@ export default class Create extends React.Component {
         });
     }
 
+    // Handles the interaction when user types in description field.
+    handleMeetChange = (event) => {
+        let newString = event.target.value;
+        this.setState({
+            when2meetURL: newString
+        });
+    }
+
     // Handles the interaction when user checks the private button.
     handlePrivateChange = (event) => {
         this.setState((prevState) => {
@@ -183,18 +192,22 @@ export default class Create extends React.Component {
     handleSubmitHelper = (newGroup, url) => {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
-        newGroup.totalNumber = parseInt(this.state.groupSize, 10);
+        newGroup.maxSize = parseInt(this.state.groupSize, 10);
+        newGroup.createdAt = this.props.editData.createdAt;
+        newGroup.creator = this.props.editData.creator;
         newGroup.description = this.state.description;
+        newGroup.when2meetURL = this.state.when2meetURL;
         newGroup.private = this.state.private;
-        newGroup.currNumber = this.props.editData.currNumber;
         newGroup.members = this.props.editData.members;
         newGroup.id = this.props.editData.id;
         newGroup.img = url;
-        newGroup.homeworkHelp = this.state.homeworkHelp;
-        newGroup.examSquad = this.state.examSquad;
-        newGroup.noteExchange = this.state.noteExchange;
-        newGroup.labMates = this.state.labMates;
-        newGroup.projectPartners = this.state.projectPartners;
+        newGroup.tags = {
+            homeworkHelp: this.state.homeworkHelp,
+            examSquad: this.state.examSquad,
+            noteExchange: this.state.noteExchange,
+            labMates: this.state.labMates,
+            projectPartners: this.state.projectPartners
+        }
         this.props.onSubmit(newGroup);
     }
 
@@ -237,6 +250,10 @@ export default class Create extends React.Component {
                     <div className="form-group">
                         <label htmlFor="g-descr" className="font-weight-bold">Group Name</label><br />
                         <input type="text" id="g-descr" value={this.state.description} onChange={this.handleDescriptionChange} /><br />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="g-meet" className="font-weight-bold">Group Name</label><br />
+                        <input type="text" id="g-meet" value={this.state.when2meetURL} onChange={this.handleMeetChange} /><br />
                     </div>
                     <div className="form-group">
                         <label htmlFor="g-size" className="font-weight-bold">Group Size (2-5)</label><br />

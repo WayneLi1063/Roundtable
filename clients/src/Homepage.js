@@ -8,11 +8,11 @@ export default class Homepage extends React.Component {
 
     render() {
         let groups = [];
-        if (this.props.cards) {
-            Array.prototype.forEach.call(this.props.cards, group => {
+        if (this.props.cards && this.props.user) {
+            this.props.cards.forEach((group) => {
                 let userIsMember = false;
-                for (let member of Object.keys(group.members)) {
-                    if (member === this.props.user.uid) {
+                for (let member of group.members) {
+                    if (member === this.props.user.id) {
                         userIsMember = true;
                     }
                 }
