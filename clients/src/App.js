@@ -315,15 +315,22 @@ export default class App extends React.Component {
     // Sets the Auth token for the current user
 
     setAuthToken = (auth) => {
-        this.state.authToken = auth;
+        this.setState(() => {
+            return { authToken: auth };
+        })
     }
 
     setUid = (uid) => {
+        this.setState(() => {
+            return { uid: uid };
+        })
         this.state.uid = uid;
     }
 
     setUser = (user) => {
-        this.state.user = user;
+        this.setState(() => {
+            return { user: user };
+        })
         console.log(this.state.user)
     }
 
