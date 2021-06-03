@@ -11,7 +11,8 @@ export default class AddCourses extends React.Component {
         this.state = {
             courses: this.props.courses,
             newName: '',
-            emptyAlertDisplay: false
+            emptyAlertDisplay: false,
+            authToken: localStorage.getItem("Authorization") || null
         }
     }
 
@@ -20,7 +21,7 @@ export default class AddCourses extends React.Component {
         // TODO: change to api call
 
         this.props.getCourseCallback()
-        
+
         // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
         // this.courseRef.on('value', (snapshot) => {
         //     let courses = snapshot.val();
@@ -81,19 +82,21 @@ export default class AddCourses extends React.Component {
 
             // TODO: change to api call
 
-            if (!this.props.authToken) {
+            if (!this.state.authToken) {
+                console.log("no auth")
                 return;
             }
-            const response = await fetch(api.base + api.handlers.courses, {
+            const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
                 method: 'POST',
                 headers: new Headers({
-                    "Authorization": this.props.authToken,
+                    "Authorization": this.state.authToken,
                     "Content-Type": "application/json"
                 }),
                 body: JSON.stringify({course: newCourseName})
             });
             if (response.status >= 300) {
-                this.props.toggleOnError("Add course failed. Please retry");
+                console.log(newCourseName)
+                console.log("Add course failed. Please retry");
                 return;
             }
 
@@ -123,6 +126,7 @@ export default class AddCourses extends React.Component {
         this.setState({
             newName: event.target.value
         })
+        console.log(this.state.newName)
     }
 
     //closes the pop up, and resets the input field
