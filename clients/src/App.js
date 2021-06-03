@@ -224,6 +224,7 @@ export default class App extends React.Component {
             console.err("no auth")
             return;
         }
+        
         const response = await fetch(api.base + api.handlers.courses, {
             method: 'GET',
             headers: new Headers({
@@ -242,7 +243,12 @@ export default class App extends React.Component {
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
         // TODO: Change this into an api call.
+        if (!this.state.authToken) {
+            console.log("no auth")
+            return;
+        }
 
+        console.log(newGroup)
         const response = await fetch(api.base + api.handlers.groups, {
             method: 'POST',
             headers: new Headers({
@@ -255,7 +261,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            this.valueChange()
+            //this.valueChange()
         }
 
         // newGroup.id = this.state.groupCount + 1;

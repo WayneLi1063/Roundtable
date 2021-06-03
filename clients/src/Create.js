@@ -20,6 +20,7 @@ export default class Create extends React.Component {
             noteExchange: false,
             labMates: false,
             projectPartners: false,
+            private: false,
             myCourses: []
         }
         // this.imgStorageRef = firebase.storage().ref("img");
@@ -172,7 +173,7 @@ export default class Create extends React.Component {
 
             // if (this.state.img === '') {
             //     newGroup.img = this.imgStorageRef.child('group6.jfif').getDownloadURL().then((url) => {
-            let url = "https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/81/2015/04/07090900/uw-block-w-statue-377x160.jpg"
+            let url = "https://ibb.co/G9bfDW4"
             this.handleSubmitHelper(newGroup, url);
             //     }).catch((errorObj) => {
             //         this.props.errorCallback(errorObj);
@@ -196,9 +197,14 @@ export default class Create extends React.Component {
     handleSubmitHelper(newGroup, url) {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
-        newGroup.maxSize = parseInt(this.state.groupSize, 10);
-        newGroup.createdAt = Date.now();
-        newGroup.img = url;
+        newGroup.totalNumber = parseInt(this.state.groupSize, 10);
+        //newGroup.createdAt = Date.now();
+        newGroup.img = url
+        newGroup.homeworkHelp = this.state.homeworkHelp
+        newGroup.examSquad = this.state.examSquad
+        newGroup.noteExchange = this.state.noteExchange
+        newGroup.labMates = this.state.labMates
+        newGroup.projectPartners = this.state.projectPartners
         newGroup.tags = {
             homeworkHelp: this.state.homeworkHelp,
             examSquad: this.state.examSquad,
@@ -206,13 +212,8 @@ export default class Create extends React.Component {
             labMates: this.state.labMates,
             projectPartners: this.state.projectPartners
         }
-        newGroup.creator = {
-            userID: this.props.user.id,
-            userEmail: this.props.user.email
-        }
         newGroup.description = this.state.description;
         newGroup.private = this.state.private;
-        newGroup.members = [this.props.user.id];
         newGroup.when2meetURL = this.state.when2meetURL;
         this.props.onSubmit(newGroup);
         if (this.props.feedbackDisplay) {
