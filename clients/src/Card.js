@@ -142,7 +142,7 @@ class Card extends React.Component {
         return (
                 <div>
                     <div className="flex-card">
-                        <img id="g-img" src={this.props.cardData.img} alt={"Group " + this.props.cardData.teamName} onClick={this.handleDetailClick} aria-haspopup="true"/>
+                        <img id="g-img" src={this.props.cardData.imgURL} alt={"Group " + this.props.cardData.teamName} onClick={this.handleDetailClick} aria-haspopup="true"/>
                         <div className="card-content">
                             <div className="card-text">
                                 <div className="group-name"> {this.props.cardData.teamName} </div>
