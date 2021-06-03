@@ -251,11 +251,11 @@ export default class Create extends React.Component {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="g-descr" className="font-weight-bold">Group Name</label><br />
+                        <label htmlFor="g-descr" className="font-weight-bold">Description</label><br />
                         <input type="text" id="g-descr" value={this.state.description} onChange={this.handleDescriptionChange} /><br />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="g-meet" className="font-weight-bold">Group Name</label><br />
+                        <label htmlFor="g-meet" className="font-weight-bold">When2Meet URL</label><br />
                         <input type="text" id="g-meet" value={this.state.when2meetURL} onChange={this.handleMeetChange} /><br />
                     </div>
                     <div className="form-group">
@@ -265,11 +265,6 @@ export default class Create extends React.Component {
                         {this.state.manyMemberDisplay &&
                             <p className="alert-red alert-edit many-member">You have {this.props.editData.currNumber} members which exceeds desired group size.</p>
                         }
-                    </div>
-
-                    <div className="form-group">
-                                <label htmlFor="g-descr" className="font-weight-bold">Group Description</label>
-                                <input type="text" className="form-control" id="g-descr" value={this.state.description} onChange={this.handleDescriptionChange} />
                     </div>
 
                     <div className="form-group">

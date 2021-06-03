@@ -460,7 +460,7 @@ form ::placeholder {
 	margin: 12px
 }
 
-#g-name, #create-group-name {
+#g-name, #create-group-name, #g-descr, #g-meet {
 	width: 100%;
 	border-style: hidden;
 	background-color: #f1f1f1;
