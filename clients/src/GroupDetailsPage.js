@@ -27,8 +27,6 @@ export default class GroupDetailsPage extends React.Component {
         this.setState({ shouldRedirect: true });
     }
 
-
-
     // get members info when component is created
     componentDidMount() {
         this.props.toggleTwoButtons(false);
@@ -38,6 +36,7 @@ export default class GroupDetailsPage extends React.Component {
         .then(res => res.json())
         .then(
             (result) => {
+
                 if (result) {
                     let members = result.members
                     let leader = result.creator
@@ -47,7 +46,7 @@ export default class GroupDetailsPage extends React.Component {
                         this.getMembersInfo(members)
                     }
                     
-                    if (leader.userID === this.props.user.id) {
+                    if (this.props.user && leader.userID === this.props.user.id) {
                         this.getLeaderInfo(leader)
                     }
                     
@@ -96,11 +95,12 @@ export default class GroupDetailsPage extends React.Component {
         if (!this.state.authToken) {
             return;
         }
-        members.array.forEach(memberID => {
-            fetch(api.testbase + api.handlers.groups + "/" + memberID)
+        members.forEach(memberID => {
+            fetch(api.base + api.handlers.myusers + "/" + memberID)
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(result)
                     if (result) {
                         this.setState((prevState) => {
                             let dataArray = prevState.userDataArray
@@ -189,17 +189,16 @@ export default class GroupDetailsPage extends React.Component {
 
     //renders the Group Detail Pop Up form
     render() {
-        if (this.state.shouldRedirect) {
-            console.log(this.state.card)
+        if (this.state.shouldRedirect && this.props.user) {
             if (this.state.card.members.includes(this.props.user.id)) {
                 return <Redirect to='/mygroup' />
             } else {
                 return <Redirect to='/home' />
             }
         }
-        let users = this.state.userDataArray;
-        let members = null;
         let card = this.state.card;
+        let users = this.state.userDataArray
+        let members = null;
         let content = null;
         let goals = null;
 
@@ -227,9 +226,7 @@ export default class GroupDetailsPage extends React.Component {
         if (card) {
         //render the Goal Tags of the displayed group
         let tags = card.tags;
-        console.log(card)
         if (tags) {
-            console.log(tags)
             goals = (
                 Object.keys(tags).map((cardKey) => {
                     if (card[cardKey] === true) {
@@ -255,17 +252,15 @@ export default class GroupDetailsPage extends React.Component {
                     return content;
                 })
             )
-
-
         }
 
         return (
             <section>
                 <div className='detailsContainer'>
-                    <h1 className='detailsTitle'>{this.state.card.teamName}</h1>
+                    <h1 className='detailsTitle'>{card.teamName}</h1>
                     <button className='detailsCloseButton' onClick={this.handleDetailClick}>Close</button>
-                    <div className="class-name-details" > {this.state.card.className} </div>
-                    <div className="lookingFor"> Looking for {this.state.card.totalNumber - this.state.card.members.length} more</div><br/>
+                    <div className="class-name-details" > {card.className} </div>
+                    <div className="lookingFor"> Looking for {card.members ? card.maxSize - card.members.length : "fetching"} more</div><br/>
                     <div>
                         <p className='membersTitle'>
                             Members:
@@ -293,7 +288,7 @@ export default class GroupDetailsPage extends React.Component {
                             Group Goal:
                         </p>
                         <div className='goalTagsContainer'>
-                            {goals}
+                            {goals ? goals : <p>None</p>}
                         </div>
                     </div>
                 </div>
