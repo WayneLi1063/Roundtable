@@ -49,24 +49,24 @@ export default class AddCourses extends React.Component {
     }
 
     //delete a course from the user's list
-    deleteCourse = async (courseKey) => {
+    deleteCourse = async (course) => {
         // let uid = this.props.user.uid;
 
         // TODO: change to api call
-
-        if (!this.props.authToken) {
+        console.log(course)
+        if (!this.state.authToken) {
             return;
         }
-        const response = await fetch(api.base + api.handlers.courses, {
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
             method: 'DELETE',
             headers: new Headers({
-                "Authorization": this.props.authToken,
+                "Authorization": this.state.authToken,
                 "Content-Type": "application/json"
             }),
-            body: JSON.stringify({course: courseKey})
+            body: JSON.stringify({course: course})
         });
         if (response.status >= 300) {
-            this.props.toggleOnError("Delete course failed. Please retry");
+            this.props.errorCallback("Delete course failed. Please retry");
             return;
         }
 

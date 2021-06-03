@@ -193,7 +193,9 @@ export default class Profile extends React.Component {
             return;
         }
         const courses = await response.json()
-        this.setState({ courses: courses.classList });
+        if (courses !== null) {
+            this.setState({ courses: courses.classList });
+        }
     }
 
     // handle name change when users edit their profiles

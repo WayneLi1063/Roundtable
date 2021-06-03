@@ -398,7 +398,9 @@ export default class App extends React.Component {
             return;
         }
         const courses = await response.json()
-        this.setState({ myCourses: courses.classList });
+        if (courses !== null) {
+            this.setState({ myCourses: courses.classList });
+        }
     }
 
     // disbands the group
@@ -461,6 +463,7 @@ export default class App extends React.Component {
     }
 
     render() {
+        console.log(this.state.authToken)
         let content = null;
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
