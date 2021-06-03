@@ -56,12 +56,11 @@ class Card extends React.Component {
     // returns the group status for this current user
     reportGroupStatus() {
         let members = this.props.cardData.members;
-        if (members[this.props.user.id] !== undefined) {
-            if (members[this.props.user.id] === true /* required to prevent coercion */) {
-                return LEADER;
-            } else if (members[this.props.user.id] === false) {
-                return MEMBER;
-            }
+        let creator = this.props.cardData.creator;
+        if (creator.userID === this.props.user.id) {
+            return LEADER
+        } else if (members.includes(this.props.user.id)){
+            return MEMBER
         } else {
             return NOT_JOINED;
         }

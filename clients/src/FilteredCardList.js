@@ -175,11 +175,15 @@ export default class FilteredCardList extends React.Component {
 
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
-        card.members[this.props.user.id] = null;
+        const index = card.members.indexOf(this.props.user.id)
+        if (index > -1) {
+            //card.members.splice(index, 1);
+          }
         if (!this.state.authToken) {
+            console.log("no auth")
             return;
         }
-        const response = await fetch(api.base + api.handlers.groups + '/' + card.id + '/members', {
+        const response = await fetch("https://api.roundtablefinder.com/v1/groups/" + card._id + '/members', {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken
@@ -187,7 +191,7 @@ export default class FilteredCardList extends React.Component {
         })
 
         if (response.status >= 300) {
-            this.toggleOnError("leaving group failed. Please retry.");
+            console.log("leaving group failed. Please retry.");
             return;
         }
     }
@@ -240,6 +244,7 @@ export default class FilteredCardList extends React.Component {
 
     // renders the filter form
     render() {
+        console.log(this.props.renderedCards)
         let listOfCards = [];
         let content = null;
         if (this.state.cardList) {
