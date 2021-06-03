@@ -377,7 +377,7 @@ const getCourseHandler = async (req, res, { Enrollment }) => {
         return
     }
 
-    Enrollment.find({userID: userID}, (err, enr) => {
+    Enrollment.findOne({userID: userID}, (err, enr) => {
         // if there's an error or enrollment could not be found
         if (err) {
             res.status(500).send('Unexpected error.')
@@ -408,7 +408,7 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
     }
     
     // // extract the enrollment
-    Enrollment.find({userID: userID}, (err, enr) => {
+    Enrollment.findOne({userID: userID}, (err, enr) => {
         // if there's an error or enrollment could not be found
         if (err) {
             res.status(500).send('Unexpected error.')
@@ -430,15 +430,15 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
             return
         }
 
-        var newClassList = enr.classList
+        
         // Add the new course to the enrollment, if they aren't already there
-        if (enr.classList) {
+        if (enr && enr.classList) {
             const index = enr.classList.indexOf(course)
             if (index >= 0) {
                 res.status(400).send("Course already exists.");
                 return
             }
-            newClassList = enr.classList.concat(course)
+            const newClassList = enr.classList.concat(course)
 
             // update the course list
             Enrollment.findOneAndUpdate({userID: userID}, {classList: newClassList}, {new: true}, (err, enr) => {
@@ -450,7 +450,7 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
                 res.status(201).send(enr);
             })
         } else {
-            newClassList = [course]
+            const newClassList = [course]
 
             const enroll = new Enrollment({userID: userID, classList: newClassList})
 
