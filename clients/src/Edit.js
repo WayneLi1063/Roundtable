@@ -1,5 +1,6 @@
 import React from 'react';
 // import firebase from 'firebase/app';
+import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js'
 
 // The form for "edit" button.
 export default class Create extends React.Component {
@@ -171,19 +172,21 @@ export default class Create extends React.Component {
         } else {
             // TODO: Change the img handling process.
 
-            // if (typeof this.state.img !== "string") {
+            if (typeof this.state.img !== "string") {
             //     this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
             //         this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
-            //             this.handleSubmitHelper(newGroup, url);
+                addPhoto("GroupPhotos", this.state.img)
+                let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
+                this.handleSubmitHelper(newGroup, url);
             //         }).catch((errorObj) => {
             //             this.props.errorCallback(errorObj);
             //         });
             //     }).catch((errorObj) => {
             //         this.props.errorCallback(errorObj);
             //     });
-            // } else {
-            this.handleSubmitHelper(newGroup, this.state.img);
-            // }
+            } else {
+                this.handleSubmitHelper(newGroup, this.state.img);
+            }
             this.props.toggleForm();
         }
     }
