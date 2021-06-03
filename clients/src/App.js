@@ -321,16 +321,10 @@ export default class App extends React.Component {
     // Sets the Auth token for the current user
 
     setAuthToken = (auth) => {
+        localStorage.setItem("Authorization", auth)
         this.setState(() => {
             return { authToken: auth };
         })
-    }
-
-    setUid = (uid) => {
-        this.setState(() => {
-            return { uid: uid };
-        })
-        this.state.uid = uid;
     }
 
     setUser = (user) => {
@@ -474,6 +468,7 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
+        console.log(this.state.authToken)
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
