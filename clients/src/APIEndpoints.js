@@ -6,7 +6,7 @@ export default {
         myuser: "/v1/users/",
         sessions: "/v1/sessions",
         sessionsMine: "/v1/sessions/mine",
-        courses: "v1/courses/users",
+        courses: "/v1/courses/users",
         groups: "/v1/groups",
         thisgroup: "/v1/groups/"
     }

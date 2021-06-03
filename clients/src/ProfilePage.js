@@ -202,10 +202,9 @@ export default class Profile extends React.Component {
             console.log("Get course failed. Please retry");
             return;
         }
-        const enrArray = await response.json()
-        const courses = enrArray[0].classList
-        console.log(courses)
-        this.setState({ courses: courses });
+        const courses = await response.json()
+        console.log(courses.classList)
+        this.setState({ courses: courses.classList });
     }
 
     // handle name change when users edit their profiles
@@ -362,6 +361,6 @@ export default class Profile extends React.Component {
                                             {this.state.emailErr2 && <p className='email-err'>Email is not validated!</p>}
                                         </div>
 
-                                        
+                                                
 
                                         */

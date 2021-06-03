@@ -223,6 +223,7 @@ export default class App extends React.Component {
     getCourse = async () => {
 
         if (!this.state.authToken) {
+            console.log("no auth")
             return;
         }
         const response = await fetch(api.base + api.handlers.courses, {
@@ -235,8 +236,10 @@ export default class App extends React.Component {
             this.toggleOnError("Get course failed. Please retry");
             return;
         }
-        const courses = await response.json().classList
+        const enrArray = await response.json()
+        const courses = enrArray[0].classList
         this.setState({ myCourses: courses });
+        console.log(courses)
     }
 
     // The callback function that allows Create form to submit a new group to app.
@@ -377,6 +380,27 @@ export default class App extends React.Component {
             editDisplay: true,
             coverDisplay: true
         })
+    }
+
+    getCourse = async () => {
+
+        if (!this.state.authToken) {
+            console.log("no auth")
+            return;
+        }
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
+            method: 'GET',
+            headers: new Headers({
+                "Authorization": this.state.authToken
+            })
+        });
+        if (response.status >= 300) {
+            console.log("Get course failed. Please retry");
+            return;
+        }
+        const courses = await response.json()
+        console.log(courses)
+        this.setState({ myCourses: courses.classList });
     }
 
     // disbands the group
