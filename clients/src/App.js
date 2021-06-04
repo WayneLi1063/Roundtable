@@ -17,12 +17,11 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import SignUp from './SignUp.js'
 import Login from './Login.js'
 import api from './APIEndpoints.js'
-import { Card, Avatar, Input, Typography } from 'antd';
-import { albumBucketName, bucketRegion, AddPhoto } from './S3.js';
+import { albumBucketName, bucketRegion } from './S3.js';
 
 
 // WEBSOCKET
-const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
+const client = new W3CWebSocket('wss://api.roundtablefinder.com:8000');
 
 export default class App extends React.Component {
     constructor(props) {
