@@ -21,7 +21,7 @@ import { Card, Avatar, Input, Typography } from 'antd';
 
 /////////WEBSOCKET/////////
 const { Search } = Input;
-const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
+const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000', 'echo-protocol');
 /////////WEBSOCKET/////////
 
 export default class App extends React.Component {
@@ -224,24 +224,28 @@ export default class App extends React.Component {
             console.error("no auth")
             return;
         }
-        
-        const response = await fetch(api.base + api.handlers.courses, {
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
             })
         });
         if (response.status >= 300) {
-            this.toggleOnError("Get course failed. Please retry");
+            console.error("Get course failed. Please retry");
             return;
         }
-        const enrArray = await response.json()
-        const courses = enrArray[0].classList
-        this.setState({ myCourses: courses });
+        const courses = await response.json()
+        if (courses !== null) {
+            this.setState({ myCourses: courses.classList });
+        } else {
+            this.setState({ myCourses: ["Please set up your current courses in profile page."] });
+        }
     }
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
+        console.log(newGroup)
+
         // TODO: Change this into an api call.
         if (!this.state.authToken) {
             console.error("no auth")
@@ -260,7 +264,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            //this.valueChange()
+            this.valueChange()
         }
 
         // newGroup.id = this.state.groupCount + 1;
@@ -279,10 +283,10 @@ export default class App extends React.Component {
     }
 
     // The callback function that allows Edit form to submit edited group info to app.
-    submitEditForm = async (card) => {
+    submitEditForm = async (card, _id) => {
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.base + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups + "/" + _id, {
             method: 'PATCH',
             headers: new Headers({
                 "Authorization": this.state.authToken,
@@ -385,28 +389,6 @@ export default class App extends React.Component {
         })
     }
 
-    getCourse = async () => {
-
-        if (!this.state.authToken) {
-            console.error("no auth")
-            return;
-        }
-        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
-            method: 'GET',
-            headers: new Headers({
-                "Authorization": this.state.authToken
-            })
-        });
-        if (response.status >= 300) {
-            console.error("Get course failed. Please retry");
-            return;
-        }
-        const courses = await response.json()
-        if (courses !== null) {
-            this.setState({ myCourses: courses.classList });
-        }
-    }
-
     // disbands the group
     disbandGroup = async (card) => {
         this.fetch()
@@ -414,12 +396,11 @@ export default class App extends React.Component {
 
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.base + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups + "/" + card._id, {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken
             }),
-            body: JSON.stringify(card)
         });
         if (response.status >= 300) {
             this.toggleOnError(response.body);
@@ -468,7 +449,6 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        //console.log(this.state.authToken)
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
@@ -515,7 +495,7 @@ export default class App extends React.Component {
                             <Confirm toggleConfirm={this.togglePopUp} confirmFunction={this.disbandGroup} cardData={this.state.tempEditData} confirmDisplay={this.state.popUpDisplay} />
                         }
                         {this.state.addCourseDisplay &&
-                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.myCourses} user={this.state.user} getCourseCallback={this.getCourse} errorCallback={this.toggleOnError} />
+                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.myCourses} user={this.state.user} getCourseCallback={this.getCourse} errorCallback={this.toggleOnError} wsUpdate={this.valueChange}/>
                         }
                         <JoinCreateFeedback feedbackDisplay={this.state.feedbackDisplay} toggleFeedback={this.toggleFeedback}
                             feedbackInfo={this.state.feedbackInfo} />
@@ -541,7 +521,7 @@ export default class App extends React.Component {
                         <Switch>
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
-                                updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
+                                wsUpdate = {this.valueChange} updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}
                                 feedbackDisplay={this.state.feedbackDisplay} filterDisplay={this.state.filterDisplay} toggleFilter={this.toggleFilter} errorCallback={this.toggleOnError} />)} />
                             <Route exact path='/home' render={(props) => (<Homepage {...props} wsUpdate = {this.valueChange} cards={this.state.myGroups} loading={this.state.spinnerDisplay}

@@ -193,6 +193,8 @@ export default class FilteredCardList extends React.Component {
         if (response.status >= 300) {
             console.log("leaving group failed. Please retry.");
             return;
+        } else {
+            this.props.wsUpdate()
         }
     }
 
@@ -216,6 +218,8 @@ export default class FilteredCardList extends React.Component {
             console.error("something went wrong for " + card._id + "： " + this.props.user.id)
             this.props.errorCallback("joining group failed. Please retry.");
             return;
+        } else {
+            this.props.wsUpdate()
         }
         // TODO: change this into an api call
 
@@ -244,7 +248,6 @@ export default class FilteredCardList extends React.Component {
 
     // renders the filter form
     render() {
-        //console.log(this.props.renderedCards)
         let listOfCards = [];
         let content = null;
         if (this.state.cardList) {
@@ -252,7 +255,7 @@ export default class FilteredCardList extends React.Component {
                 let singleCard = (
                     <Card cardData={eachCard} switchFunction={this.joinGroup} editFunction={this.editGroup} fetch={this.props.fetch}
                         toggleFeedback={this.props.toggleFeedback} feedbackInfo={this.props.feedbackInfo} feedbackDisplay={this.props.feedbackDisplay}
-                        key={eachCard.id} confirmFunction={this.confirmLeave} user={this.props.user}
+                        key={eachCard._id} confirmFunction={this.confirmLeave} user={this.props.user}
                         toggleEditForm={this.props.toggleEditForm} />
                 )
                 return singleCard;

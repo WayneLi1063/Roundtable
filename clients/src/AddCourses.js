@@ -16,6 +16,14 @@ export default class AddCourses extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.courses !== prevProps.courses) {
+            this.setState(() => {
+                return ({ courses: this.props.courses });
+            })
+        }
+    }
+
     //called when component shows
     componentDidMount() {
         // TODO: change to api call
@@ -66,7 +74,8 @@ export default class AddCourses extends React.Component {
         });
         if (response.status >= 300) {
             this.props.errorCallback("Delete course failed. Please retry");
-            return;
+        } else {
+            this.props.wsUpdate()
         }
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
@@ -95,7 +104,8 @@ export default class AddCourses extends React.Component {
             });
             if (response.status >= 300) {
                 console.error("Add course failed. Please retry");
-                return;
+            } else {
+                this.props.wsUpdate()
             }
 
             // this.courseRef.update({
@@ -140,10 +150,12 @@ export default class AddCourses extends React.Component {
         let courses = this.state.courses;
         if (courses) {
             courses.forEach((course) => {
-                content.push(<div className='course-tag'>
+                if (course !== "Please set up your current courses in profile page.") {
+                    content.push(<div className='course-tag'>
                     {course}
                     <FontAwesomeIcon icon={faTrashAlt} size="xs" className="white trash mt-1 mr-2" onClick={() => this.deleteCourse(course)} />
                 </div>)
+                }
             })
         }
         
