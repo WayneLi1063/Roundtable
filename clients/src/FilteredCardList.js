@@ -193,6 +193,8 @@ export default class FilteredCardList extends React.Component {
         if (response.status >= 300) {
             console.log("leaving group failed. Please retry.");
             return;
+        } else {
+            this.props.wsUpdate()
         }
     }
 
@@ -216,6 +218,8 @@ export default class FilteredCardList extends React.Component {
             console.error("something went wrong for " + card._id + "： " + this.props.user.id)
             this.props.errorCallback("joining group failed. Please retry.");
             return;
+        } else {
+            this.props.wsUpdate()
         }
         // TODO: change this into an api call
 
