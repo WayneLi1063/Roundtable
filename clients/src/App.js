@@ -22,7 +22,7 @@ import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from
 
 
 // WEBSOCKET
-const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
+const client = new W3CWebSocket('wss://api.roundtablefinder.com:443');
 
 export default class App extends React.Component {
     constructor(props) {
