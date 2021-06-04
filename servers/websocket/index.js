@@ -1,14 +1,19 @@
-const wsPort = 8000;
-const webSocketServer = require('websocket').server
-const http = require('http')
+const wsPort = 8443;
+const fs = require("fs");
+const webSocketServer = require('ws').Server
+const HttpsServer = require('https').createServer;
 
-const server = http.createServer();
-server.listen(wsPort)
-console.log('websocket server listening on port 8000')
-
-const wsServer = new webSocketServer({
-    httpServer: server
+const server = HttpsServer({
+  cert : fs.readFileSync('/etc/letsencrypt/live/api.roundtablefinder.com/fullchain.pem'),
+	key : fs.readFileSync('/etc/letsencrypt/live/api.roundtablefinder.com/privkey.pem')
 })
+
+socket = new WebSocket({
+  server: server
+});
+
+wsServer.listen(wsPort)
+console.log('websocket server listening on port ' + wsPort)
 
 const clients = {};
 

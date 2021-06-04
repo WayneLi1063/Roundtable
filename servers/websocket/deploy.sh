@@ -8,6 +8,6 @@ docker rm -f rtwebsocket
 
 docker pull penumbrapow/rtwebsocket
 
-docker run -d -p 8000:8000 --name rtwebsocket penumbrapow/rtwebsocket
+docker run -d -p 8443:8443 --name rtwebsocket penumbrapow/rtwebsocket
 
 EOF
