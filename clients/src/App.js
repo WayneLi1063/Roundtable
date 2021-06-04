@@ -224,24 +224,22 @@ export default class App extends React.Component {
             console.error("no auth")
             return;
         }
-        
-        const response = await fetch(api.base + api.handlers.courses, {
+        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
             method: 'GET',
             headers: new Headers({
                 "Authorization": this.state.authToken
             })
         });
         if (response.status >= 300) {
-            this.toggleOnError("Get course failed. Please retry");
+            console.error("Get course failed. Please retry");
             return;
         }
-        const enrArray = await response.json()
-        var courses = enrArray[0].classList
-        if (!courses) {
-            courses = ["Please set up your current courses in profile page."]
+        const courses = await response.json()
+        if (courses !== null) {
+            this.setState({ myCourses: courses.classList });
+        } else {
+            this.setState({ myCourses: ["Please set up your current courses in profile page."] });
         }
-        this.setState({ myCourses: courses });
-
     }
 
     // The callback function that allows Create form to submit a new group to app.
@@ -391,28 +389,6 @@ export default class App extends React.Component {
         })
     }
 
-    getCourse = async () => {
-
-        if (!this.state.authToken) {
-            console.error("no auth")
-            return;
-        }
-        const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
-            method: 'GET',
-            headers: new Headers({
-                "Authorization": this.state.authToken
-            })
-        });
-        if (response.status >= 300) {
-            console.error("Get course failed. Please retry");
-            return;
-        }
-        const courses = await response.json()
-        if (courses !== null) {
-            this.setState({ myCourses: courses.classList });
-        }
-    }
-
     // disbands the group
     disbandGroup = async (card) => {
         this.fetch()
@@ -519,7 +495,7 @@ export default class App extends React.Component {
                             <Confirm toggleConfirm={this.togglePopUp} confirmFunction={this.disbandGroup} cardData={this.state.tempEditData} confirmDisplay={this.state.popUpDisplay} />
                         }
                         {this.state.addCourseDisplay &&
-                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.myCourses} user={this.state.user} getCourseCallback={this.getCourse} errorCallback={this.toggleOnError} />
+                            <AddCourses toggleAddCourse={this.toggleAddCourse} courses={this.state.myCourses} user={this.state.user} getCourseCallback={this.getCourse} errorCallback={this.toggleOnError} wsUpdate={this.valueChange}/>
                         }
                         <JoinCreateFeedback feedbackDisplay={this.state.feedbackDisplay} toggleFeedback={this.toggleFeedback}
                             feedbackInfo={this.state.feedbackInfo} />
