@@ -131,32 +131,32 @@ export default class FilteredCardList extends React.Component {
         }
         if (this.state.homeworkHelp) {
             renderCards = renderCards.filter((card) => {
-                return (card.homeworkHelp);
+                return (card.tags.homeworkHelp);
             })
         }
         if (this.state.examSquad) {
             renderCards = renderCards.filter((card) => {
-                return (card.examSquad);
+                return (card.tags.examSquad);
             })
         }
         if (this.state.noteExchange) {
             renderCards = renderCards.filter((card) => {
-                return (card.noteExchange);
+                return (card.tags.noteExchange);
             })
         }
         if (this.state.labMates) {
             renderCards = renderCards.filter((card) => {
-                return (card.labMates);
+                return (card.tags.labMates);
             })
         }
         if (this.state.projectPartners) {
             renderCards = renderCards.filter((card) => {
-                return (card.projectPartners);
+                return (card.tags.projectPartners);
             })
         }
         if (this.state.fullGroup) {
             renderCards = renderCards.filter((card) => {
-                return (card.currNumber !== card.totalNumber);
+                return (card.members.length !== card.totalNumber);
             })
         }
         if (renderCards === this.props.renderedCards) {
@@ -241,7 +241,7 @@ export default class FilteredCardList extends React.Component {
             })
         }
 
-        if (this.state.cardList.length === 0 && this.state.fetched) {
+        if (this.state.cardList.length === 0) {
             content = (
                 <div>
                     <h4 className='text-center'>So Empty...</h4>
