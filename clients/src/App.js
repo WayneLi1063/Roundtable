@@ -18,6 +18,8 @@ import SignUp from './SignUp.js'
 import Login from './Login.js'
 import api from './APIEndpoints.js'
 import { Card, Avatar, Input, Typography } from 'antd';
+import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js';
+
 
 /////////WEBSOCKET/////////
 const { Search } = Input;
@@ -47,6 +49,7 @@ export default class App extends React.Component {
             coverDisplay: false,
             groupCount: 0,
             errorMessage: '',
+            userPhoto: '',
             authToken: localStorage.getItem("Authorization") || null
         }
     }
@@ -69,7 +72,10 @@ export default class App extends React.Component {
             return;
         }
         const user = await response.json()
-        this.setState({user: user});
+        this.setState({
+            user: user,
+            userPhoto: `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${user.userName}`
+        });
     }
 
     getCurrentGroups = async () => {
@@ -474,7 +480,7 @@ export default class App extends React.Component {
         } else {
             content = (
                 <div>
-                    <Header page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} setAuthToken={this.setAuthToken}/>
+                    <Header userPhoto={this.state.userPhoto} page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} setAuthToken={this.setAuthToken}/>
                     {this.state.coverDisplay &&
                         <div className="grey-cover"></div>
                     }

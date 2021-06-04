@@ -1,6 +1,7 @@
 import React from 'react';
 import Form from "@rjsf/core";
-import api from './APIEndpoints.js'
+import api from './APIEndpoints.js';
+import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js';
 
 export default class SignUp extends React.Component {
 
@@ -81,6 +82,8 @@ export default class SignUp extends React.Component {
     }
     const user = await response.json()
     this.props.setUser(user);
+    let currImg = user.photoURL
+    addPhoto("GroupPhotos", user.photoURL, user.userName)
     this.props.setAuthToken(response.headers.get("Authorization"));
   }
 

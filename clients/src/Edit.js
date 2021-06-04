@@ -177,7 +177,7 @@ export default class Create extends React.Component {
             if (typeof this.state.img !== "string") {
             //     this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
             //         this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
-                addPhoto("GroupPhotos", this.state.img)
+                addPhoto("GroupPhotos", this.state.img, "")
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
             //         }).catch((errorObj) => {

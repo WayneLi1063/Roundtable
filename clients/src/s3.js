@@ -58,7 +58,7 @@ const createAlbum = async (albumName) => {
   };
 
   // Add a photo to an album
-const addPhoto = async (albumName, imgFile) => {
+const addPhoto = async (albumName, imgFile, photoKeyName) => {
       const albumPhotosKey = encodeURIComponent(albumName) + "/";
       const data = await s3.send(
           new ListObjectsCommand({
@@ -67,7 +67,12 @@ const addPhoto = async (albumName, imgFile) => {
           })
       );
       const fileName = imgFile.name;
-      const photoKey = albumPhotosKey + fileName;
+      let photoKey = "";
+      if (photoKeyName == "") {
+        photoKey = albumPhotosKey + fileName;
+      } else {
+        photoKey = albumPhotosKey + photoKeyName;
+      }
       const uploadParams = {
         Bucket: albumBucketName,
         Key: photoKey,

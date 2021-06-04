@@ -176,7 +176,7 @@ export default class Create extends React.Component {
                 let url = "https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/81/2015/04/07090900/uw-block-w-statue-377x160.jpg"
                 this.handleSubmitHelper(newGroup, url);
             } else {
-                addPhoto("GroupPhotos", this.state.img)
+                addPhoto("GroupPhotos", this.state.img, "")
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
             }

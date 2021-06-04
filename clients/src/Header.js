@@ -84,7 +84,7 @@ export default class Header extends React.Component {
                                         >MyGroups</NavLink>
                                     <NavLink to='/myprofile' className="text-uppercase font-weight-bold">Profile</NavLink>
                                     <NavLink to='/' className="text-uppercase font-weight-bold" onClick={() => this.props.setAuthToken(null)}>Sign out</NavLink>
-                                    <NavLink to='/myprofile'><img className="avatar" src={url}  alt="User Profile" /></NavLink>
+                                    <NavLink to='/myprofile'><img className="avatar" src={this.props.userPhoto}  alt="User Profile" /></NavLink>
                                 </div>
                                 
                                 <div className="dropdown-mobile" onClick={this.toggleMenu}>

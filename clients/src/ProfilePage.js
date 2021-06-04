@@ -1,7 +1,8 @@
 import React from 'react';
 // import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js';
 //import api from './APIEndpoints.js'
 
 export default class Profile extends React.Component {
@@ -18,6 +19,8 @@ export default class Profile extends React.Component {
             passwordErr: false,
             nameErr: false,
             newPhoto: '',
+            userPhoto: '',
+            userName: '',
             authToken: localStorage.getItem("Authorization") || null
         }
         // this.imgStorageRef = firebase.storage().ref("img");
@@ -28,6 +31,7 @@ export default class Profile extends React.Component {
         this.props.toggleTwoButtons(false);
         this.setUserProfile();
         this.getCourse()
+        // this.setUserPhoto()
     }
 
     // disables all event listeners when component gets destoryed.
@@ -35,6 +39,11 @@ export default class Profile extends React.Component {
         //this.currentUserRef.off();
     }
 
+    // setUserPhoto = () => {
+    //     this.setState({
+    //         userPhoto: `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${this.state.userName}`
+    //     })
+    // }
     // decide to show the profile or edit tab
     toggleMenu = (tab) => {
         this.setState({ display: tab })
@@ -78,6 +87,8 @@ export default class Profile extends React.Component {
             // })
 
             if (this.state.newPhoto !== '') {
+                addPhoto("UserFolder", this.state.newPhoto, this.state.userName)
+                
                 // TODO: Change the img handling process.
 
                 // this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
@@ -173,6 +184,8 @@ export default class Profile extends React.Component {
             lastName: user.lastName,
             email: user.email,
             url: user.photoURL,
+            userName: user.userName,
+            userPhoto: `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${user.userName}`
         })
     }
 
@@ -281,7 +294,7 @@ export default class Profile extends React.Component {
                             </div>
                         </div>
                         <div className="col-lg-4 order-lg-1">
-                            <img src={url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
+                            <img src={this.state.userPhoto} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
                         </div>
                     </div>
                 </div>
@@ -328,7 +341,7 @@ export default class Profile extends React.Component {
                             </div>
                         </div>
                         <div className="col-lg-4 order-lg-1">
-                            <img src={url} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
+                            <img src={this.state.userPhoto} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
                             <div className="custom-file">
                                 <input type="file" className="custom-file-input" onChange={this.handlePhoto} />
                                 <label className="custom-file-label">Upload a different photo</label>
