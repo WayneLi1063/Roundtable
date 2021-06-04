@@ -21,7 +21,8 @@ export default class Create extends React.Component {
             emptyAlertDisplay: false,
             exceedCharDisplay: false,
             manyMemberDisplay: false,
-            myCourses: this.props.courseList
+            myCourses: this.props.courseList,
+            authToken: localStorage.getItem("Authorization") || null
         }
         // this.imgStorageRef = firebase.storage().ref("img");
     }

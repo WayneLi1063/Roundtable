@@ -244,7 +244,7 @@ export default class FilteredCardList extends React.Component {
 
     // renders the filter form
     render() {
-        console.log(this.props.renderedCards)
+        //console.log(this.props.renderedCards)
         let listOfCards = [];
         let content = null;
         if (this.state.cardList) {

@@ -468,7 +468,7 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        console.log(this.state.authToken)
+        //console.log(this.state.authToken)
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>
