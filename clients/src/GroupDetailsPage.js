@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from 'firebase/app';
 import { Redirect } from 'react-router-dom';
 import api from './APIEndpoints.js'
 
@@ -49,9 +48,6 @@ export default class GroupDetailsPage extends React.Component {
                         this.getMembersInfo(members, leader)
                     }
                     
-                    //console.log("true")
-                    
-                    
                     if (teamName) {
                         this.setState(() => {
                             return ({
@@ -67,29 +63,6 @@ export default class GroupDetailsPage extends React.Component {
                 }
             }
         )
-
-        // TODO: Change this into an api call.
-
-        // this.groupRef = firebase.database().ref("groups/").child(groupID);
-        // this.groupRef.on("value", (snapshot) => {
-        //     let group = snapshot.val();
-        //     if (group) {
-        //         let members = group.members;
-        //         this.getMembersInfo(members);
-        //         this.setState(() => {
-        //             return ({ card: group, teamName: group.teamName })
-        //         })
-        //     }
-        // }, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // })
-    }
-
-    // unregister event listener when component is destroyed
-    componentWillUnmount() {
-        // this.groupRef.off();
     }
 
     // build the data arrays for group leader and memebers
@@ -124,44 +97,9 @@ export default class GroupDetailsPage extends React.Component {
             }
             console.log(this.state.card)
         })
-        // TODO: Change this into an api call.
-
-        // Object.keys(members).forEach((key) => {
-        //     let userString = 'users/' + key;
-        //     this.ref = firebase.database().ref(userString);
-        //     if (!members[key]) {
-        //         this.ref.on("value", (snapshot) => {
-        //             this.setState((prevState) => {
-        //                 let dataArray = prevState.userDataArray
-        //                 dataArray.push(snapshot.val());
-        //                 return {
-        //                     userDataArray: dataArray
-        //                 }
-        //             }, (errorObj) => {
-        //                 if (errorObj) {
-        //                     this.props.errorCallback(errorObj);
-        //                 }
-        //             })
-        //         })
-        //     } else {
-        //         this.ref.on('value', (snapshot) => {
-        //             this.setState((prevState) => {
-        //                 let leaderArray = prevState.leader
-        //                 leaderArray.push(snapshot.val());
-        //                 return {
-        //                     leader: leaderArray
-        //                 }
-        //             })
-        //         }, (errorObj) => {
-        //             if (errorObj) {
-        //                 this.props.errorCallback(errorObj);
-        //             }
-        //         })
-        //     }
-        // })
     }
 
-    //pre-prosess member data
+    // pre-prosess member data
     buildUserDataArray = (userData) => {
         let dataArray = this.state.userDataArray
         dataArray.push(userData);
@@ -170,6 +108,7 @@ export default class GroupDetailsPage extends React.Component {
         })
     }
 
+    // fetches the current user info
     getCurrentUser = async () => {
         if (!this.state.authToken) {
             console.error("no auth token found, aborting")
