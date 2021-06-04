@@ -13,8 +13,8 @@ docker run -d \
 -p 80:80 \
 --name roundtable_client \
 -v /etc/letsencrypt:/etc/letsencrypt:ro \
--e TLSCERT=/etc/letsencrypt/live/wayneli.me/fullchain.pem \
--e TLSKEY=/etc/letsencrypt/live/wayneli.me/privkey.pem \
+-e TLSCERT=/etc/letsencrypt/live/roundtablefinder.com/fullchain.pem \
+-e TLSKEY=/etc/letsencrypt/live/roundtablefinder.com/privkey.pem \
 wayneli1063/roundtable_client
 
 EOF

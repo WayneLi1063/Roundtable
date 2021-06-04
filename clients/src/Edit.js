@@ -1,5 +1,5 @@
 import React from 'react';
-import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js'
+import { albumBucketName, bucketRegion, AddPhoto } from './S3.js'
 
 // The form for "edit" button.
 export default class Create extends React.Component {
@@ -170,7 +170,7 @@ export default class Create extends React.Component {
             this.toggleManyMember();
         } else {
             if (typeof this.state.img !== "string") {
-                addPhoto("GroupPhotos", this.state.img, "")
+                AddPhoto("GroupPhotos", this.state.img, "")
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
             } else {
