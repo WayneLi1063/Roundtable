@@ -110,6 +110,7 @@ export default class Profile extends React.Component {
             })
             this.setUserProfile();
             this.toggleMenu('profile');
+            this.render()
         }
     }
 
@@ -131,7 +132,7 @@ export default class Profile extends React.Component {
         if (response.status >= 300) {
             console.error("error:" + response.status);
             return;
-        }
+        } 
     }
 
     // sets the authToken
@@ -273,7 +274,6 @@ export default class Profile extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div className="col-lg-4 order-lg-1">

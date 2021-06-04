@@ -22,7 +22,7 @@ import { albumBucketName, bucketRegion, AddPhoto } from './S3.js';
 
 
 // WEBSOCKET
-const client = new W3CWebSocket('wss://api.roundtablefinder.com:443');
+//const client = new W3CWebSocket('wss://api.roundtablefinder.com:443');
 
 export default class App extends React.Component {
     constructor(props) {
@@ -94,15 +94,16 @@ export default class App extends React.Component {
         this.setState({myGroups: groups});
     }
 
-    //WEBSOCKET
+    //NO WEBSOCKET
     valueChange = () => {
-        client.send("update happened")
+        //client.send("update happened")
+        this.fetch()
     }
 
     // fetch data from database and handles user sign in
     componentDidMount() {
         this.fetch();
-
+        /*
         client.onopen = () => {
             console.log('Websocket Client Connected')
         }
@@ -110,7 +111,7 @@ export default class App extends React.Component {
         client.onmessage = (message) => {
             this.fetch();
         }
-
+        */
         // If user is authenticated
         if (this.state.authToken) {
             this.getCurrentUser();

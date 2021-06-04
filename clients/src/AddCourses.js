@@ -102,6 +102,7 @@ export default class AddCourses extends React.Component {
         this.setState({
             newName: ''
         })
+        this.props.wsUpdate()
     }
 
     //renders the component
