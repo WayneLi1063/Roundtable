@@ -11,7 +11,7 @@ export default class Footer extends React.Component {
                 <footer> 
                     <div className="container">
                         <div className="row d-flex text-center justify-content-center github">
-                            <a href="https://github.com/info340a-au19/project-StudyGroupFinder" aria-label="Get source code of this site from Github!"><FontAwesomeIcon icon={faGithub} size="lg" className="white mt-1" /></a>
+                            <a href="https://github.com/WayneLi1063/Roundtable" aria-label="Get source code of this site from Github!"><FontAwesomeIcon icon={faGithub} size="lg" className="white mt-1" /></a>
                         </div>
                     </div>
                     <div className="container">
@@ -27,7 +27,7 @@ export default class Footer extends React.Component {
                     <div className="container">
                         <div className="d-flex text-center justify-content-center">
                             <div className="font-small">
-                                <p>&copy; 2021 Wanye Li, Andi Ren, Aryan Varshney. All rights reserved.</p>
+                                <p>&copy; 2021 Wanye Li, Andi Ren, Aryan Varshney, Coco Li. All rights reserved.</p>
                             </div>
                         </div>
                     </div>
