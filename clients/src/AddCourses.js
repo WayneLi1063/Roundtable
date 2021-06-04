@@ -16,6 +16,14 @@ export default class AddCourses extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.courses !== prevProps.courses) {
+            this.setState(() => {
+                return ({ courses: this.props.courses });
+            })
+        }
+    }
+
     //called when component shows
     componentDidMount() {
         // TODO: change to api call
@@ -66,7 +74,6 @@ export default class AddCourses extends React.Component {
         });
         if (response.status >= 300) {
             this.props.errorCallback("Delete course failed. Please retry");
-            return;
         } else {
             this.props.wsUpdate()
         }
@@ -97,7 +104,6 @@ export default class AddCourses extends React.Component {
             });
             if (response.status >= 300) {
                 console.error("Add course failed. Please retry");
-                return;
             } else {
                 this.props.wsUpdate()
             }
