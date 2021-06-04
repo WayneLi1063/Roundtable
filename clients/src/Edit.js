@@ -7,24 +7,26 @@ export default class Create extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            img: this.props.editData.img,
+            img: this.props.editData.imgURL,
             groupName: this.props.editData.teamName,
             courseName: this.props.editData.className,
             description: this.props.editData.description,
             when2meetURL: this.props.editData.when2meetURL,
             private: this.props.editData.private,
             groupSize: this.props.editData.totalNumber,
-            homeworkHelp: this.props.editData.homeworkHelp,
-            examSquad: this.props.editData.examSquad,
-            noteExchange: this.props.editData.noteExchange,
-            labMates: this.props.editData.labMates,
-            projectPartners: this.props.editData.projectPartners,
+            homeworkHelp: this.props.editData.tags.homeworkHelp,
+            examSquad: this.props.editData.tags.examSquad,
+            noteExchange: this.props.editData.tags.noteExchange,
+            labMates: this.props.editData.tags.labMates,
+            projectPartners: this.props.editData.tags.projectPartners,
             emptyAlertDisplay: false,
             exceedCharDisplay: false,
             manyMemberDisplay: false,
             myCourses: this.props.courseList
         }
-        // this.imgStorageRef = firebase.storage().ref("img");
+        console.log(this.props.editData)
+        console.log(this.state.description)
+        console.log(this.state.when2meetURL)
     }
 
     // updates course list prop when database fetches
@@ -195,23 +197,17 @@ export default class Create extends React.Component {
     handleSubmitHelper = (newGroup, url) => {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
-        newGroup.maxSize = parseInt(this.state.groupSize, 10);
-        newGroup.createdAt = this.props.editData.createdAt;
-        newGroup.creator = this.props.editData.creator;
+        newGroup.totalNumber = this.state.groupSize ? parseInt(this.state.groupSize, 10) : parseInt(this.props.editData.maxSize, 10);
         newGroup.description = this.state.description;
         newGroup.when2meetURL = this.state.when2meetURL;
         newGroup.private = this.state.private;
-        newGroup.members = this.props.editData.members;
-        newGroup.id = this.props.editData.id;
         newGroup.img = url;
-        newGroup.tags = {
-            homeworkHelp: this.state.homeworkHelp,
-            examSquad: this.state.examSquad,
-            noteExchange: this.state.noteExchange,
-            labMates: this.state.labMates,
-            projectPartners: this.state.projectPartners
-        }
-        this.props.onSubmit(newGroup);
+        newGroup.homeworkHelp = this.state.homeworkHelp
+        newGroup.examSquad = this.state.examSquad
+        newGroup.noteExchange = this.state.noteExchange
+        newGroup.labMates = this.state.labMates
+        newGroup.projectPartners = this.state.projectPartners
+        this.props.onSubmit(newGroup, this.props.editData._id);
     }
 
     // Handles the disband group funtion when user clicks on the disband function.
@@ -305,14 +301,14 @@ export default class Create extends React.Component {
                         </div>
                     </div>
 
-                    <label htmlFor="leave">Disband the group?</label>
-                    <button type="button" className="btn disband" id="leave" onClick={this.props.togglePopUpForm}>Disband</button>
-
                     <div class="form-check">
                                 <input type="checkbox" class="form-check-input" 
                                     id="g-private" onClick={this.handlePrivateChange}/>
                                 <label class="form-check-label" for="g-private">Private Group</label>
                     </div>
+
+                    <label htmlFor="leave">Disband the group?</label>
+                    <button type="button" className="btn disband" id="leave" onClick={this.props.togglePopUpForm}>Disband</button>
 
                     <div className="formButton">
                         <button type="button" id="submit-edit" className="btn save" onClick={this.handleSubmit}>Save</button>

@@ -189,20 +189,12 @@ export default class Create extends React.Component {
         newGroup.teamName = this.state.groupName;
         newGroup.className = this.state.courseName;
         newGroup.totalNumber = parseInt(this.state.groupSize, 10);
-        //newGroup.createdAt = Date.now();
         newGroup.img = url
         newGroup.homeworkHelp = this.state.homeworkHelp
         newGroup.examSquad = this.state.examSquad
         newGroup.noteExchange = this.state.noteExchange
         newGroup.labMates = this.state.labMates
         newGroup.projectPartners = this.state.projectPartners
-        newGroup.tags = {
-            homeworkHelp: this.state.homeworkHelp,
-            examSquad: this.state.examSquad,
-            noteExchange: this.state.noteExchange,
-            labMates: this.state.labMates,
-            projectPartners: this.state.projectPartners
-        }
         newGroup.description = this.state.description;
         newGroup.private = this.state.private;
         newGroup.when2meetURL = this.state.when2meetURL;

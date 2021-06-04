@@ -242,6 +242,8 @@ export default class App extends React.Component {
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
+        console.log(newGroup)
+
         // TODO: Change this into an api call.
         if (!this.state.authToken) {
             console.error("no auth")
@@ -279,10 +281,10 @@ export default class App extends React.Component {
     }
 
     // The callback function that allows Edit form to submit edited group info to app.
-    submitEditForm = async (card) => {
+    submitEditForm = async (card, _id) => {
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.base + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups + "/" + _id, {
             method: 'PATCH',
             headers: new Headers({
                 "Authorization": this.state.authToken,
@@ -294,7 +296,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            this.valueChange()
+            // this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
@@ -414,18 +416,17 @@ export default class App extends React.Component {
 
         // TODO: Change this into an api call.
 
-        const response = await fetch(api.base + api.handlers.groups, {
+        const response = await fetch(api.base + api.handlers.groups + "/" + card._id, {
             method: 'DELETE',
             headers: new Headers({
                 "Authorization": this.state.authToken
             }),
-            body: JSON.stringify(card)
         });
         if (response.status >= 300) {
             this.toggleOnError(response.body);
             return;
         } else {
-            this.valueChange()
+            // this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
@@ -468,7 +469,6 @@ export default class App extends React.Component {
 
     render() {
         let content = null;
-        console.log(this.state.authToken)
         if (!this.state.authToken || this.state.authToken === "null") {
             content = (
                 <div>

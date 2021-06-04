@@ -244,7 +244,6 @@ export default class FilteredCardList extends React.Component {
 
     // renders the filter form
     render() {
-        console.log(this.props.renderedCards)
         let listOfCards = [];
         let content = null;
         if (this.state.cardList) {
@@ -252,7 +251,7 @@ export default class FilteredCardList extends React.Component {
                 let singleCard = (
                     <Card cardData={eachCard} switchFunction={this.joinGroup} editFunction={this.editGroup} fetch={this.props.fetch}
                         toggleFeedback={this.props.toggleFeedback} feedbackInfo={this.props.feedbackInfo} feedbackDisplay={this.props.feedbackDisplay}
-                        key={eachCard.id} confirmFunction={this.confirmLeave} user={this.props.user}
+                        key={eachCard._id} confirmFunction={this.confirmLeave} user={this.props.user}
                         toggleEditForm={this.props.toggleEditForm} />
                 )
                 return singleCard;

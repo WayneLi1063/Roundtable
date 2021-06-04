@@ -13,10 +13,10 @@ const postGroupHandler = async (req, res, { Group }) => {
     const { 
         teamName, 
         className, 
-        descrption, 
+        description, 
         private, 
         img, 
-        when2meet,
+        when2meetURL,
         homeworkHelp,
         examSquad,
         noteExchange,
@@ -55,13 +55,13 @@ const postGroupHandler = async (req, res, { Group }) => {
     const group = {
         teamName: teamName,
         className: className,
-        descrption: descrption,
+        description: description,
         private: private,
         creator: creator,
         members: [userID],
         createdAt: createdAt,
         imgURL: img,
-        when2meetURL: when2meet,
+        when2meetURL: when2meetURL,
         tags: tags,
         maxSize: totalNumber
     }
