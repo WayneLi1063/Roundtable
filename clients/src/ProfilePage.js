@@ -1,8 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js';
-//import api from './APIEndpoints.js'
+import { albumBucketName, bucketRegion, AddPhoto } from './S3.js';
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -80,7 +79,7 @@ export default class Profile extends React.Component {
             // })
 
             if (this.state.newPhoto !== '') {
-                addPhoto("UserFolder", this.state.newPhoto, this.state.userName)
+                AddPhoto("UserFolder", this.state.newPhoto, this.state.userName)
                 
                 // TODO: Change the img handling process.
 

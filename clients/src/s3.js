@@ -2,8 +2,8 @@ const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
 const { fromCognitoIdentityPool, } = require("@aws-sdk/credential-provider-cognito-identity");
 const { S3Client, PutObjectCommand, ListObjectsCommand, DeleteObjectCommand, DeleteObjectsCommand } = require("@aws-sdk/client-s3");
 
-const albumBucketName = "roundtablefinder";
-const bucketRegion = "us-west-1";
+export const albumBucketName = "roundtablefinder";
+export const bucketRegion = "us-west-1";
 const IdentityPoolId = "us-west-1:28fdba59-1304-427e-8879-19f3d8c15844";
 
 const s3 = new S3Client({
@@ -15,7 +15,7 @@ const s3 = new S3Client({
   });
 
 // List the photo albums that exist in the bucket
-const listAlbums = async () => {
+export const ListAlbums = async () => {
     try {
       const data = await s3.send(
           new ListObjectsCommand({ Delimiter: "/", Bucket: albumBucketName })
@@ -38,7 +38,7 @@ const listAlbums = async () => {
   };
   
   // Create an album in the bucket
-const createAlbum = async (albumName) => {
+export const CreateAlbum = async (albumName) => {
     albumName = albumName.trim();
     if (!albumName) {
       return alert("Album names must contain at least one non-space character.");
@@ -58,7 +58,7 @@ const createAlbum = async (albumName) => {
   };
 
   // Add a photo to an album
-const addPhoto = async (albumName, imgFile, photoKeyName) => {
+export const AddPhoto = async (albumName, imgFile, photoKeyName) => {
       const albumPhotosKey = encodeURIComponent(albumName) + "/";
       const data = await s3.send(
           new ListObjectsCommand({
@@ -86,6 +86,6 @@ const addPhoto = async (albumName, imgFile, photoKeyName) => {
       }
 }
 
-module.exports = {
-    albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto
-}
+// export default {
+//     albumBucketName, ListAlbums, bucketRegion, CreateAlbum, AddPhoto
+// }

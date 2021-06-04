@@ -1,5 +1,5 @@
 import React from 'react';
-import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js'
+import { albumBucketName, bucketRegion, AddPhoto } from './S3.js';
 
 // The form for "create a group" function.
 export default class Create extends React.Component {
@@ -172,7 +172,7 @@ export default class Create extends React.Component {
                 let url = "https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/81/2015/04/07090900/uw-block-w-statue-377x160.jpg"
                 this.handleSubmitHelper(newGroup, url);
             } else {
-                addPhoto("GroupPhotos", this.state.img, "")
+                AddPhoto("GroupPhotos", this.state.img, "")
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
             }
