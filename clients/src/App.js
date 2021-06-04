@@ -17,11 +17,9 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import SignUp from './SignUp.js'
 import Login from './Login.js'
 import api from './APIEndpoints.js'
-import { Card, Avatar, Input, Typography } from 'antd';
 
 // WEBSOCKET
-const { Search } = Input;
-const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000', 'echo-protocol');
+const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
 
 export default class App extends React.Component {
     constructor(props) {
@@ -377,18 +375,6 @@ export default class App extends React.Component {
                                 <p>{this.state.errorMessage + " Check your connection and refresh webpage."}</p>
                             </div>
                         }
-
-                        <div className="bottom">
-                            <Search
-                            placeholder="input message and send"
-                            enterButton="Send"
-                            value={this.state.searchVal}
-                            size="large"
-                            onChange={(e) => this.setState({ searchVal: e.target.value })}
-                            onSearch={value => this.valueChange()}
-                            />
-                        </div> 
-
 
                         <Switch>
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser} />)} />
