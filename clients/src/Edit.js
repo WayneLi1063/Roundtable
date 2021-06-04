@@ -301,10 +301,10 @@ export default class Create extends React.Component {
                         </div>
                     </div>
 
-                    <div class="form-check">
-                                <input type="checkbox" class="form-check-input" 
+                    <div className="form-check">
+                                <input type="checkbox" className="form-check-input" 
                                     id="g-private" onClick={this.handlePrivateChange}/>
-                                <label class="form-check-label" for="g-private">Private Group</label>
+                                <label className="form-check-label" htmlFor="g-private">Private Group</label>
                     </div>
 
                     <label htmlFor="leave">Disband the group?</label>

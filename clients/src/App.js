@@ -21,7 +21,7 @@ import { Card, Avatar, Input, Typography } from 'antd';
 
 /////////WEBSOCKET/////////
 const { Search } = Input;
-const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000');
+const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000', 'echo-protocol');
 /////////WEBSOCKET/////////
 
 export default class App extends React.Component {
@@ -236,8 +236,12 @@ export default class App extends React.Component {
             return;
         }
         const enrArray = await response.json()
-        const courses = enrArray[0].classList
+        var courses = enrArray[0].classList
+        if (!courses) {
+            courses = ["Please set up your current courses in profile page."]
+        }
         this.setState({ myCourses: courses });
+
     }
 
     // The callback function that allows Create form to submit a new group to app.
@@ -262,7 +266,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            //this.valueChange()
+            this.valueChange()
         }
 
         // newGroup.id = this.state.groupCount + 1;
@@ -296,7 +300,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            // this.valueChange()
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
@@ -426,7 +430,7 @@ export default class App extends React.Component {
             this.toggleOnError(response.body);
             return;
         } else {
-            // this.valueChange()
+            this.valueChange()
         }
 
         // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
