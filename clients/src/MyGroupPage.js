@@ -21,7 +21,7 @@ export default class RenderMyGroups extends React.Component {
 
         return (
             <div>
-                <FilteredCardList filterDisplay={this.props.filterDisplay} toggleFilter={this.props.toggleFilter} cards={this.props.cards} renderedCards={groups} fetch={this.props.fetch} updateCallback={this.props.updateCallback} toggleFeedback={this.props.toggleFeedback}feedbackInfo={this.props.feedbackInfo} passEditCallback={this.props.passEditCallback}feedbackDisplay={this.props.feedbackDisplay} user={this.props.user} h1Title={"My Current Groups"} errorCallback={this.props.errorCallback} loading={this.props.loading}/>
+                <FilteredCardList wsUpdate={this.props.wsUpdate} filterDisplay={this.props.filterDisplay} toggleFilter={this.props.toggleFilter} cards={this.props.cards} renderedCards={groups} fetch={this.props.fetch} updateCallback={this.props.updateCallback} toggleFeedback={this.props.toggleFeedback}feedbackInfo={this.props.feedbackInfo} passEditCallback={this.props.passEditCallback}feedbackDisplay={this.props.feedbackDisplay} user={this.props.user} h1Title={"My Current Groups"} errorCallback={this.props.errorCallback} loading={this.props.loading}/>
             </div>
         )
     }
