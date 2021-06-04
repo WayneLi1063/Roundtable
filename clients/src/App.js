@@ -19,10 +19,9 @@ import Login from './Login.js'
 import api from './APIEndpoints.js'
 import { Card, Avatar, Input, Typography } from 'antd';
 
-/////////WEBSOCKET/////////
+// WEBSOCKET
 const { Search } = Input;
 const client = new W3CWebSocket('ws://api.roundtablefinder.com:8000', 'echo-protocol');
-/////////WEBSOCKET/////////
 
 export default class App extends React.Component {
     constructor(props) {
@@ -53,7 +52,7 @@ export default class App extends React.Component {
 
     getCurrentUser = async () => {
         if (!this.state.authToken) {
-            console.error("no auth token found, aborting")
+            this.toggleOnError("You are not authenticated.")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
@@ -90,11 +89,10 @@ export default class App extends React.Component {
         this.setState({myGroups: groups});
     }
 
-    /////////WEBSOCKET/////////
+    //WEBSOCKET
     valueChange = () => {
         client.send("update happened")
     }
-    /////////WEBSOCKET/////////
 
     // fetch data from database and handles user sign in
     componentDidMount() {
@@ -105,123 +103,32 @@ export default class App extends React.Component {
         }
 
         client.onmessage = (message) => {
-            console.log(message)
             this.fetch();
         }
 
-        // TODO: Change this into the auth we wrote
+        // If user is authenticated
         if (this.state.authToken) {
             this.getCurrentUser();
             this.getCurrentGroups();
             this.getCourse();
         }
-        // this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
-        //     (user) => {
-        //         if (user) {
-        //             let userDataString = 'users/' + user.uid;
-        //             let userRef = firebase.database().ref(userDataString);
-        //             userRef.once("value", snapshot => {
-        //                 let uid = user.uid
-        //                 user.updateProfile({ photoURL: 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png' })
-        //                 if (!snapshot.exists()) {
-        //                     firebase.database().ref('users').child(uid).set({
-        //                         uid: uid,
-        //                         name: user.displayName,
-        //                         email: user.email,
-        //                         photoURL: 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
-        //                         courses: {}
-        //                     }, (errorObj) => {
-        //                         if (errorObj) {
-        //                             this.toggleOnError(errorObj);
-        //                         }
-        //                     })
-        //                     this.toggleAddCourse();
-        //                 }
-        //                 firebase.database().ref('/users/' + uid).once('value', (snapshot) => {
-        //                     let user = snapshot.val();
-        //                     if (user) {
-        //                         this.setState({ currentCourses: user.courses })
-        //                     }
-        //                 }, (errorObj) => {
-        //                     if (errorObj) {
-        //                         this.toggleOnError(errorObj);
-        //                     }
-        //                 });
-        //             }, (errorObj) => {
-        //                 if (errorObj) {
-        //                     this.toggleOnError(errorObj);
-        //                 }
-        //             })
-        //             this.setState({ user: user, uid: user.uid })
-        //             this.fetch()
-        //         } else {
-        //             this.setState({ user: null, uid: null })
-        //         }
-        //     }
-        // );
-    }
-
-    // unregister all listeners
-    componentWillUnmount() {
-        // this.rootRef.off();
-        //this.unregisterAuthObserver();
     }
 
     // Fetch the groups the user is currently enrolled and user's current attending courses in from json.
     fetch = async () => {
-        
         this.setSpinnerOnDisplay();
 
-        // TODO: Change this into an api call.
         this.getCurrentUser();
-
         this.getCurrentGroups();
-
         this.getCourse();
 
         this.setSpinnerOffDisplay();
-        // this.rootRef = firebase.database().ref();
-        // this.rootRef.on('value', (snapshot) => {
-        //     let groupList = snapshot.val().groups;
-        //     let count = snapshot.val().groupCount;
-        //     let userList = snapshot.val().users;
-        //     let groups = [];
-        //     let courses = [];
-        //     if (groupList) {
-        //         let groupListArrKeys = Object.keys(groupList);
-        //         groupListArrKeys.forEach((groupKey) => {
-        //             groups.push(groupList[groupKey])
-        //         })
-        //     }
-        //     if (userList && this.state.uid) {
-        //         if (!userList[this.state.uid].courses) {
-        //             courses = ["Please set up your current courses in profile page."]
-        //         } else {
-        //             courses = Object.values(userList[this.state.uid].courses);
-        //         }
-        //     }
-        //     this.setState({
-        //         myGroups: groups,
-        //         groupCount: count,
-        //         myCourses: courses,
-        //         errorDisplay: false,
-        //         errorMessage: ''
-        //     })
-        //     this.setSpinnerOffDisplay();
-        // }, (errorObj) => {
-        //     if (errorObj) {
-        //         this.setSpinnerOffDisplay();
-        //         this.toggleOnError(errorObj);
-        //     }
-
-        // })
     }
 
     // This callback gets the current course enrollment of the user
     getCourse = async () => {
-
         if (!this.state.authToken) {
-            console.error("no auth")
+            this.toggleOnError("You are not authenticated.")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -231,7 +138,7 @@ export default class App extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.error("Get course failed. Please retry");
+            this.toggleOnError("Get course failed. Please retry");
             return;
         }
         const courses = await response.json()
@@ -244,11 +151,8 @@ export default class App extends React.Component {
 
     // The callback function that allows Create form to submit a new group to app.
     submitCreateForm = async (newGroup) => {
-        console.log(newGroup)
-
-        // TODO: Change this into an api call.
         if (!this.state.authToken) {
-            console.error("no auth")
+            this.toggleOnError("You are not authenticated.")
             return;
         }
 
@@ -266,26 +170,10 @@ export default class App extends React.Component {
         } else {
             this.valueChange()
         }
-
-        // newGroup.id = this.state.groupCount + 1;
-        // this.rootRef.child("groups").child(newGroup.id).set(newGroup, (errorObj) => {
-        //     if (errorObj) {
-        //         this.toggleOnError(errorObj);
-        //     }
-        // });
-        // this.rootRef.child("groupCount").set(this.state.groupCount + 1, (errorObj) => {
-        //     if (errorObj) {
-        //         this.toggleOnError(errorObj);
-        //     }
-        // });
-
-        this.fetch()
     }
 
     // The callback function that allows Edit form to submit edited group info to app.
     submitEditForm = async (card, _id) => {
-        // TODO: Change this into an api call.
-
         const response = await fetch(api.base + api.handlers.groups + "/" + _id, {
             method: 'PATCH',
             headers: new Headers({
@@ -300,12 +188,6 @@ export default class App extends React.Component {
         } else {
             this.valueChange()
         }
-
-        // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
-        //     if (errorObj) {
-        //         this.toggleOnError(errorObj);
-        //     }
-        // });
     }
 
     // Sets React-FontAwesome spinner on.
@@ -323,7 +205,6 @@ export default class App extends React.Component {
     }
 
     // Sets the Auth token for the current user
-
     setAuthToken = (auth) => {
         localStorage.setItem("Authorization", auth)
         this.setState(() => {
@@ -331,11 +212,11 @@ export default class App extends React.Component {
         })
     }
 
+    // Save user data to the state
     setUser = (user) => {
         this.setState(() => {
             return { user: user };
         })
-        console.log(this.state.user)
     }
 
     // Toggle filter group form
@@ -365,7 +246,6 @@ export default class App extends React.Component {
         })
     }
 
-
     // Toggle the feedback popup window when "leave" button is clicked
     toggleFeedback = () => {
         this.setState((prevState) => {
@@ -391,10 +271,7 @@ export default class App extends React.Component {
 
     // disbands the group
     disbandGroup = async (card) => {
-        this.fetch()
         this.toggleEditForm();
-
-        // TODO: Change this into an api call.
 
         const response = await fetch(api.base + api.handlers.groups + "/" + card._id, {
             method: 'DELETE',
@@ -408,12 +285,6 @@ export default class App extends React.Component {
         } else {
             this.valueChange()
         }
-
-        // this.rootRef.child("groups").child(card.id).set(null, (errorObj) => {
-        //     if (errorObj) {
-        //         this.toggleOnError(errorObj);
-        //     }
-        // });
     }
 
     // toggles the popup window when disbanding a group
@@ -440,11 +311,12 @@ export default class App extends React.Component {
 
     // allows child components to toggle error message when their fetch goes wrong
     toggleOnError = (errorObj) => {
-        if (errorObj)
+        if (errorObj) {
             this.setState({
                 errorDisplay: true,
                 errorMessage: errorObj.message
             })
+        }
     }
 
     render() {
