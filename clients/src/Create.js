@@ -309,12 +309,6 @@ export default class Create extends React.Component {
                                 </div>
                             </div>
 
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" 
-                                    id="create-private" onClick={this.handlePrivateChange}/>
-                                <label className="form-check-label" htmlFor="create-private">Private Group</label>
-                            </div>
-
                             <div className="form-button">
                                 <button type="button" id="submit-create" className="btn save" onClick={this.handleSubmit}>Save</button>
                                 <button type="button" id="cancel-create" className="btn cancel" onClick={this.props.toggleForm}>Cancel</button>

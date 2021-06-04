@@ -12,7 +12,7 @@ export default class Create extends React.Component {
             courseName: this.props.editData.className,
             description: this.props.editData.description,
             when2meetURL: this.props.editData.when2meetURL,
-            private: this.props.editData.private,
+            private: false,
             groupSize: this.props.editData.totalNumber,
             homeworkHelp: this.props.editData.tags.homeworkHelp,
             examSquad: this.props.editData.tags.examSquad,
@@ -300,12 +300,6 @@ export default class Create extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="form-check">
-                                <input type="checkbox" className="form-check-input" 
-                                    id="g-private" onClick={this.handlePrivateChange}/>
-                                <label className="form-check-label" htmlFor="g-private">Private Group</label>
                     </div>
 
                     <label htmlFor="leave">Disband the group?</label>
