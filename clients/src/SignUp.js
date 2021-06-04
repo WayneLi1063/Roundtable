@@ -83,7 +83,6 @@ export default class SignUp extends React.Component {
     }
     const user = await response.json()
     this.props.setUser(user);
-    let currImg = user.photoURL
     AddPhoto("GroupPhotos", user.photoURL, user.userName)
     this.props.setAuthToken(response.headers.get("Authorization"));
   }

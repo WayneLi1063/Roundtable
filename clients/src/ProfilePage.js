@@ -29,16 +29,6 @@ export default class Profile extends React.Component {
         // this.setUserPhoto()
     }
 
-    // disables all event listeners when component gets destoryed.
-    componentWillUnmount() {
-        //this.currentUserRef.off();
-    }
-
-    // setUserPhoto = () => {
-    //     this.setState({
-    //         userPhoto: `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${this.state.userName}`
-    //     })
-    // }
     // decide to show the profile or edit tab
     toggleMenu = (tab) => {
         this.setState({ display: tab })
@@ -67,39 +57,9 @@ export default class Profile extends React.Component {
             });
         } else {
             this.submitUpdate()
-            //const user = await response.json()
-
-            // firebase.database().ref('/users/' + uid).update({
-            //     name: this.state.name,
-            //     email: this.state.email
-            // }, (errorObj) => {
-            //     if (errorObj) {
-            //         this.props.errorCallback(errorObj);
-            //     }
-            // })
 
             if (this.state.newPhoto !== '') {
                 AddPhoto("UserFolder", this.state.newPhoto, this.state.userName)
-                
-                // TODO: Change the img handling process.
-
-                // this.imgStorageRef.child(this.state.newPhoto.name).put(this.state.newPhoto).then(() => {
-                //     this.imgStorageRef.child(this.state.newPhoto.name).getDownloadURL().then((url) => {
-                //         this.props.user.updateProfile({ photoURL: url})
-                //         firebase.database().ref('users').child(this.props.user.uid).update({
-                //             photoURL: url
-                //         })
-                //         this.setState({ url: url })
-                //     }).catch((errorObj) => {
-                //         if (errorObj) {
-                //             this.props.errorCallback(errorObj);
-                //         }
-                //     });
-                // }).catch((errorObj) => {
-                //     if (errorObj) {
-                //         this.props.errorCallback(errorObj);
-                //     }
-                // });
             }
 
             this.setState({
@@ -228,11 +188,6 @@ export default class Profile extends React.Component {
 
     render() {
         let content = [];
-
-        let url = ""
-        if (this.props.user !== null) {
-            url = this.props.user.photoURL
-        }
 
         let courses = this.state.courses;
         if (courses.length !== 0) {
