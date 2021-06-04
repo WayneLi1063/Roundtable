@@ -1,7 +1,5 @@
 import React from 'react';
 import {NavLink, Redirect} from 'react-router-dom';
-import api from './APIEndpoints'
-// import firebase from 'firebase/app';
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -49,23 +47,9 @@ export default class Header extends React.Component {
         } 
 
         let url = ""
-        //should this be PhotoURL or photo_url
         if (this.props.user !== null) {
             url = this.props.user.photoURL
         }
-
-        
-        // TODO: Change this into an api call.
-
-        // let url = ''
-        // firebase.database().ref('/users/' + this.props.uid).once('value', (snapshot) => {
-        //     let user = snapshot.val();
-        //     url = user.photoURL
-        // }, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // })
         
         return (
             <div id="nav-search" className="sticky-top">

@@ -1,8 +1,6 @@
 import React from 'react';
-// import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import api from './APIEndpoints.js'
 
 export default class AddCourses extends React.Component {
 
@@ -16,26 +14,23 @@ export default class AddCourses extends React.Component {
         }
     }
 
-    //called when component shows
+    // When the props gets updated, change the state as well
+    componentDidUpdate(prevProps) {
+        if (this.props.courses !== prevProps.courses) {
+            this.setState(() => {
+                return ({ courses: this.props.courses });
+            })
+        }
+    }
+
+    // Called when component shows
     componentDidMount() {
-        // TODO: change to api call
-
         this.props.getCourseCallback()
-
-        // this.courseRef = firebase.database().ref('/users/' + uid + '/courses');
-        // this.courseRef.on('value', (snapshot) => {
-        //     let courses = snapshot.val();
-        //     this.setState({ courses: courses })
-        // }, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // })
     }
 
     // disable event listens.
     componentWillUnmount() {
-        // this.courseRef.off();
+
     }
 
     //shows empty field alert
@@ -50,9 +45,6 @@ export default class AddCourses extends React.Component {
 
     //delete a course from the user's list
     deleteCourse = async (course) => {
-        // let uid = this.props.user.uid;
-
-        // TODO: change to api call
         if (!this.state.authToken) {
             return;
         }
@@ -66,11 +58,9 @@ export default class AddCourses extends React.Component {
         });
         if (response.status >= 300) {
             this.props.errorCallback("Delete course failed. Please retry");
-            return;
+        } else {
+            this.props.wsUpdate()
         }
-
-        // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
-        // courseRef.remove()
     }
 
     //add a course to the user's list
@@ -78,11 +68,8 @@ export default class AddCourses extends React.Component {
         if (newCourseName === '') {
             this.showEmpty();
         } else {
-
-            // TODO: change to api call
-
             if (!this.state.authToken) {
-                console.error("no auth")
+                this.props.errorCallback("You are not authenticated")
                 return;
             }
             const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -94,29 +81,10 @@ export default class AddCourses extends React.Component {
                 body: JSON.stringify({course: newCourseName})
             });
             if (response.status >= 300) {
-                console.error("Add course failed. Please retry");
-                return;
+                this.props.errorCallback("Add course failed. Please retry");
             } else {
                 this.props.wsUpdate()
             }
-
-            // this.courseRef.update({
-            //     [newCourseName]: newCourseName
-            // }, (errorObj) => {
-            //     if (errorObj) {
-            //         this.props.errorCallback(errorObj);
-            //     }
-            // })
-            // this.courseRef.on('value', (snapshot) => {
-            //     let courses = snapshot.val();
-            //     if (courses !== null) {
-            //         this.setState({ courses: courses })
-            //     }
-            // }, (errorObj) => {
-            //     if (errorObj) {
-            //         this.props.errorCallback(errorObj);
-            //     }
-            // })
             this.hideEmpty();
         }
     }

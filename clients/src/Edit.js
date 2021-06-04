@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from 'firebase/app';
 import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js'
 
 // The form for "edit" button.
@@ -12,7 +11,7 @@ export default class Create extends React.Component {
             courseName: this.props.editData.className,
             description: this.props.editData.description,
             when2meetURL: this.props.editData.when2meetURL,
-            private: this.props.editData.private,
+            private: false,
             groupSize: this.props.editData.totalNumber,
             homeworkHelp: this.props.editData.tags.homeworkHelp,
             examSquad: this.props.editData.tags.examSquad,
@@ -22,11 +21,9 @@ export default class Create extends React.Component {
             emptyAlertDisplay: false,
             exceedCharDisplay: false,
             manyMemberDisplay: false,
-            myCourses: this.props.courseList
+            myCourses: this.props.courseList,
+            authToken: localStorage.getItem("Authorization") || null
         }
-        console.log(this.props.editData)
-        console.log(this.state.description)
-        console.log(this.state.when2meetURL)
     }
 
     // updates course list prop when database fetches
@@ -169,23 +166,13 @@ export default class Create extends React.Component {
             this.toggleEmpty();
         } else if (this.state.groupName.length > 24) {
             this.toggleExceed();
-        } else if (this.state.groupSize < this.props.editData.currNumber) {
+        } else if (this.state.groupSize < this.props.editData.members.length) {
             this.toggleManyMember();
         } else {
-            // TODO: Change the img handling process.
-
             if (typeof this.state.img !== "string") {
-            //     this.imgStorageRef.child(this.state.img.name).put(this.state.img).then(() => {
-            //         this.imgStorageRef.child(this.state.img.name).getDownloadURL().then((url) => {
                 addPhoto("GroupPhotos", this.state.img, "")
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
-            //         }).catch((errorObj) => {
-            //             this.props.errorCallback(errorObj);
-            //         });
-            //     }).catch((errorObj) => {
-            //         this.props.errorCallback(errorObj);
-            //     });
             } else {
                 this.handleSubmitHelper(newGroup, this.state.img);
             }
@@ -256,10 +243,10 @@ export default class Create extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="g-size" className="font-weight-bold">Group Size (2-5)</label><br />
-                        <input type="range" name="g-size" max="5" min="2" id="g-size" className="g-size" value={this.state.groupSize} onChange={this.handleGroupSizeChange} />
+                        <input type="range" name="g-size" max="5" min="2" id="g-size" className="g-size" value={this.state.groupSize ? this.state.groupSize : this.props.editData.maxSize } onChange={this.handleGroupSizeChange} />
                         <output className="ml-3" name="size-output" id="size-output">{this.state.groupSize}</output><br />
                         {this.state.manyMemberDisplay &&
-                            <p className="alert-red alert-edit many-member">You have {this.props.editData.currNumber} members which exceeds desired group size.</p>
+                            <p className="alert-red alert-edit many-member">You have {this.props.editData.members.length} members which exceeds desired group size.</p>
                         }
                     </div>
 
@@ -299,12 +286,6 @@ export default class Create extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="form-check">
-                                <input type="checkbox" className="form-check-input" 
-                                    id="g-private" onClick={this.handlePrivateChange}/>
-                                <label className="form-check-label" htmlFor="g-private">Private Group</label>
                     </div>
 
                     <label htmlFor="leave">Disband the group?</label>

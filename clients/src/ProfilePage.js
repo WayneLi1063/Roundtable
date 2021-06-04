@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js';
@@ -14,8 +13,6 @@ export default class Profile extends React.Component {
             lastName: '',
             email: '',
             courses: '',
-            // newPassword: '',
-            // confirmPassword: '',
             passwordErr: false,
             nameErr: false,
             newPhoto: '',
@@ -23,7 +20,6 @@ export default class Profile extends React.Component {
             userName: '',
             authToken: localStorage.getItem("Authorization") || null
         }
-        // this.imgStorageRef = firebase.storage().ref("img");
     }
 
     // initial actions when component is created.
@@ -65,9 +61,6 @@ export default class Profile extends React.Component {
             console.error("no auth token, aborting")
             return;
         }
-
-        // let id = this.props.user.id;
-        //if (this.state.newPassword === this.state.confirmPassword) {
 
         if (this.state.firstName === '' && this.state.LastName === '') {
             this.setState({
@@ -119,9 +112,6 @@ export default class Profile extends React.Component {
             this.setUserProfile();
             this.toggleMenu('profile');
         }
-        /*} else {
-            this.setState({ passwordErr: true })
-        }*/
     }
 
     submitUpdate = async () => {
@@ -142,22 +132,16 @@ export default class Profile extends React.Component {
         if (response.status >= 300) {
             console.error("error:" + response.status);
             return;
-        } else {
-            //this.props.wsUpdate()
         }
-
-        // this.rootRef.child("groups").child(card.id).set(card, (errorObj) => {
-        //     if (errorObj) {
-        //         this.toggleOnError(errorObj);
-        //     }
-        // });
     }
 
+    // sets the authToken
     setAuthToken = (auth) => {
         localStorage.setItem("Authorization", auth)
         this.setState({authToken: auth});
     }
 
+    // saves the user data
     setUser = (user) => {
         this.setState({user: user});
     }
@@ -189,8 +173,8 @@ export default class Profile extends React.Component {
         })
     }
 
+    // calls the course api to get user's current courses
     getCourse = async () => {
-
         if (!this.state.authToken) {
             console.error("no auth")
             return;

@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from 'firebase/app';
 import { albumBucketName, listAlbums, bucketRegion, createAlbum, addPhoto } from './s3.js'
 
 // The form for "create a group" function.
@@ -24,7 +23,6 @@ export default class Create extends React.Component {
             private: false,
             myCourses: []
         }
-        // this.imgStorageRef = firebase.storage().ref("img");
     }
 
     // updates course list prop when database fetches
@@ -170,8 +168,6 @@ export default class Create extends React.Component {
             this.toggleEmptyCourse();
             // default img if user didn't upload image
         } else {
-            // TODO: Change the image handling process
-
             if (this.state.img === '') {
                 let url = "https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/81/2015/04/07090900/uw-block-w-statue-377x160.jpg"
                 this.handleSubmitHelper(newGroup, url);
@@ -311,12 +307,6 @@ export default class Create extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" 
-                                    id="create-private" onClick={this.handlePrivateChange}/>
-                                <label className="form-check-label" htmlFor="create-private">Private Group</label>
                             </div>
 
                             <div className="form-button">
