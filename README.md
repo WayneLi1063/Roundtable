@@ -22,13 +22,13 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 | Priority | User              | Description                                                  | Technical Implementation                                     |
 | -------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| P0       | As a user         | I want to create a group and fill out my preferred meeting time. | Store the filled out group information form to the **MySQL** database, which will be in **JSON**, and returns the validated group info back to users’ browsers, and render the results using **React, HTML, and CSS**. |
-| P0       | As a group admin  | I want to edit my group descriptions in the future.          | Validate the identity of the user as the group admin, store the filled out updated group information form to the **MySQL** database, which will be in **JSON**, and returns the validated group info back to users’ browsers, and render the results using **React, HTML, and CSS**. |
-| P0       | As a group admin  | I want to disband the group now that the quarter is finished. | Validate the identity of the user as the group admin, and delete the group entry from the **MySQL** database. |
-| P0       | As a group member | I want to leave the group because I think the group does not suit my interests / there is now a conflict in my schedule after I switched classes. | Validate the identity of the user as one of the members, and delete the person from the list of members from the **MySQL** database. |
-| P0       | As a group admin  | I want to remove a member from the group because he or she no longer shows up and I want new members to join. | Validate the identity of the user as the group admin, and delete the person from the list of members from the **MySQL** database. |
-| P1       | As a student      | I want to filter groups by group size and join a group with no more than 5 people, because I want to make close friends. | Look up groups with a form filled out by the user, send the form in **JSON** and search for suitable groups in **MySQL** database, compile all matches and send all the data back to users in **JSON**, then display them using **React, HTML and CSS**. |
-| P1       | As a group admin  | I want to add tags to my study group, so it is more searchable. | Validate the identity of the user as the group admin, append tags (defined by us) to the current group within the groups table in **MySQL**.The tags we envisioned are: homework help, exam squad, lab mates, note exchange, project partners |
+| P0       | As a user         | I want to create a group that advertises my interests with a representative image. | Store the filled out group information form encoded in **JSON** and send to the api gateway, then the gateway reroutes the request to the groups microservices, the group handlers stores the group info into a **MongoDB** database, websocket then fires off and tells all clients to update. The image storage solution is **AWS S3**. |
+| P0       | As a group admin  | I want to edit my group descriptions in the future.          | Validate the identity of the user as the group admin by local authToken, retrieved earlier from api server, and user info is contained in a **MySQL** user database. The api server then stores the filled out updated group information to the **MongoDB** database, encoded in **JSON**. |
+| P0       | As a group admin  | I want to disband the group now that the quarter is finished. | Validate the identity of the user as the group admin by local authToken, retrieved earlier from api server, and user info is contained in a **MySQL** user database. Deletes the group entry from the **MongoDB** database. |
+| P0       | As a group member | I want to leave the group because I think the group does not suit my interests / there is now a conflict in my schedule after I switched classes. | Validate the identity of the user as the group member by local authToken, retrieved earlier from api server, and user info is contained in a **MySQL** user database. Deletes the person from the list of members from the **MongoDB** database. |
+| P1       | As a student      | I want to filter groups by course (INFO441) and the note exchange tag, so I can join groups that help me take notes in this class. | Retrieve all groups from the api server, which stored in a **MongoDB** database, then filters groups by checking the course and tags in **React** |
+| P1       | As a student      | I want to set up courses that I am currently taking this quarter, so every time I create a group, I don't have to type in the courses. | Validate the identity of the user as a user by local authToken, retrieved earlier from api server, and user info is contained in a **MySQL** user database. **React** frontend will send the course string to the api server, and the server saves the information in the **MongoDB** database. |
+| P1       | As a student      | I want to delete the courses in my profiles, now that I am done with this quarter. | Validate the identity of the user as a user by local authToken, retrieved earlier from api server, and user info is contained in a **MySQL** user database. **React** frontend will send the course string that user wants to delete to the api server, and the server deletes the enrollment information from the **MongoDB** database. |
 
  <br />
 
@@ -38,9 +38,9 @@ We, the developers, had experienced these pain points as UW students and wished 
 
 POST /users (Creates a new user)
 
-GET /users/{id} (Returns the given user’s profile info, including stuff like contact info)
+GET /users/{id} (Returns the given user’s profile info, including contact info)
 
-PATCH /users/{id} (Edits the given user’s profile info)
+PATCH /users/{id} (Edits the given user’s first name and last name in profile)
 
 POST /sessions (Starts a new session)
 
@@ -52,9 +52,9 @@ DELETE /sessions/mine (Ends the current session)
 
 POST /groups (Creates a new group)
 
-GET /groups (Given search filters, return suitable groups)
+GET /groups (Return all groups)
 
-GET /groups/{id} (Returns a particular group’s info, including stuff like group size and name)
+GET /groups/{id} (Returns a particular group’s info, including details such as descriptions and when2meet URL)
 
 PATCH /groups/{id} (Edits the group’s info)
 
@@ -64,116 +64,69 @@ POST /groups/{id}/members (Adds a new member)
 
 DELETE /groups/{id}/members/{id} (Deletes the member, both from admin removal, or member leaving the group)
 
-POST /groups/{id}/tags/{id} (Adds a new tag to a particular group)
+POST /courses/users (Adds a new course to user's profile)
 
-DELETE /groups/{id}/tags/{id} (Deletes the tag of a particular group) 
+DELETE /courses/users (Deletes a course from user's profile) 
 
  <br />
 
 **Database Schema:**
+
+MySQL for Users (Go)
 ```
 create table if not exists Users (
+    id int not null auto_increment primary key,
+    email varchar(320) not null unique,
+    pass_hash varchar(255) not null,
+    usr_name varchar(255) not null unique,
+    first_name varchar(128) not null,
+    last_name varchar(128) not null,
+    photo_url varchar(2000) not null,
+  	unique index idx_usr_name_email (usr_name, email)
+);
 
-  usr_id int not null auto_increment primary key,
+create table if not exists UserLog (
+    id int not null auto_increment primary key,
+    usr_id int not null,
+    signin_dt datetime not null,
+    client_IP varchar(45)
+);
+```
 
-  email varchar(320) not null,
+Mongo for groups and courses (JavaScript)
+```
+const groupSchema = new Schema ({
+    teamName: { type: String, required: true },
+    className: { type: String, required: true },
+    description: { type: String, required: false },
+    private: { type : Boolean, required: true },
+    creator:{ 
+        type: {
+            userID: Number,
+            userEmail: String,
+            }, 
+        required: true
+    },
+    members: { type: [Number], required: true },
+    createdAt: { type: Date, required: true },
+    imgURL: { type: String, required: false },
+    when2meetURL: { type: String, required: false },
+    tags: { 
+        type: {
+            examSquad: Boolean,
+            homeworkHelp: Boolean,
+            noteExchange: Boolean,
+            projectPartners: Boolean,
+            labMates: Boolean
+            }, 
+        required: true
+    },
+    maxSize: { type: Number, required: true }
+});
 
-  pass_hash varchar(255) not null,
-
-  first_name varchar(128) not null,
-
-  last_name varchar(128) not null,
-
-  photo_url varchar(2000) not null
-
-) 
-
-
-
-create table if not exists Courses (
-
-  courese_id int not null auto_increment primary key,
-
-  course_name varchar(120) not null,
-
-  course_abbr varchar(5) not null
-
-) 
-
-
-
-create table if not exists Groups (
-
-  group_id int not null auto_increment primary key,
-
-  group_name varchar(300) not null,
-
-  total_number int not null,
-
-  curr_number int not null,
-
-  exam_bool boolean not null,
-
-  homework_bool boolean not null,
-
-  note_bool boolean not null,
-
-  project_bool boolean not null,
-
-  photo_url varchar(2000) not null
-
-) 
-
-
-
-create table if not exists Enrollments (
-
-  enrollment_id int not null auto_increment primary key,
-
-  usr_id int not null FOREIGN KEY REFERENCES Users(usr_id),
-
-  group_id int not null FOREIGN KEY REFERENCES Groups(group_id)
-
-) 
-
-
-
-create table if not exists Tags (
-
-  tag_id int not null auto_increment primary key,
-
-  tag_name varchar(120) not null
-
-) 
-
-
-
-create table if not exists GroupTags (
-
-  GroupTag_id int not null auto_increment primary key,
-
-  tag_id int not null FOREIGN KEY REFERENCES Tags(tag_id),
-
-  group_id int not null FOREIGN KEY REFERENCES Groups(group_id)
-
-) 
-
-
-
-create unique index idx_usr_email
-
-on Users (email) 
-
-
-
-create unique index idx_crs_abbr
-
-on Courses (course_abbr) 
-
-
-
-create unique index idx_grp_name
-
-on Groups (group_name) 
+const enrollmentSchema = new Schema ({
+    userID: { type: Number, required: true, unique: true },
+    classList: { type: [String], required: true }
+});
 ```
  
