@@ -95,7 +95,7 @@ export default class GroupDetailsPage extends React.Component {
             } else {
                 this.setState({leader: user});
             }
-            console.log(this.state.user)
+            console.log(this.state.card)
         })
     }
 
@@ -216,7 +216,7 @@ export default class GroupDetailsPage extends React.Component {
                     <div>
                         <p className='membersTitle'>
                             Members:
-                    </p>
+                        </p>
                     </div>
                     <div className='memberList'>
                         {(typeof (this.state.leader) !== 'undefined') &&
@@ -242,6 +242,12 @@ export default class GroupDetailsPage extends React.Component {
                         <div className='goalTagsContainer'>
                             {goals ? goals : <p>None</p>}
                         </div>
+                    </div>
+                    <div>
+                        <p className='membersTitle'>
+                            When2Meet URL: 
+                        </p>
+                        <p>{this.state.card.when2meetURL ? this.state.card.when2meetURL : <p>None</p>}</p>
                     </div>
                 </div>
             </section>
