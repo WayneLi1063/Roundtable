@@ -33,6 +33,7 @@ export default class SignUp extends React.Component {
     }
   }
 
+  // sends the log in data to api server
   onSubmit = async ({formData}) => {
     const response = await fetch(api.base + api.handlers.sessions, {
       method: 'POST',

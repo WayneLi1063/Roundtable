@@ -1,7 +1,5 @@
 import React from 'react';
 import Card from './Card.js';
-// import firebase from 'firebase/app';
-import api from './APIEndpoints.js'
 
 export default class FilteredCardList extends React.Component {
     constructor(props) {
@@ -175,12 +173,8 @@ export default class FilteredCardList extends React.Component {
 
     // confirm user's decision on leaving the passed in study group.
     confirmLeave = async (card) => {
-        const index = card.members.indexOf(this.props.user.id)
-        if (index > -1) {
-            //card.members.splice(index, 1);
-          }
         if (!this.state.authToken) {
-            console.log("no auth")
+            this.props.errorCallback("You are not authenticated.")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/groups/" + card._id + '/members', {
@@ -191,7 +185,7 @@ export default class FilteredCardList extends React.Component {
         })
 
         if (response.status >= 300) {
-            console.log("leaving group failed. Please retry.");
+            this.props.errorCallback("leaving group failed. Please retry.");
             return;
         } else {
             this.props.wsUpdate()
@@ -201,8 +195,7 @@ export default class FilteredCardList extends React.Component {
     // Add the user to the group when they join the group
     joinGroup = async (card) => {
         if (!this.state.authToken) {
-            console.error("no auth")
-            this.props.errorCallback("not authenticated, aborting")
+            this.props.errorCallback("You are not authenticated.")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/groups/" + card._id + '/members', {
@@ -215,25 +208,11 @@ export default class FilteredCardList extends React.Component {
         })
 
         if (response.status >= 300) {
-            console.error("something went wrong for " + card._id + "： " + this.props.user.id)
-            this.props.errorCallback("joining group failed. Please retry.");
+            this.props.errorCallback("Joining group failed. Please retry.");
             return;
         } else {
             this.props.wsUpdate()
         }
-        // TODO: change this into an api call
-
-        // let cardRef = firebase.database().ref("groups/" + card.id);
-        // cardRef.child("members").child(this.props.user.uid).set(false, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // });
-        // cardRef.child("currNumber").set(card.currNumber + 1, (errorObj) => {
-        //     if (errorObj) {
-        //         this.props.errorCallback(errorObj);
-        //     }
-        // });
     }
 
     // Pops up an edit form when the user clicks "edit" button

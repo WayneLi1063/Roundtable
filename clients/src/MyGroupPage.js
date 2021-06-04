@@ -2,6 +2,7 @@ import React from 'react';
 import FilteredCardList from './FilteredCardList.js';
 
 export default class RenderMyGroups extends React.Component {
+    // make filter and create group appear
     componentDidMount() {
         this.props.toggleTwoButtons(true);
     }

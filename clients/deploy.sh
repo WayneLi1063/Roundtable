@@ -2,7 +2,7 @@
 
 docker push wayneli1063/roundtable_client
 
-ssh ec2-user@wayneli.me << EOF
+ssh ec2-user@roundtablefinder.com << EOF
 
 docker rm -f roundtable_client
 
