@@ -67,6 +67,8 @@ export default class AddCourses extends React.Component {
         if (response.status >= 300) {
             this.props.errorCallback("Delete course failed. Please retry");
             return;
+        } else {
+            this.props.wsUpdate()
         }
 
         // let courseRef = firebase.database().ref('/users/' + uid + '/courses/' + courseKey);
