@@ -5,8 +5,33 @@ export default class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            profileChange: this.props.profileChange,
+            profileURL: '',
             display: false,
             page: this.props.page
+        }
+    }
+
+    // actions when data is updated.
+    componentDidUpdate(prevProps) {
+        if (this.props.profileChange !== prevProps.profileChange) {
+            if (this.props.user) {
+                this.setState(() => {
+                    return ({ 
+                        profileChange: this.props.profileChange,
+                        profileURL: this.props.user.profileChange
+                    });
+                })
+            }
+        }
+        if (this.props.user !== prevProps.user) {
+            if (this.props.user) {
+                this.setState(() => {
+                    return ({ 
+                        profileURL: this.props.user.profileChange
+                     });
+                })
+            }
         }
     }
 

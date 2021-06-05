@@ -86,7 +86,7 @@ export default class SignUp extends React.Component {
     const img_response = await fetch("https://roundtablefinder.s3-us-west-1.amazonaws.com/UserFolder/husky.png")
     const default_image = await img_response.blob()
     AddPhoto("UserFolder", default_image, user.userName, () => {
-      this.props.fetch()
+      this.props.setProfilePic()
       this.props.setAuthToken(response.headers.get("Authorization"));
     })
 

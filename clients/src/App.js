@@ -46,7 +46,8 @@ export default class App extends React.Component {
             groupCount: 0,
             errorMessage: '',
             userPhoto: '',
-            authToken: localStorage.getItem("Authorization") || null
+            authToken: localStorage.getItem("Authorization") || null,
+            profileChanged: false,
         }
     }
 
@@ -215,6 +216,13 @@ export default class App extends React.Component {
         })
     }
 
+    // letting the client know to update profile pic
+    setProfilePic = () => {
+        this.setState((prevState) => {
+            return { profileChanged: !prevState.profileChanged };
+        })
+    }
+
     // Toggle filter group form
     toggleFilter = () => {
         this.setState((prevState) => {
@@ -327,7 +335,7 @@ export default class App extends React.Component {
                                 <div className='login-form text-center container'>
                                         <div className="row justify-content-center">
                                             <div className="col">
-                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError} fetch={this.fetch} />
+                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError} fetch={this.fetch} setProfilePic={this.setProfilePic}/>
                                             </div>
                                             <div className="col">
                                                 <Login setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError} fetch={this.fetch} />
@@ -342,7 +350,8 @@ export default class App extends React.Component {
         } else {
             content = (
                 <div>
-                    <Header userPhoto={this.state.userPhoto} page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} setAuthToken={this.setAuthToken}/>
+                    <Header userPhoto={this.state.userPhoto} page={this.state.currentPage} togglePage={this.togglePageTitle} user={this.state.user} errorCallback={this.toggleOnError} 
+                    setAuthToken={this.setAuthToken} profileChanged={this.state.profileChanged} />
                     {this.state.coverDisplay &&
                         <div className="grey-cover"></div>
                     }
@@ -377,7 +386,7 @@ export default class App extends React.Component {
                         <Switch>
                             <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} 
                             toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser}
-                            courses={this.state.myCourses} />)} />
+                            courses={this.state.myCourses} setProfilePic={this.setProfilePic}/>)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 wsUpdate = {this.valueChange} updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}

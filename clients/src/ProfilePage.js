@@ -13,7 +13,6 @@ export default class Profile extends React.Component {
             email: '',
             courses: '',
             nameErr: false,
-            profileChanged: false,
             userPhotoFile: '',
             userPhoto: '',
             userName: '',
@@ -29,7 +28,7 @@ export default class Profile extends React.Component {
     }
 
     // actions when data is updated.
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.courses !== prevProps.courses) {
             this.setState(() => {
                 return ({ courses: this.props.courses });
@@ -75,7 +74,7 @@ export default class Profile extends React.Component {
         }
         if (this.state.userPhotoFile !== '') {
             AddPhoto("UserFolder", this.state.userPhotoFile, this.state.userName, () => {
-                this.setProfilePic()
+                this.props.setProfilePic()
             })
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/users/me", {
@@ -93,11 +92,6 @@ export default class Profile extends React.Component {
             this.setUserProfile();
             this.toggleMenu('profile');
         }
-    }
-
-    // letting the client know to update profile pic
-    setProfilePic = () => {
-        this.setState({profileChanged: true});
     }
 
     // sets the authToken
