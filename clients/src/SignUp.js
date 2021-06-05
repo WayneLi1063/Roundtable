@@ -4,7 +4,7 @@ import api from './APIEndpoints.js';
 import { AddPhoto } from './S3.js';
 
 export default class SignUp extends React.Component {
-
+  // Schema for sign up form
   formSchema = {
     "title": "SIGN UP",
     "description": "Enter basic information to create an account",
@@ -45,6 +45,7 @@ export default class SignUp extends React.Component {
     }
   }
 
+  // Schema for sign up form UI
   UIschema = {
     "email": {
       "ui:format": "email"
@@ -83,9 +84,13 @@ export default class SignUp extends React.Component {
     }
     const user = await response.json()
     this.props.setUser(user);
-    let currImg = user.photoURL
-    AddPhoto("GroupPhotos", user.photoURL, user.userName)
-    this.props.setAuthToken(response.headers.get("Authorization"));
+    const img_response = await fetch("https://roundtablefinder.s3-us-west-1.amazonaws.com/UserFolder/husky.png")
+    const default_image = await img_response.blob()
+    AddPhoto("UserFolder", default_image, user.userName, () => {
+      this.props.setProfilePic()
+      this.props.setAuthToken(response.headers.get("Authorization"));
+    })
+
   }
 
   render() {

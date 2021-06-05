@@ -1,4 +1,4 @@
-// TODO: Creates a new group with user as creator
+// Creates a new group with user as creator
 const postGroupHandler = async (req, res, { Group }) => {
     const user = req.header('X-User')
     var userObject = ""
@@ -79,7 +79,7 @@ const postGroupHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: Responds with all groups that fit the filters
+// Responds with all groups that fit the filters
 const getGroupHandler = async (req, res, { Group }) => {
     try {
         const groups = await Group.find();
@@ -90,7 +90,7 @@ const getGroupHandler = async (req, res, { Group }) => {
     }
 }
 
-// TODO: Returns a specific group's info, if the user has permission
+// Returns a specific group's info, if the user has permission
 const getOneGroupHandler = async (req, res, { Group }) => {
     const groupID = req.params.groupID
     Group.findById(groupID, async (err, grp) => {
@@ -123,7 +123,7 @@ const getOneGroupHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: Updates a group's information
+// Updates a group's information
 const patchOneGroupHandler = async (req, res, { Group }) => {
     // gets the groupID from the address
     const groupID = req.params.groupID
@@ -211,7 +211,7 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: Disbands a group
+// Disbands a group
 const deleteOneGroupHandler = async (req, res, { Group }) => {
     // gets the groupID from the address
     const groupID = req.params.groupID
@@ -254,7 +254,7 @@ const deleteOneGroupHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: adds a new member to the group
+// adds a new member to the group
 const postMemberHandler = async (req, res, { Group }) => {
     const groupID = req.params.groupID
     
@@ -307,7 +307,7 @@ const postMemberHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: deletes the member from the group if user is creator or the user themselves
+// deletes the member from the group if user is creator or the user themselves
 const deleteMemberHandler = async (req, res, { Group }) => {
     const groupID = req.params.groupID
     
@@ -360,7 +360,7 @@ const deleteMemberHandler = async (req, res, { Group }) => {
     })
 }
 
-// TODO: gets a list of courses the user is taking
+// gets a list of courses the user is taking
 const getCourseHandler = async (req, res, { Enrollment }) => {
     // extract userID from X-User header
     const user = req.header('X-User')
@@ -390,7 +390,7 @@ const getCourseHandler = async (req, res, { Enrollment }) => {
     })
 }
 
-// TODO: adds a course to the list of courses the user is taking
+// adds a course to the list of courses the user is taking
 const postCourseHandler = async (req, res, { Enrollment }) => {
     // extract user from X-User header
     const user = req.header('X-User')
@@ -408,7 +408,7 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
         return
     }
     
-    // // extract the enrollment
+    // extract the enrollment
     Enrollment.findOne({userID: userID}, (err, enr) => {
         // if there's an error or enrollment could not be found
         if (err) {
@@ -469,7 +469,7 @@ const postCourseHandler = async (req, res, { Enrollment }) => {
     })
 }; 
 
-// TODO: deletes the course from the list of courses the user is taking
+// deletes the course from the list of courses the user is taking
 const deleteCourseHandler = async (req, res, { Enrollment }) => {
         // extract user from X-User header
         const user = req.header('X-User')

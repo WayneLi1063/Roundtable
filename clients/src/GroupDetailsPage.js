@@ -1,12 +1,14 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import api from './APIEndpoints.js'
+import api from './APIEndpoints.js';
+import { albumBucketName, bucketRegion, AddPhoto } from './S3.js';
 
 const HOMEWORK_HELP = "homeworkHelp";
 const EXAM_SQUAD = "examSquad";
 const NOTE_EXCHANGE = "noteExchange";
 const LAB_MATES = "labMates";
 const PROJECT_PARTNERS = "projectPartners"
+
 
 export default class GroupDetailsPage extends React.Component {
 
@@ -68,7 +70,7 @@ export default class GroupDetailsPage extends React.Component {
     // build the data arrays for group leader and memebers
     getMembersInfo = async (members, leader) => {
         if (!this.state.authToken) {
-            console.log("no auth")
+            this.props.errorCallback("no auth")
             return;
         }
 
@@ -95,7 +97,7 @@ export default class GroupDetailsPage extends React.Component {
             } else {
                 this.setState({leader: user});
             }
-            console.log(this.state.card)
+            //console.log(this.state.card)
         })
     }
 
@@ -111,7 +113,7 @@ export default class GroupDetailsPage extends React.Component {
     // fetches the current user info
     getCurrentUser = async () => {
         if (!this.state.authToken) {
-            console.error("no auth token found, aborting")
+            this.props.errorCallback("no auth token found, aborting")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
@@ -153,7 +155,7 @@ export default class GroupDetailsPage extends React.Component {
                     return (
                         <div key={user.id}>
                             <div className='memberRow'>
-                                <img className="avatar" src={user.photoURL} alt="User Profile"></img>
+                                <img className="avatar" src={`https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${user.userName}`} alt="User Profile"></img>
                                 <p className='memberInfos'>
                                     {user.firstName + '\t' + user.lastName}
                                 </p>
@@ -168,7 +170,7 @@ export default class GroupDetailsPage extends React.Component {
                             <p className='memberInfos'>
                                 {user.firstName + '\t' + user.lastName}
                             </p>
-                            <a className='sendEmailButton' href={userEmailString}>Email</a>
+                            <a className='sendEmailButton' href={'mailto: ' + user.email}>Email</a>
                         </div>
                     </div>
                 )
@@ -213,6 +215,14 @@ export default class GroupDetailsPage extends React.Component {
                     <button className='detailsCloseButton' onClick={this.handleDetailClick}>Close</button>
                     <div className="class-name-details" > {card.className} </div>
                     <div className="lookingFor"> Looking for {card.members ? card.maxSize - card.members.length : "fetching"} more</div><br/>
+                    
+                    <div>
+                        <p className='membersTitle'>
+                            Group Description: 
+                        </p>
+                        <div className='detailsContent' >{this.state.card.description ? this.state.card.description : <p>None</p>}</div>
+                    </div>
+
                     <div>
                         <p className='membersTitle'>
                             Members:
@@ -223,7 +233,7 @@ export default class GroupDetailsPage extends React.Component {
                             <div>
                                 <div key={this.state.leader.id}>
                                     <div className='memberRow'>
-                                        <img className="avatar" src={this.state.leader.photoURL} alt="User Profile"></img>
+                                        <img className="avatar" src={`https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${this.state.leader.userName}`} alt="User Profile"></img>
                                         <img className="detailsLeader" src="/img/crown.svg" alt="You are leader"></img>
                                         <p className='leaderInfos'>
                                             {this.state.leader.firstName + '\t' + this.state.leader.lastName}
@@ -234,6 +244,7 @@ export default class GroupDetailsPage extends React.Component {
                                 {members}
                             </div>}
                     </div>
+
 
                     <div>
                         <p className='membersTitle'>
@@ -247,7 +258,7 @@ export default class GroupDetailsPage extends React.Component {
                         <p className='membersTitle'>
                             When2Meet URL: 
                         </p>
-                        <p>{this.state.card.when2meetURL ? this.state.card.when2meetURL : <p>None</p>}</p>
+                        <div className='detailsContent' >{this.state.card.when2meetURL ? this.state.card.when2meetURL : <p>None</p>}</div>
                     </div>
                 </div>
             </section>

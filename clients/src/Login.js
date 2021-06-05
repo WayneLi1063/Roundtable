@@ -3,7 +3,7 @@ import Form from "@rjsf/core";
 import api from './APIEndpoints.js'
 
 export default class SignUp extends React.Component {
-
+  // Schema for login form
   formSchema = {
     "title": "LOG IN",
     "description": "Log in to your exisitng account",
@@ -24,6 +24,7 @@ export default class SignUp extends React.Component {
     }
   }
 
+  // Schema for login form UI
   UIschema = {
     "email": {
       "ui:format": "email"
@@ -49,6 +50,7 @@ export default class SignUp extends React.Component {
     const user = await response.json()
     this.props.setUser(user);
     this.props.setAuthToken(response.headers.get("Authorization"));
+    this.props.fetch()
   }
 
   render() {

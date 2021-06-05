@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 
 	"github.com/go-redis/redis"
 	"wayneli.me/m/servers/gateway/handlers"
@@ -71,6 +72,37 @@ func getURLs(addrString string) []*url.URL {
 	return URLs
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		if r.Header.Get("Origin") == "https://roundtablefinder.com" || r.Header.Get("Origin") == "https://localhost:3000" {
+			return true
+		}
+		return false
+	},
+}
+
+func socketHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	for {
+		messageType, message, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		log.Printf("Socket received message: type: %d, Message: %s", messageType, message)
+
+		conn.WriteMessage(1, []byte("Data changed, please fetch."))
+	}
+
+}
+
 //main is the main entry point for the server
 func main() {
 	addr := os.Getenv("ADDR")
@@ -110,6 +142,8 @@ func main() {
 	rtr.HandleFunc("/v1/users/{ID}", ctx.SpecificUsersHandler)
 	rtr.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	rtr.HandleFunc("/v1/sessions/{ID}", ctx.SpecificSessionHandler)
+
+	rtr.HandleFunc("/websocket", socketHandler)
 
 	// Create URLs for proxies
 	groupsAddrs := os.Getenv("GROUPSADDRS")
