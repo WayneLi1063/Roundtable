@@ -10,9 +10,9 @@ export default class Create extends React.Component {
             groupName: this.props.editData.teamName,
             courseName: this.props.editData.className,
             description: this.props.editData.description,
-            when2meetURL: this.props.editData.when2meet,
+            when2meetURL: this.props.editData.when2meetURL,
             private: false,
-            groupSize: this.props.editData.totalNumber,
+            groupSize: this.props.editData.maxSize,
             homeworkHelp: this.props.editData.tags.homeworkHelp,
             examSquad: this.props.editData.tags.examSquad,
             noteExchange: this.props.editData.tags.noteExchange,
@@ -243,7 +243,8 @@ export default class Create extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="g-size" className="font-weight-bold">Group Size (2-5)</label><br />
-                        <input type="range" name="g-size" max="5" min="2" id="g-size" className="g-size" value={this.state.groupSize ? this.state.groupSize : this.props.editData.maxSize } onChange={this.handleGroupSizeChange} />
+                        <input type="range" name="g-size" max="5" min="2" id="g-size" className="g-size" 
+                        value={ this.state.groupSize ? this.state.groupSize : this.props.editData.maxSize } onChange={this.handleGroupSizeChange} />
                         <output className="ml-3" name="size-output" id="size-output">{this.state.groupSize}</output><br />
                         {this.state.manyMemberDisplay &&
                             <p className="alert-red alert-edit many-member">You have {this.props.editData.members.length} members which exceeds desired group size.</p>

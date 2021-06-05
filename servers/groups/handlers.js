@@ -154,10 +154,10 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
         const { 
             teamName, 
             className, 
-            descrption, 
+            description, 
             private, 
             img,
-            when2meet,
+            when2meetURL,
             homeworkHelp,
             examSquad,
             noteExchange,
@@ -187,13 +187,13 @@ const patchOneGroupHandler = async (req, res, { Group }) => {
         const newGroup = {
             teamName: teamName,
             className: className,
-            descrption: descrption,
+            description: description,
             private: private,
             creator: foundGroup.creator,
             members: foundGroup.members,
             createdAt: foundGroup.createdAt,
             imgURL: img,
-            when2meetURL: when2meet,
+            when2meetURL: when2meetURL,
             tags: tags,
             maxSize: totalNumber
         }
