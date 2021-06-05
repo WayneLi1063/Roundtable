@@ -68,7 +68,7 @@ export default class GroupDetailsPage extends React.Component {
     // build the data arrays for group leader and memebers
     getMembersInfo = async (members, leader) => {
         if (!this.state.authToken) {
-            console.log("no auth")
+            this.props.errorCallback("no auth")
             return;
         }
 
@@ -95,7 +95,6 @@ export default class GroupDetailsPage extends React.Component {
             } else {
                 this.setState({leader: user});
             }
-            console.log(this.state.card)
         })
     }
 
@@ -111,7 +110,7 @@ export default class GroupDetailsPage extends React.Component {
     // fetches the current user info
     getCurrentUser = async () => {
         if (!this.state.authToken) {
-            console.error("no auth token found, aborting")
+            this.props.errorCallback("no auth token found, aborting")
             return;
         }
         const response = await fetch(api.base + api.handlers.myuser + "me", {
