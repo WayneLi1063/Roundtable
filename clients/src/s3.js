@@ -38,7 +38,9 @@ export const AddPhoto = async (albumName, imgFile, photoKeyName, callback) => {
       try {
         await s3.send(new PutObjectCommand(uploadParams));
         console.log("Successfully uploaded photo.");
-        callback()
+        if (typeof callback === "function") {
+          callback()
+        }
       } catch (err) {
         console.error("There was an error uploading your photo: ", err.message);
       }

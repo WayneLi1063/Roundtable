@@ -170,7 +170,7 @@ export default class Create extends React.Component {
             this.toggleManyMember();
         } else {
             if (typeof this.state.img !== "string") {
-                AddPhoto("GroupPhotos", this.state.img, "")
+                AddPhoto("GroupPhotos", this.state.img, this.state.img.name)
                 let url = `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/GroupPhotos/${this.state.img.name}`
                 this.handleSubmitHelper(newGroup, url);
             } else {
