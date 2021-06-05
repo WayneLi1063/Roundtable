@@ -10,7 +10,7 @@ export default class Create extends React.Component {
             groupName: this.props.editData.teamName,
             courseName: this.props.editData.className,
             description: this.props.editData.description,
-            when2meetURL: this.props.editData.when2meetURL,
+            when2meetURL: this.props.editData.when2meet,
             private: false,
             groupSize: this.props.editData.totalNumber,
             homeworkHelp: this.props.editData.tags.homeworkHelp,
