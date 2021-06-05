@@ -165,7 +165,7 @@ export default class GroupDetailsPage extends React.Component {
                 return (
                     <div key={user.id}>
                         <div className='memberRow'>
-                            <img className="avatar" src={user.photoURL} alt="User Profile"></img>
+                            <img className="avatar" src={`https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${user.userName}`} alt="User Profile"></img>
                             <p className='memberInfos'>
                                 {user.firstName + '\t' + user.lastName}
                             </p>
