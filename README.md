@@ -130,4 +130,7 @@ const enrollmentSchema = new Schema ({
     classList: { type: [String], required: true }
 });
 ```
- 
+
+**Addendum for Updated Architecture**
+
+![img](./readme_img/update_architecture.png?raw=true)
