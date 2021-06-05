@@ -12,9 +12,9 @@ export default class Profile extends React.Component {
             lastName: '',
             email: '',
             courses: '',
-            passwordErr: false,
             nameErr: false,
-            newPhoto: '',
+            profileChanged: false,
+            userPhotoFile: '',
             userPhoto: '',
             userName: '',
             authToken: localStorage.getItem("Authorization") || null
@@ -25,8 +25,16 @@ export default class Profile extends React.Component {
     componentDidMount() {
         this.props.toggleTwoButtons(false);
         this.setUserProfile();
-        this.getCourse()
-        // this.setUserPhoto()
+        this.getCourse();
+    }
+
+    // actions when data is updated.
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.courses !== prevProps.courses) {
+            this.setState(() => {
+                return ({ courses: this.props.courses });
+            })
+        }
     }
 
     // decide to show the profile or edit tab
@@ -39,47 +47,37 @@ export default class Profile extends React.Component {
         this.setUserProfile();
     }
 
-    validateEmail(email) {
-        var re = /\S+@\S+\.\S+/;
-        return re.test(String(email).toLowerCase());
-    }
-
     // handle clicks on save change button
     submitEdit = () => {
         if (!this.state.authToken) {
-            console.error("no auth token, aborting")
+            this.props.errorCallback("You are not authenticated")
             return;
         }
-
+        this.setState({
+            profileChanged: false,
+        });
         if (this.state.firstName === '' && this.state.LastName === '') {
             this.setState({
                 nameErr: true,
             });
         } else {
-            this.submitUpdate()
-
-            if (this.state.newPhoto !== '') {
-                AddPhoto("UserFolder", this.state.newPhoto, this.state.userName)
-            }
-
             this.setState({
-                passwordErr: false,
                 nameErr: false,
-                emailErr: false,
-                emailErr2: false
             })
-            this.setUserProfile();
-            this.toggleMenu('profile');
+            this.submitUpdate()
         }
     }
 
     submitUpdate = async () => {
-        
         const update = {
             FirstName: this.state.firstName,
             LastName: this.state.lastName,
         }
-
+        if (this.state.userPhotoFile !== '') {
+            AddPhoto("UserFolder", this.state.userPhotoFile, this.state.userName, () => {
+                this.setProfilePic()
+            })
+        }
         const response = await fetch("https://api.roundtablefinder.com/v1/users/me", {
             method: 'PATCH',
             headers: new Headers({
@@ -89,9 +87,17 @@ export default class Profile extends React.Component {
             body: JSON.stringify(update)
         });
         if (response.status >= 300) {
-            console.error("error:" + response.status);
+            this.props.errorCallback("error:" + response.status);
             return;
+        } else {
+            this.setUserProfile();
+            this.toggleMenu('profile');
         }
+    }
+
+    // letting the client know to update profile pic
+    setProfilePic = () => {
+        this.setState({profileChanged: true});
     }
 
     // sets the authToken
@@ -108,7 +114,7 @@ export default class Profile extends React.Component {
     // fetch user information from the database
     setUserProfile = async () => {
         if (!this.state.authToken) {
-            console.error("no auth token found, aborting")
+            this.props.errorCallback("You are not authenticated.")
             return;
         }
         const response = await fetch(this.props.api.base + this.props.api.handlers.myuser + "me", {
@@ -118,7 +124,7 @@ export default class Profile extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.error("error:" + response.status);
+            this.props.errorCallback("error:" + response.status);
             return;
         }
         const user = await response.json()
@@ -130,12 +136,13 @@ export default class Profile extends React.Component {
             userName: user.userName,
             userPhoto: `https://${albumBucketName}.s3.${bucketRegion}.amazonaws.com/UserFolder/${user.userName}`
         })
+
     }
 
     // calls the course api to get user's current courses
     getCourse = async () => {
         if (!this.state.authToken) {
-            console.error("no auth")
+            this.props.errorCallback("You are not authenticated")
             return;
         }
         const response = await fetch("https://api.roundtablefinder.com/v1/courses/users", {
@@ -145,7 +152,7 @@ export default class Profile extends React.Component {
             })
         });
         if (response.status >= 300) {
-            console.error("Get course failed. Please retry");
+            this.props.errorCallback("Get course failed. Please retry");
             return;
         }
         const courses = await response.json()
@@ -163,26 +170,11 @@ export default class Profile extends React.Component {
         this.setState({ lastName: event.target.value })
     }
 
-    // handle email change when users edit their profiles
-    handleEmailChange = (event) => {
-        this.setState({ email: event.target.value })
-    }
-
-    // handle password change when users edit their profiles
-    handlePassword = (event) => {
-        this.setState({ newPassword: event.target.value })
-    }
-
-    // handle confirm password change when users edit their profiles
-    handleConfirmPassword = (event) => {
-        this.setState({ confirmPassword: event.target.value })
-    }
-
     // handle profile photo change when users edit their profiles
     handlePhoto = (event) => {
         this.setState({ 
-            newPhoto: event.target.files[0],
-            url: URL.createObjectURL(event.target.files[0])
+            userPhotoFile: event.target.files[0],
+            userPhoto: URL.createObjectURL(event.target.files[0])
         })
     }
 
@@ -192,7 +184,11 @@ export default class Profile extends React.Component {
         let courses = this.state.courses;
         if (courses.length !== 0) {
             courses.forEach(course => {
+                if (course === "Please set up your current courses in profile page.") {
+                    course = "Please set up your current courses by clicking the plus sign."
+                }
                 content.push(<div key={course} id="class-name" className={`class-name + ${course}`}> {course} </div>)
+
             })
         }
 
@@ -211,14 +207,14 @@ export default class Profile extends React.Component {
                             </ul>
                             <div className="tab-content py-4">
                                 <div className="tab-pane active" id="profile">
-                                    <h5 className="mb-3">User Profile</h5>
+                                    <h5 className="mb-3">{this.state.userName}</h5>
                                     <div className="row">
                                         <div className="user-profile ml-3">
-                                            <h6>firstName</h6>
+                                            <h6>First Name</h6>
                                             <p>{this.state.firstName}</p>
-                                            <h6>LastName</h6>
+                                            <h6>Last Name</h6>
                                             <p>{this.state.lastName}</p>
-                                            <h6>E-mail</h6>
+                                            <h6>Email</h6>
                                             <p>{this.state.email}</p>
                                             <h6>Current Courses</h6>
                                             <div className="my-courses">
@@ -281,7 +277,7 @@ export default class Profile extends React.Component {
                         <div className="col-lg-4 order-lg-1">
                             <img src={this.state.userPhoto} className="mx-auto img-fluid img-circle d-block user-img" alt="avatar"></img>
                             <div className="custom-file">
-                                <input type="file" className="custom-file-input" onChange={this.handlePhoto} />
+                                <input type="file" accept="image/*" className="custom-file-input" onChange={this.handlePhoto} />
                                 <label className="custom-file-label">Upload a different photo</label>
                             </div>
                         </div>
@@ -292,17 +288,3 @@ export default class Profile extends React.Component {
 
     }
 }
-
-/*
-                                        <div className="form-group row">
-                                            <label className="col-lg-3 col-form-label form-control-label">Email</label>
-                                            <div className="col-lg-9">
-                                                <input className="form-control" type="email" value={this.state.email} onChange={this.handleEmailChange}></input>
-                                            </div>
-                                            {this.state.emailErr && <p className='email-err'>Email cannot be empty!</p>}
-                                            {this.state.emailErr2 && <p className='email-err'>Email is not validated!</p>}
-                                        </div>
-
-                                                
-
-                                        */

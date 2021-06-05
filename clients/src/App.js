@@ -13,7 +13,6 @@ import MyGroupPage from './MyGroupPage.js';
 import Homepage from './Homepage.js';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import GroupDetailsPage from './GroupDetailsPage.js';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import SignUp from './SignUp.js'
 import Login from './Login.js'
 import api from './APIEndpoints.js'
@@ -21,7 +20,7 @@ import { albumBucketName, bucketRegion } from './S3.js';
 
 
 // WEBSOCKET
-const client = new W3CWebSocket('wss://api.roundtablefinder.com:8000');
+const client = new WebSocket('wss://api.roundtablefinder.com/websocket');
 
 export default class App extends React.Component {
     constructor(props) {
@@ -108,13 +107,6 @@ export default class App extends React.Component {
 
         client.onmessage = (message) => {
             this.fetch();
-        }
-
-        // If user is authenticated
-        if (this.state.authToken) {
-            this.getCurrentUser();
-            this.getCurrentGroups();
-            this.getCourse();
         }
     }
 
@@ -335,10 +327,10 @@ export default class App extends React.Component {
                                 <div className='login-form text-center container'>
                                         <div className="row justify-content-center">
                                             <div className="col">
-                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                                <SignUp setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError} fetch={this.fetch} />
                                             </div>
                                             <div className="col">
-                                                <Login setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError}/>
+                                                <Login setAuthToken={this.setAuthToken} setUser={this.setUser} errorCallback={this.toggleOnError} fetch={this.fetch} />
                                             </div>
                                         </div>
                                     </div>
@@ -383,7 +375,9 @@ export default class App extends React.Component {
                         }
 
                         <Switch>
-                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser} />)} />
+                            <Route exact path='/myprofile' render={(props) => (<ProfilePage {...props} user={this.state.user} toggleAddCourse={this.toggleAddCourse} 
+                            toggleTwoButtons={this.toggleTwoButtons} errorCallback={this.toggleOnError} authToken = {this.state.authToken} api = {api} getCurrentUser = {this.getCurrentUser}
+                            courses={this.state.myCourses} />)} />
                             <Route exact path='/mygroup' render={(props) => (<MyGroupPage {...props} cards={this.state.myGroups} loading={this.state.spinnerDisplay}
                                 wsUpdate = {this.valueChange} updateCallback={this.updateAppState} toggleFeedback={this.toggleFeedback} user={this.state.user} toggleEditForm={this.toggleEditForm}
                                 feedbackInfo={this.state.feedbackInfo} passEditCallback={this.passEdit} toggleTwoButtons={this.toggleTwoButtons} fetch={this.fetch}

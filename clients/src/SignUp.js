@@ -83,8 +83,13 @@ export default class SignUp extends React.Component {
     }
     const user = await response.json()
     this.props.setUser(user);
-    AddPhoto("GroupPhotos", user.photoURL, user.userName)
-    this.props.setAuthToken(response.headers.get("Authorization"));
+    const img_response = await fetch("https://roundtablefinder.s3-us-west-1.amazonaws.com/UserFolder/husky.png")
+    const default_image = await img_response.blob()
+    AddPhoto("UserFolder", default_image, user.userName, () => {
+      this.props.fetch()
+      this.props.setAuthToken(response.headers.get("Authorization"));
+    })
+
   }
 
   render() {

@@ -49,6 +49,7 @@ export default class SignUp extends React.Component {
     const user = await response.json()
     this.props.setUser(user);
     this.props.setAuthToken(response.headers.get("Authorization"));
+    this.props.fetch()
   }
 
   render() {

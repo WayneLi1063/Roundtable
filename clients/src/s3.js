@@ -15,7 +15,7 @@ const s3 = new S3Client({
   });
 
 // Add a photo to an album
-export const AddPhoto = async (albumName, imgFile, photoKeyName) => {
+export const AddPhoto = async (albumName, imgFile, photoKeyName, callback) => {
       const albumPhotosKey = encodeURIComponent(albumName) + "/";
       await s3.send(
           new ListObjectsCommand({
@@ -38,11 +38,8 @@ export const AddPhoto = async (albumName, imgFile, photoKeyName) => {
       try {
         await s3.send(new PutObjectCommand(uploadParams));
         console.log("Successfully uploaded photo.");
+        callback()
       } catch (err) {
-        console.log("There was an error uploading your photo: ", err.message);
+        console.error("There was an error uploading your photo: ", err.message);
       }
 }
-
-// export default {
-//     albumBucketName, ListAlbums, bucketRegion, CreateAlbum, AddPhoto
-// }

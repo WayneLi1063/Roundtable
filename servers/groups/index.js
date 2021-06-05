@@ -14,9 +14,6 @@ const {
     deleteCourseHandler
 } = require('./handlers')
 
-//websocket
-
-
 const mongoEndpoint = `mongodb://${process.env.MONGOADDR}/test`
 const port = 80;
 

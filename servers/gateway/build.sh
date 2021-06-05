@@ -1,4 +1,4 @@
 GOOS=linux go build
-docker build -t penumbrapow/roundtable_gateway .
+docker build -t wayneli1063/roundtable_gateway .
 go clean
-docker push penumbrapow/roundtable_gateway
+docker push wayneli1063/roundtable_gateway
